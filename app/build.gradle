@@ -4,14 +4,17 @@ android {
     compileSdkVersion 23
     buildToolsVersion "23.0.1"
 
+    packagingOptions {
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/LICENSE.txt'
+    }
+
     defaultConfig {
         applicationId "br.com.civico.mais.saude"
         minSdkVersion 15
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
-        multiDexEnabled true
-
     }
     buildTypes {
         release {
@@ -24,6 +27,22 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
+
+    compile 'com.loopj.android:android-async-http:1.4.9'
+
+
+    compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.2.1'
+    compile group: 'org.apache.httpcomponents', name: 'httpcore', version: '4.2.1'
+    compile group: 'org.jboss.resteasy', name: 'jaxrs-api', version: '3.0.5.Final'
+    compile group: 'org.jboss.resteasy', name: 'resteasy-client', version: '3.0.5.Final'
+    compile group: 'org.jboss.resteasy', name: 'resteasy-jaxrs', version: '3.0.5.Final'
+    compile group: 'commons-io', name: 'commons-io', version: '2.1'
+    compile group: 'commons-logging', name: 'commons-logging', version: '1.1.1'
+    compile group: 'org.json', name: 'json', version: '20160212'
+
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:design:23.1.1'
+    compile 'com.android.support:multidex:1.0.0'
+
+    androidTestCompile 'junit:junit:4.12'
 }
