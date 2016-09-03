@@ -75,7 +75,13 @@ public class UnidadeService extends AbstractService {
                 listaDados = new ArrayList<String>();
                 JSONObject oneObject = jsonArray.getJSONObject(i);
                 listaHeader.add(oneObject.getString("nomeFantasia"));
-                listaDados.add(oneObject.getString("codUnidade"));
+                listaDados.add("Código: " + oneObject.getString("codUnidade"));
+                listaDados.add("Logradouro: " + oneObject.getString("logradouro") + ", " + oneObject.getString("numero"));
+                listaDados.add("Bairro: " + oneObject.getString("bairro"));
+                listaDados.add("Cidade: " + oneObject.getString("cidade") + " - " + oneObject.getString("uf"));
+                listaDados.add("Telefone: " + oneObject.getString("telefone"));
+                listaDados.add("Vinculo SUS: " + oneObject.getString("vinculoSus"));
+                listaDados.add("Atendimento: " + oneObject.getString("turnoAtendimento"));
                 listDataChild.put(listaHeader.get(i), listaDados);
             } catch (JSONException e) {
                 // Oops

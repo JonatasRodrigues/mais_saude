@@ -43,14 +43,14 @@ public class ExpandableListUnidadeAdapter extends BaseExpandableListAdapter{
         final String childText = (String) getChild(groupPosition, childPosition);
 
         if (convertView == null) {
-            LayoutInflater infalInflater = (LayoutInflater) this._context
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            LayoutInflater infalInflater = (LayoutInflater) this._context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = infalInflater.inflate(R.layout.customer_unidade_row, null);
         }
 
         TextView txtListChild = (TextView) convertView.findViewById(R.id.descUnidade);
 
         txtListChild.setText(childText);
+        txtListChild.setMinHeight(45);
         return convertView;
     }
 
@@ -84,7 +84,8 @@ public class ExpandableListUnidadeAdapter extends BaseExpandableListAdapter{
 
         TextView lblListHeader = (TextView) convertView.findViewById(R.id.lblListHeader);
         lblListHeader.setTypeface(null, Typeface.BOLD);
-        lblListHeader.setTextColor(_context.getResources().getColor(R.color.colorPrimaryDark));
+        lblListHeader.setHeight(70);
+        lblListHeader.setTextColor(_context.getResources().getColor(R.color.DodgerBlue));
         lblListHeader.setText(headerTitle);
 
         return convertView;

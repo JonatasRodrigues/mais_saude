@@ -7,9 +7,10 @@
         android:id="@+id/descUnidade"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="40dp"
+        android:layout_marginLeft="15dp"
         android:layout_gravity="center_vertical"
-        android:text="TextView" />
+        android:text="TextView"
+        android:background="#00000000"/>
 
 
 </LinearLayout>
