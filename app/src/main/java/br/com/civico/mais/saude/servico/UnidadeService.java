@@ -1,6 +1,8 @@
 package br.com.civico.mais.saude.servico;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.location.Location;
 
 import com.loopj.android.http.HttpGet;
 import org.json.JSONArray;
@@ -10,12 +12,14 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
 import br.com.civico.mais.saude.constantes.ConstantesAplicacao;
 import br.com.civico.mais.saude.converter.StreamConverter;
 import br.com.civico.mais.saude.dto.ExpandableDTO;
+import br.com.civico.mais.saude.exception.ErroServicoTCUException;
 import cz.msebera.android.httpclient.HttpEntity;
 import cz.msebera.android.httpclient.HttpResponse;
 import cz.msebera.android.httpclient.client.HttpClient;
@@ -26,32 +30,40 @@ import cz.msebera.android.httpclient.impl.client.DefaultHttpClient;
  */
 public class UnidadeService extends AbstractService {
 
-    private Context context;
+    private Location location;
     private static final Integer RAIO = 30;
     private static UnidadeService unidadeService;
+    private static final Integer STATUS_OK=200;
+    private ProgressDialog progressDialog;
+    private Context context;
 
-    public static UnidadeService getInstance(Context context){
+    public static UnidadeService getInstance(Location location,Context context){
         if(unidadeService==null){
-            unidadeService= new UnidadeService(context);
+            unidadeService= new UnidadeService(location,context);
         }
         return unidadeService;
     }
 
-    private UnidadeService(Context context){
+    private UnidadeService(Location location,Context context){
+        this.location=location;
         this.context=context;
     }
 
     @Override
-    public ExpandableDTO consumirServicoTCU() throws JSONException {
+    public ExpandableDTO consumirServicoTCU() throws JSONException,ErroServicoTCUException {
         String result="";
         try {
-            String url = ConstantesAplicacao.URL_BASE + "/rest/estabelecimentos/latitude/" + getLatitude()
-                    + "/longitude/" + getLongitude() + "/raio/" + RAIO;
+            String url = ConstantesAplicacao.URL_BASE + "/rest/estabelecimentos/latitude/" + this.location.getLatitude()
+                    + "/longitude/" + this.location.getLongitude() + "/raio/" + RAIO;
 
             HttpClient httpclient = new DefaultHttpClient();
 
             HttpGet httpget = new HttpGet(url);
             HttpResponse response = httpclient.execute(httpget);
+
+            if(response.getStatusLine().getStatusCode()!=STATUS_OK)
+               throw new ErroServicoTCUException("Erro ao recuperar informações. Por favor, tente mais tarde.");
+
             HttpEntity entity = response.getEntity();
 
             if (entity != null) {
@@ -90,15 +102,16 @@ public class UnidadeService extends AbstractService {
        return new ExpandableDTO(listaHeader,listDataChild);
     }
 
-    private double getLongitude(){
-        LocalizacaoService localizacaoService = new LocalizacaoService(context);
-        return localizacaoService.getLongitude();
+    public void exibirMensagemProcessamento(){
+        progressDialog = new ProgressDialog(context);
+        progressDialog.setMessage("Por favor, aguarde...");
+        progressDialog.setCancelable(false);
+        progressDialog.setIndeterminate(true);
+        progressDialog.show();
     }
 
-    private double getLatitude(){
-        LocalizacaoService localizacaoService = new LocalizacaoService(context);
-        return localizacaoService.getLatitude();
+    public void encerrarMensagemProcessamento(){
+        progressDialog.dismiss();
     }
-
 
 }

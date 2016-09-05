@@ -8,6 +8,7 @@
     <color name="black">#000000</color>
     <color name="DodgerBlue">#1E90FF</color>
     <color name="lime">#00FF00</color>
+    <color name="transparente">#00000000</color>
 
 
 </resources>

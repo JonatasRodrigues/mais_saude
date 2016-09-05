@@ -9,8 +9,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="15dp"
         android:layout_gravity="center_vertical"
-        android:text="TextView"
-        android:background="#00000000"/>
+        android:text="TextView"/>
 
 
 </LinearLayout>

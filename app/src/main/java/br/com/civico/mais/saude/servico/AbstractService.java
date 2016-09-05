@@ -1,10 +1,15 @@
 package br.com.civico.mais.saude.servico;
 
+import android.app.ProgressDialog;
 import android.os.AsyncTask;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.util.Calendar;
+
+import br.com.civico.mais.saude.controle.UnidadeActivity;
 import br.com.civico.mais.saude.dto.ExpandableDTO;
 
 /**
@@ -12,7 +17,16 @@ import br.com.civico.mais.saude.dto.ExpandableDTO;
  */
 public abstract class AbstractService extends AsyncTask<String, Void, ExpandableDTO> implements Service{
 
+
+
     public abstract ExpandableDTO consumirServicoTCU()throws JSONException;
+
+    @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+     //   exibirMensagemProcessamento();
+    }
+
 
     @Override
     protected ExpandableDTO doInBackground(String... params) {
@@ -22,6 +36,12 @@ public abstract class AbstractService extends AsyncTask<String, Void, Expandable
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    protected void onPostExecute(ExpandableDTO result) {
+        super.onPostExecute(result);
+    //    encerrarMensagemProcessamento();
     }
 
     @Override

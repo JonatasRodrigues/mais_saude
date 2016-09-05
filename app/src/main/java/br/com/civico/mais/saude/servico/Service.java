@@ -14,4 +14,6 @@ public interface Service {
 
    public ExpandableDTO consumirServicoTCU()throws JSONException;
    public JSONArray getJson(String json) throws JSONException;
+   public void exibirMensagemProcessamento();
+   public void encerrarMensagemProcessamento();
 }
