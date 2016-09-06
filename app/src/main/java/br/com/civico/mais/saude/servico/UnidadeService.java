@@ -1,7 +1,6 @@
 package br.com.civico.mais.saude.servico;
 
-import android.app.ProgressDialog;
-import android.content.Context;
+ import android.content.Context;
 import android.location.Location;
 
 import com.loopj.android.http.HttpGet;
@@ -12,7 +11,6 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
@@ -34,19 +32,16 @@ public class UnidadeService extends AbstractService {
     private static final Integer RAIO = 30;
     private static UnidadeService unidadeService;
     private static final Integer STATUS_OK=200;
-    private ProgressDialog progressDialog;
-    private Context context;
 
-    public static UnidadeService getInstance(Location location,Context context){
+    public static UnidadeService getInstance(Location location){
         if(unidadeService==null){
-            unidadeService= new UnidadeService(location,context);
+            unidadeService= new UnidadeService(location);
         }
         return unidadeService;
     }
 
-    private UnidadeService(Location location,Context context){
+    private UnidadeService(Location location){
         this.location=location;
-        this.context=context;
     }
 
     @Override
@@ -84,34 +79,24 @@ public class UnidadeService extends AbstractService {
         HashMap<String, List<String>> listDataChild = new HashMap<>();
         for (int i=0; i < jsonArray.length(); i++) {
             try {
-                listaDados = new ArrayList<String>();
+                 listaDados = new ArrayList<String>();
                 JSONObject oneObject = jsonArray.getJSONObject(i);
                 listaHeader.add(oneObject.getString("nomeFantasia"));
                 listaDados.add("Código: " + oneObject.getString("codUnidade"));
                 listaDados.add("Logradouro: " + oneObject.getString("logradouro") + ", " + oneObject.getString("numero"));
                 listaDados.add("Bairro: " + oneObject.getString("bairro"));
                 listaDados.add("Cidade: " + oneObject.getString("cidade") + " - " + oneObject.getString("uf"));
-                listaDados.add("Telefone: " + oneObject.getString("telefone"));
+                if (oneObject.has("telefone")) {
+                    listaDados.add("Telefone: " + oneObject.getString("telefone"));
+                }
                 listaDados.add("Vinculo SUS: " + oneObject.getString("vinculoSus"));
                 listaDados.add("Atendimento: " + oneObject.getString("turnoAtendimento"));
                 listDataChild.put(listaHeader.get(i), listaDados);
             } catch (JSONException e) {
-                // Oops
+                e.printStackTrace();
             }
         }
        return new ExpandableDTO(listaHeader,listDataChild);
-    }
-
-    public void exibirMensagemProcessamento(){
-        progressDialog = new ProgressDialog(context);
-        progressDialog.setMessage("Por favor, aguarde...");
-        progressDialog.setCancelable(false);
-        progressDialog.setIndeterminate(true);
-        progressDialog.show();
-    }
-
-    public void encerrarMensagemProcessamento(){
-        progressDialog.dismiss();
     }
 
 }

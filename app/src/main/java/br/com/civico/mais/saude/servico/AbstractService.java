@@ -9,6 +9,7 @@ import org.json.JSONObject;
 
 import java.util.Calendar;
 
+import br.com.civico.mais.saude.controle.MainActivity;
 import br.com.civico.mais.saude.controle.UnidadeActivity;
 import br.com.civico.mais.saude.dto.ExpandableDTO;
 
@@ -20,12 +21,6 @@ public abstract class AbstractService extends AsyncTask<String, Void, Expandable
 
 
     public abstract ExpandableDTO consumirServicoTCU()throws JSONException;
-
-    @Override
-    protected void onPreExecute() {
-        super.onPreExecute();
-     //   exibirMensagemProcessamento();
-    }
 
 
     @Override
@@ -39,13 +34,9 @@ public abstract class AbstractService extends AsyncTask<String, Void, Expandable
     }
 
     @Override
-    protected void onPostExecute(ExpandableDTO result) {
-        super.onPostExecute(result);
-    //    encerrarMensagemProcessamento();
-    }
-
-    @Override
     public JSONArray getJson(String json) throws JSONException {
         return new JSONArray(json);
     }
+
+
 }

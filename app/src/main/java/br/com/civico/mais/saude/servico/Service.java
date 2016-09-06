@@ -1,5 +1,7 @@
 package br.com.civico.mais.saude.servico;
 
+import android.content.Context;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 
@@ -14,6 +16,5 @@ public interface Service {
 
    public ExpandableDTO consumirServicoTCU()throws JSONException;
    public JSONArray getJson(String json) throws JSONException;
-   public void exibirMensagemProcessamento();
-   public void encerrarMensagemProcessamento();
+
 }

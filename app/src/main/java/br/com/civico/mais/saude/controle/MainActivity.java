@@ -2,8 +2,10 @@ package br.com.civico.mais.saude.controle;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.view.View;
@@ -15,6 +17,8 @@ import br.com.civico.mais.saude.R;
 import br.com.civico.mais.saude.servico.GPSService;
 
 public class MainActivity extends Activity {
+
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,8 +33,32 @@ public class MainActivity extends Activity {
     private View.OnClickListener onClickListener = new View.OnClickListener() {
         public void onClick(final View v) {
             if(v.getId()== R.id.btnUnidade){
-                Intent intent = new Intent(MainActivity.this, UnidadeActivity.class);
-                startActivity(intent);
+                AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>() {
+
+                    @Override
+                    protected void onPreExecute() {
+                        progressDialog = new ProgressDialog(MainActivity.this);
+                        progressDialog.setMessage("Processando...");
+                        progressDialog.setCancelable(false);
+                        progressDialog.setIndeterminate(true);
+                        progressDialog.show();
+                    }
+
+                    @Override
+                    protected Void doInBackground(Void... arg0) {
+                        Intent intent = new Intent(MainActivity.this, UnidadeActivity.class);
+                        startActivity(intent);
+                        return null;
+                    }
+
+                    @Override
+                    protected void onPostExecute(Void result) {
+                        if (progressDialog != null) {
+                            progressDialog.dismiss();
+                        }
+                    }
+                };
+                task.execute((Void[]) null);
             }
         }
     };

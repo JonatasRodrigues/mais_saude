@@ -32,6 +32,8 @@ import br.com.civico.mais.saude.servico.UnidadeService;
 
 public class UnidadeActivity extends Activity {
 
+    ExpandableListView expListView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,18 +43,14 @@ public class UnidadeActivity extends Activity {
 
             try {
                 Location location = new GPSService(this).getLocation();
-                ExpandableDTO dto = UnidadeService.getInstance(location,this).execute(new String()).get();
-                ExpandableListView expListView = (ExpandableListView) findViewById(R.id.unidadeListView);
+                ExpandableDTO dto = UnidadeService.getInstance(location).execute(new String()).get();
+                expListView = (ExpandableListView) findViewById(R.id.unidadeListView);
 
                 ExpandableListAdapter listAdapter = new ExpandableListUnidadeAdapter(this, dto.getListDataHeader(),
                         dto.getListDataChild());
 
-                // setting list adapter
+                configurarExpList();
                 expListView.setAdapter(listAdapter);
-                ColorDrawable linhaColor = new ColorDrawable(this.getResources().getColor(R.color.lime));
-                expListView.setChildDivider(getResources().getDrawable(R.color.transparente));
-                expListView.setDivider(linhaColor);
-                expListView.setDividerHeight(2);
 
             } catch (ErroServicoTCUException e) {
                 exibirMensagemErro(e.getMessage());
@@ -67,8 +65,16 @@ public class UnidadeActivity extends Activity {
             }
 
         } else {
-            ActivityCompat.requestPermissions(UnidadeActivity.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION}, 200);
+            ActivityCompat.requestPermissions(UnidadeActivity.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.ACCESS_FINE_LOCATION}, 200);
         }
+    }
+
+    private void configurarExpList(){
+        ColorDrawable linhaColor = new ColorDrawable(this.getResources().getColor(R.color.lime));
+        expListView.setChildDivider(getResources().getDrawable(R.color.transparente));
+        expListView.setDivider(linhaColor);
+        expListView.setDividerHeight(2);
     }
 
     private void voltarMenu(){
@@ -104,11 +110,7 @@ public class UnidadeActivity extends Activity {
                 toast.cancel();
             }
         };
-
-        // Show the toast and starts the countdown
-       // toast.show();
         toastCountDown.start();
-
     }
 
     @Override
