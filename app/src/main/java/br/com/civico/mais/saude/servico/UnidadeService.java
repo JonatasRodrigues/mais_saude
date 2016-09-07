@@ -82,14 +82,19 @@ public class UnidadeService extends AbstractService {
                  listaDados = new ArrayList<String>();
                 JSONObject oneObject = jsonArray.getJSONObject(i);
                 listaHeader.add(oneObject.getString("nomeFantasia"));
+                listaDados.add("Tipo Unidade: " + oneObject.getString("tipoUnidade"));
                 listaDados.add("Código: " + oneObject.getString("codUnidade"));
+                listaDados.add("Vinculo SUS: " + oneObject.getString("vinculoSus"));
+                listaDados.add("Emergência:  " + oneObject.getString("temAtendimentoUrgencia")+ "       " + "Centro Cirúrgico: " + oneObject.getString("temCentroCirurgico"));
+                listaDados.add("Ambulatório: " + oneObject.getString("temAtendimentoAmbulatorial")+ "       " + "Obstetria: " + oneObject.getString("temObstetra"));
+                listaDados.add("Neo-Natal:     " + oneObject.getString("temNeoNatal") + "       " + "Diálise: " + oneObject.getString("temDialise"));
+                listaDados.add("  ");
                 listaDados.add("Logradouro: " + oneObject.getString("logradouro") + ", " + oneObject.getString("numero"));
                 listaDados.add("Bairro: " + oneObject.getString("bairro"));
                 listaDados.add("Cidade: " + oneObject.getString("cidade") + " - " + oneObject.getString("uf"));
                 if (oneObject.has("telefone")) {
                     listaDados.add("Telefone: " + oneObject.getString("telefone"));
                 }
-                listaDados.add("Vinculo SUS: " + oneObject.getString("vinculoSus"));
                 listaDados.add("Atendimento: " + oneObject.getString("turnoAtendimento"));
                 listDataChild.put(listaHeader.get(i), listaDados);
             } catch (JSONException e) {
