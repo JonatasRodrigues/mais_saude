@@ -82,6 +82,7 @@ public class UnidadeService extends AbstractService {
                  listaDados = new ArrayList<String>();
                 JSONObject oneObject = jsonArray.getJSONObject(i);
                 listaHeader.add(oneObject.getString("nomeFantasia"));
+                listaDados.add("  ");
                 listaDados.add("Tipo Unidade: " + oneObject.getString("tipoUnidade"));
                 listaDados.add("Código: " + oneObject.getString("codUnidade"));
                 listaDados.add("Vinculo SUS: " + oneObject.getString("vinculoSus"));

@@ -1,6 +1,5 @@
 package br.com.civico.mais.saude.adapter;
 
-import android.graphics.drawable.ColorDrawable;
 import android.view.View;
 import android.view.ViewGroup;
 import br.com.civico.mais.saude.R;
@@ -8,7 +7,9 @@ import android.widget.BaseExpandableListAdapter;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +29,11 @@ public class ExpandableListUnidadeAdapter extends BaseExpandableListAdapter{
         this._listDataChild = listChildData;
     }
 
+    static class ViewHolder {
+        TextView textView;
+        Button btnComentario,btnMapa;
+    }
+
     @Override
     public Object getChild(int groupPosition, int childPosititon) {
         return this._listDataChild.get(this._listDataHeader.get(groupPosition)).get(childPosititon);
@@ -39,20 +45,53 @@ public class ExpandableListUnidadeAdapter extends BaseExpandableListAdapter{
     }
 
     @Override
+    public int getChildTypeCount() {
+        return 2;
+    }
+
+    @Override
+    public int getChildType(int groupPosition, int childPosition) {
+        if (childPosition == 0)
+            return 0;
+        else
+            return 1;
+    }
+
+    @Override
     public View getChildView(int groupPosition, final int childPosition,boolean isLastChild, View convertView, ViewGroup parent) {
         final String childText = (String) getChild(groupPosition, childPosition);
-
+        final String codigo = (String) getChild(groupPosition, 2);
+        ViewHolder holder;
         if (convertView == null) {
-            LayoutInflater infalInflater = (LayoutInflater) this._context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = infalInflater.inflate(R.layout.customer_unidade_row, null);
+            holder = new ViewHolder();
+            if(childPosition == 0){
+                LayoutInflater infalInflater = (LayoutInflater) this._context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                convertView = infalInflater.inflate(R.layout.customer_unidade_row_com_btn, parent, false);
+                holder.btnComentario = (Button) convertView.findViewById(R.id.btnComentario);
+                holder.btnMapa = (Button) convertView.findViewById(R.id.btnMapa);
+
+                holder.btnComentario.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(_context, codigo, Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+            }else {
+                // Other views
+                LayoutInflater infalInflater = (LayoutInflater) this._context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                convertView = infalInflater.inflate(R.layout.customer_unidade_row_sem_btn, parent, false);
+            }
+            holder.textView = (TextView) convertView.findViewById(R.id.descUnidade);
+            convertView.setTag(holder);
+        } else {
+            holder = (ViewHolder) convertView.getTag();
         }
-
-        TextView txtListChild = (TextView) convertView.findViewById(R.id.descUnidade);
-
-        txtListChild.setText(childText);
-        txtListChild.setMinHeight(45);
+        holder.textView.setText(childText);
         return convertView;
     }
+
+
 
     @Override
     public int getChildrenCount(int groupPosition) {

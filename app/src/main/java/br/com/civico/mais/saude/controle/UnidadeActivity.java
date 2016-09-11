@@ -65,8 +65,7 @@ public class UnidadeActivity extends Activity {
             }
 
         } else {
-            ActivityCompat.requestPermissions(UnidadeActivity.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,
-                    Manifest.permission.ACCESS_FINE_LOCATION}, 200);
+            ActivityCompat.requestPermissions(UnidadeActivity.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION}, 200);
         }
     }
 
@@ -110,7 +109,11 @@ public class UnidadeActivity extends Activity {
                 toast.cancel();
             }
         };
+
+        // Show the toast and starts the countdown
+       // toast.show();
         toastCountDown.start();
+
     }
 
     @Override
