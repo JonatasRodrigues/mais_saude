@@ -1,9 +1,7 @@
 package br.com.civico.mais.saude.servico;
 
- import android.content.Context;
-import android.location.Location;
-
 import com.loopj.android.http.HttpGet;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -17,6 +15,8 @@ import java.util.List;
 import br.com.civico.mais.saude.constantes.ConstantesAplicacao;
 import br.com.civico.mais.saude.converter.StreamConverter;
 import br.com.civico.mais.saude.dto.ExpandableDTO;
+import br.com.civico.mais.saude.dto.UsuarioDTO;
+import br.com.civico.mais.saude.exception.EmailJaCadastradoException;
 import br.com.civico.mais.saude.exception.ErroServicoTCUException;
 import cz.msebera.android.httpclient.HttpEntity;
 import cz.msebera.android.httpclient.HttpResponse;
@@ -24,40 +24,39 @@ import cz.msebera.android.httpclient.client.HttpClient;
 import cz.msebera.android.httpclient.impl.client.DefaultHttpClient;
 
 /**
- * Created by Jônatas Rodrigues on 27/08/2016.
+ * Created by Jônatas Rodrigues on 11/09/2016.
  */
-public class UnidadeService extends AbstractService {
+public class LoginService implements Service<UsuarioDTO>{
 
-    private Location location;
-    private static final Integer RAIO = 30;
-    private static UnidadeService unidadeService;
+    private String url;
+    private String email;
 
+    public void cadastrarUsuario(){
+      //  try {
+            this.url= ConstantesAplicacao.URL_BASE + "/rest/pessoas?email=" + this.email;
+         //   UsuarioDTO dto = consumirServicoTCU();
+          //  if(dto==null){
 
-    public static UnidadeService getInstance(Location location){
-        if(unidadeService==null){
-            unidadeService= new UnidadeService(location);
-        }
-        return unidadeService;
+         //   }else{
+             //   throw new EmailJaCadastradoException("Email já cadastrado!");
+         //   }
+     //   } catch (JSONException e) {
+     //      e.printStackTrace();
+      //  }
     }
 
-    private UnidadeService(Location location){
-        this.location=location;
-    }
 
     @Override
-    public ExpandableDTO consumirServicoTCU() throws JSONException,ErroServicoTCUException {
+    public UsuarioDTO consumirServicoTCU() throws JSONException {
         String result="";
         try {
-            String url = ConstantesAplicacao.URL_BASE + "/rest/estabelecimentos/latitude/" + this.location.getLatitude()
-                    + "/longitude/" + this.location.getLongitude() + "/raio/" + RAIO;
-
             HttpClient httpclient = new DefaultHttpClient();
 
-            HttpGet httpget = new HttpGet(url);
+            HttpGet httpget = new HttpGet(this.url);
             HttpResponse response = httpclient.execute(httpget);
 
             if(response.getStatusLine().getStatusCode() != ConstantesAplicacao.STATUS_OK)
-               throw new ErroServicoTCUException("Erro ao recuperar informações. Por favor, tente mais tarde.");
+                throw new ErroServicoTCUException("Erro ao recuperar informações. Por favor, tente mais tarde.");
 
             HttpEntity entity = response.getEntity();
 
@@ -72,14 +71,13 @@ public class UnidadeService extends AbstractService {
         return converterJsonParaObject(getJson(result));
     }
 
-
-    private ExpandableDTO converterJsonParaObject(JSONArray jsonArray){
+    private UsuarioDTO converterJsonParaObject(JSONArray jsonArray){
         List<String> listaHeader = new ArrayList<String>();
         List<String> listaDados;
         HashMap<String, List<String>> listDataChild = new HashMap<>();
         for (int i=0; i < jsonArray.length(); i++) {
             try {
-                 listaDados = new ArrayList<String>();
+                listaDados = new ArrayList<String>();
                 JSONObject oneObject = jsonArray.getJSONObject(i);
                 listaHeader.add(oneObject.getString("nomeFantasia"));
                 listaDados.add("  ");
@@ -102,7 +100,12 @@ public class UnidadeService extends AbstractService {
                 e.printStackTrace();
             }
         }
-       return new ExpandableDTO(listaHeader,listDataChild);
+        return new UsuarioDTO();
     }
 
+
+    @Override
+    public JSONArray getJson(String json) throws JSONException {
+        return null;
+    }
 }

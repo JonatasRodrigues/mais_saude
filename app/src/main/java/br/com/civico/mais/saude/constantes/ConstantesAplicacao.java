@@ -6,4 +6,5 @@ package br.com.civico.mais.saude.constantes;
 public class ConstantesAplicacao {
 
     public static final String URL_BASE = "http://mobile-aceite.tcu.gov.br/mapa-da-saude";
+    public static final Integer STATUS_OK=200;
 }

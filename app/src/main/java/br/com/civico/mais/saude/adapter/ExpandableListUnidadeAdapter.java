@@ -1,8 +1,12 @@
 package br.com.civico.mais.saude.adapter;
 
+import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
 import br.com.civico.mais.saude.R;
+import br.com.civico.mais.saude.controle.ComentarioActivity;
+import br.com.civico.mais.saude.controle.UnidadeActivity;
+
 import android.widget.BaseExpandableListAdapter;
 import android.content.Context;
 import android.graphics.Typeface;
@@ -73,7 +77,8 @@ public class ExpandableListUnidadeAdapter extends BaseExpandableListAdapter{
                 holder.btnComentario.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Toast.makeText(_context, codigo, Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(_context, ComentarioActivity.class);
+                        _context.startActivity(intent);
                     }
                 });
 

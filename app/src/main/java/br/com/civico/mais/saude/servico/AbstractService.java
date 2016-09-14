@@ -16,7 +16,7 @@ import br.com.civico.mais.saude.dto.ExpandableDTO;
 /**
  * Created by Jônatas Rodrigues on 30/08/2016.
  */
-public abstract class AbstractService extends AsyncTask<String, Void, ExpandableDTO> implements Service{
+public abstract class AbstractService extends AsyncTask<String, Void, ExpandableDTO> implements Service<ExpandableDTO>{
 
 
 

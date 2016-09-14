@@ -12,9 +12,9 @@ import br.com.civico.mais.saude.dto.ExpandableDTO;
 /**
  * Created by Jônatas Rodrigues on 29/08/2016.
  */
-public interface Service {
+public interface Service<E> {
 
-   public ExpandableDTO consumirServicoTCU()throws JSONException;
+   public E consumirServicoTCU()throws JSONException;
    public JSONArray getJson(String json) throws JSONException;
 
 }
