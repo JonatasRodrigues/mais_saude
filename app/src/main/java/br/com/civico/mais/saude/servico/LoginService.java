@@ -28,12 +28,11 @@ import cz.msebera.android.httpclient.impl.client.DefaultHttpClient;
  */
 public class LoginService implements Service<UsuarioDTO>{
 
-    private String url;
     private String email;
 
     public void cadastrarUsuario(){
       //  try {
-            this.url= ConstantesAplicacao.URL_BASE + "/rest/pessoas?email=" + this.email;
+          //  this.url= ConstantesAplicacao.URL_BASE + "/rest/pessoas?email=" + this.email;
          //   UsuarioDTO dto = consumirServicoTCU();
           //  if(dto==null){
 
@@ -50,9 +49,11 @@ public class LoginService implements Service<UsuarioDTO>{
     public UsuarioDTO consumirServicoTCU() throws JSONException {
         String result="";
         try {
+
+            String url= ConstantesAplicacao.URL_BASE + "/rest/pessoas";
             HttpClient httpclient = new DefaultHttpClient();
 
-            HttpGet httpget = new HttpGet(this.url);
+            HttpGet httpget = new HttpGet(url);
             HttpResponse response = httpclient.execute(httpget);
 
             if(response.getStatusLine().getStatusCode() != ConstantesAplicacao.STATUS_OK)

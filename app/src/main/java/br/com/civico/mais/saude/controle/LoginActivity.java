@@ -92,6 +92,8 @@ public class LoginActivity extends AppCompatActivity {
         final AlertDialog.Builder popDialog = new AlertDialog.Builder(this);
         popDialog.setIcon(android.R.drawable.btn_star_big_on);
         popDialog.setTitle(" Avaliação ");
+
+
         popDialog.setView(root);
 
         // Button OK
