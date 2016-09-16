@@ -93,9 +93,13 @@ public class MedicamentoService extends AbstractService  {
                 JSONObject oneObject = jsonArray.getJSONObject(i);
                 listaHeader.add(oneObject.getString("produto"));
                 listaDados.add("  ");
-                listaDados.add("Principio Ativo: " + oneObject.getString("principioAtivo"));
-                listaDados.add("Laboratorio: " + oneObject.getString("laboratorio"));
-                listaDados.add("Ultima Alteracao: " + oneObject.getString("ultimaAlteracao"));
+                listaDados.add("Laboratório: " + oneObject.getString("laboratorio"));
+                listaDados.add("CNPJ: " + oneObject.getString("cnpj"));
+                listaDados.add("Princípio Ativo: " + oneObject.getString("principioAtivo"));
+                listaDados.add("Classe Terapêutica: " + oneObject.getString("classeTerapeutica"));
+                listaDados.add("Registro: " + oneObject.getString("registro"));
+                listaDados.add("Apresentação: " + oneObject.getString("apresentacao"));
+                listaDados.add("Última Alteração: " + oneObject.getString("ultimaAlteracao"));
                 listDataChild.put(listaHeader.get(i), listaDados);
             } catch (JSONException e) {
                 e.printStackTrace();

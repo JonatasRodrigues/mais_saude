@@ -22,6 +22,7 @@ import org.json.JSONException;
 import java.util.concurrent.ExecutionException;
 
 import br.com.civico.mais.saude.R;
+import br.com.civico.mais.saude.adapter.ExpandableListMedicamentoAdapter;
 import br.com.civico.mais.saude.adapter.ExpandableListUnidadeAdapter;
 import br.com.civico.mais.saude.dto.ExpandableDTO;
 import br.com.civico.mais.saude.exception.ErroServicoTCUException;
@@ -32,13 +33,13 @@ public class MedicamentoActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.unidade_consulta);
+        setContentView(R.layout.medicamento_consulta);
 
         try {
-            ExpandableDTO dto = MedicamentoService.getInstance().consumirServicoTCU();
-            expListView = (ExpandableListView) findViewById(R.id.unidadeListView);
+            ExpandableDTO dto = MedicamentoService.getInstance().execute(new String()).get();
+            expListView = (ExpandableListView) findViewById(R.id.medicamentoListView);
 
-            ExpandableListAdapter listAdapter = new ExpandableListUnidadeAdapter(this, dto.getListDataHeader(),
+            ExpandableListAdapter listAdapter = new ExpandableListMedicamentoAdapter(this, dto.getListDataHeader(),
                     dto.getListDataChild());
 
             configurarExpList();
@@ -46,7 +47,9 @@ public class MedicamentoActivity extends Activity {
         } catch (ErroServicoTCUException e) {
             exibirMensagemErro(e.getMessage());
             voltarMenu();
-        } catch (JSONException e) {
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
             e.printStackTrace();
         }
     }
