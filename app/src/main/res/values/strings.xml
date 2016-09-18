@@ -3,7 +3,7 @@
     <string name="action_settings">Settings</string>
 
     <string name="title">Mais Saúde Brasil</string>
-    <string name="title_unidades_hospitalares">Unidades Hospitalares</string>
+    <string name="title_unidades_hospitalares">Unidades</string>
     <string name="label_comentario">Comentários</string>
     <string name="btn_novo_comentario">Adicionar Comentário</string>
     <string name="title_activity_login">Login</string>

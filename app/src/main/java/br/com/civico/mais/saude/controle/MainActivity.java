@@ -11,6 +11,8 @@ import android.support.v4.app.ActivityCompat;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 
 import br.com.civico.mais.saude.R;
@@ -19,12 +21,14 @@ import br.com.civico.mais.saude.servico.GPSService;
 public class MainActivity extends Activity {
 
     ProgressDialog progressDialog;
+     Animation animation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        animation = AnimationUtils.loadAnimation(this,R.anim.anim_scale);
         Button  btnUnidade = (Button) findViewById(R.id.btnUnidade);
         btnUnidade.setOnClickListener(onClickListener);
 
@@ -36,6 +40,7 @@ public class MainActivity extends Activity {
     private View.OnClickListener onClickListenerMedicamento = new View.OnClickListener() {
         public void onClick(View view) {
             if(view.getId() == R.id.btnMedicamento){
+                view.startAnimation(animation);
                 AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>() {
 
                     @Override
@@ -69,6 +74,7 @@ public class MainActivity extends Activity {
     private View.OnClickListener onClickListener = new View.OnClickListener() {
         public void onClick(final View v) {
             if(v.getId()== R.id.btnUnidade){
+                v.startAnimation(animation);
                 AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>() {
 
                     @Override

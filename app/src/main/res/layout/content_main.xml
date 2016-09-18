@@ -20,8 +20,9 @@
         android:layout_height="wrap_content"
         android:id="@+id/btnUnidade"
         android:background="@drawable/btn_unidade"
-        android:layout_marginBottom="65dp"
-        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="55dp"
+        android:layout_marginStart="55dp"
+        android:layout_centerVertical="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
@@ -31,10 +32,11 @@
         android:layout_height="wrap_content"
         android:background="@drawable/btn_medicamento"
         android:id="@+id/btnMedicamento"
+        android:layout_marginRight="57dp"
+        android:layout_marginEnd="57dp"
         android:layout_alignTop="@+id/btnUnidade"
-        android:layout_toLeftOf="@+id/btnSobre"
-        android:layout_toStartOf="@+id/btnSobre"
-        android:layout_marginRight="15dp"/>
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
     <Button
         style="?android:attr/buttonStyleSmall"
@@ -42,10 +44,9 @@
         android:layout_height="wrap_content"
         android:background="@drawable/btn_sobre"
         android:id="@+id/btnSobre"
-        android:layout_alignTop="@+id/btnMedicamento"
-        android:layout_toLeftOf="@+id/btnSair"
-        android:layout_toStartOf="@+id/btnSair"
-        android:layout_marginRight="10dp"/>
+        android:layout_alignBottom="@+id/btnSair"
+        android:layout_alignLeft="@+id/btnUnidade"
+        android:layout_alignStart="@+id/btnUnidade" />
 
     <Button
         style="?android:attr/buttonStyleSmall"
@@ -53,7 +54,8 @@
         android:layout_height="wrap_content"
         android:background="@drawable/btn_sair"
         android:id="@+id/btnSair"
-        android:layout_alignTop="@+id/btnSobre"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_below="@+id/btnMedicamento"
+        android:layout_alignRight="@+id/btnMedicamento"
+        android:layout_alignEnd="@+id/btnMedicamento"
+        android:layout_marginTop="46dp" />
 </RelativeLayout>
