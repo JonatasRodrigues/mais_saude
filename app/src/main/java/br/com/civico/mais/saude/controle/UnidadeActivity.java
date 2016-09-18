@@ -29,6 +29,7 @@ import br.com.civico.mais.saude.exception.ErroServicoTCUException;
 import br.com.civico.mais.saude.exception.GPSException;
 import br.com.civico.mais.saude.servico.GPSService;
 import br.com.civico.mais.saude.servico.UnidadeService;
+import br.com.civico.mais.saude.util.MensagemUtil;
 
 public class UnidadeActivity extends Activity {
 
@@ -53,10 +54,10 @@ public class UnidadeActivity extends Activity {
                 expListView.setAdapter(listAdapter);
 
             } catch (ErroServicoTCUException e) {
-                exibirMensagemErro(e.getMessage());
+                MensagemUtil.exibirMensagemErro(getLayoutInflater(), this, e.getMessage(), (ViewGroup) findViewById(R.id.layout_erro));
                 voltarMenu();
             } catch (GPSException e) {
-               exibirMensagemErro(e.getMessage());
+                MensagemUtil.exibirMensagemErro(getLayoutInflater(), this, e.getMessage(), (ViewGroup) findViewById(R.id.layout_erro));
                 voltarMenu();
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -86,34 +87,6 @@ public class UnidadeActivity extends Activity {
         boolean permissionCoarseLocation = ActivityCompat.checkSelfPermission(UnidadeActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
 
         return (permissionCoarseLocation && permissionFineLocation);
-    }
-
-    private void exibirMensagemErro(String mensagem){
-        LayoutInflater inflater = getLayoutInflater();
-        View layout = inflater.inflate(R.layout.toast_erro,(ViewGroup) findViewById(R.id.layout_erro));
-        TextView text = (TextView) layout.findViewById(R.id.textErro);
-        text.setText(mensagem);
-
-        final Toast toast = new Toast(getApplicationContext());
-        toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
-        toast.setDuration(Toast.LENGTH_LONG);
-        toast.setView(layout);
-
-        //Configurar tempo de exibição
-        int toastDurationInMilliSeconds = 10000;
-        CountDownTimer toastCountDown = new CountDownTimer(toastDurationInMilliSeconds, 1 /*Tick duration*/) {
-            public void onTick(long millisUntilFinished) {
-                toast.show();
-            }
-            public void onFinish() {
-                toast.cancel();
-            }
-        };
-
-        // Show the toast and starts the countdown
-       // toast.show();
-        toastCountDown.start();
-
     }
 
     @Override

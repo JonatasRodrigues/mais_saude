@@ -19,9 +19,10 @@
     <string name="btn_login">Login</string>
     <string name="btn_facebook">Login Facebook</string>
     <string name="error_invalido_email">Email inválido</string>
-    <string name="error_invalido_password">A senha deve possuir no mínimo 6 dígitos</string>
-    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_nome_invalido">Nome inválido</string>
+    <string name="error_invalido_password">A senha deve possuir no mínimo 6 caracteres</string>
     <string name="error_email_obrigatorio">O campo email é obrigatório</string>
+    <string name="error_nome_obrigatorio">O campo nome é obrigatório</string>
     <string name="error_password_nao_confere">Confirmação da senha não confere</string>
 
 </resources>

@@ -1,40 +1,45 @@
 package br.com.civico.mais.saude.controle;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
+import android.os.AsyncTask;
 
-import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RatingBar;
 
+import org.json.JSONException;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import br.com.civico.mais.saude.R;
+import br.com.civico.mais.saude.constantes.ConstantesAplicacao;
 import br.com.civico.mais.saude.servico.LoginService;
+import br.com.civico.mais.saude.util.MensagemUtil;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends Activity {
 
-    private AutoCompleteTextView emailView;
-    private EditText nome;
-    private EditText password;
+    public AutoCompleteTextView emailView;
+    public EditText nome;
+    public EditText password;
     private EditText passwordConfirm;
-    private View mProgressView;
-    private View mLoginFormView;
     private Button btnNovaConta;
     private Button btnLogin;
     private CheckBox chkCadastrado;
+    private ProgressDialog progressDialog;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +52,7 @@ public class LoginActivity extends AppCompatActivity {
         btnNovaConta = (Button) findViewById(R.id.btnNovaConta );
         btnLogin = (Button) findViewById(R.id.btnLogin );
         chkCadastrado = (CheckBox) findViewById(R.id.chkCadastrado);
+        context=this;
 
         chkCadastrado.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
@@ -65,19 +71,100 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         btnNovaConta.setOnClickListener(onClickCriarContaListener);
+        btnLogin.setOnClickListener(onClickLoginListener);
 
-        mLoginFormView = findViewById(R.id.login_form);
-        mProgressView = findViewById(R.id.login_progress);
     }
+
+    public View.OnClickListener onClickLoginListener = new View.OnClickListener() {
+        public void onClick(final View v) {
+
+            final String nomeUsuario = nome.getText().toString();
+            final String senhaUsuario = password.getText().toString();
+            final String emailUsuario = emailView.getText().toString();
+
+            AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>() {
+                String retorno;
+
+                @Override
+                protected void onPreExecute() {
+                    progressDialog = new ProgressDialog(context);
+                    progressDialog.setMessage("Processando...");
+                    progressDialog.setCancelable(false);
+                    progressDialog.setIndeterminate(true);
+                    progressDialog.show();
+                }
+
+                @Override
+                protected Void doInBackground(Void... voids) {
+                    try {
+                        LoginService service = new LoginService(nomeUsuario,senhaUsuario,emailUsuario);
+                        retorno = service.autenticarUsuario();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                }
+
+                @Override
+                protected void onPostExecute(Void result) {
+                    if (progressDialog != null) {
+                        progressDialog.dismiss();
+                        if(retorno == ConstantesAplicacao.MENSAGEM_SUCESSO){
+                            showPopUpComentario();
+                        }else {
+                            MensagemUtil.exibirMensagemErro(getLayoutInflater(), context, retorno, (ViewGroup) findViewById(R.id.layout_erro));
+                        }
+                    }
+                }
+
+            };
+            task.execute((Void[]) null);
+        }
+    };
 
     private View.OnClickListener onClickCriarContaListener = new View.OnClickListener() {
         public void onClick(final View v) {
-            if(validarCampos()){
-                showProgress(true);
-                LoginService service = new LoginService();
-                service.cadastrarUsuario();
-                showProgress(false);
-                showPopUpComentario();
+            final String nomeUsuario = nome.getText().toString();
+            final String senhaUsuario = password.getText().toString();
+            final String emailUsuario = emailView.getText().toString();
+
+            if(validarCampos(nomeUsuario,emailUsuario,senhaUsuario)) {
+                AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>() {
+                    String retorno;
+
+                    @Override
+                    protected void onPreExecute() {
+                        progressDialog = new ProgressDialog(LoginActivity.this);
+                        progressDialog.setMessage("Processando...");
+                        progressDialog.setCancelable(false);
+                        progressDialog.setIndeterminate(true);
+                        progressDialog.show();
+                    }
+
+                    @Override
+                    protected Void doInBackground(Void... voids) {
+                        try {
+                            LoginService service = new LoginService(nomeUsuario, senhaUsuario, emailUsuario);
+                            retorno = service.cadastrarUsuario();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        return null;
+                    }
+
+                    @Override
+                    protected void onPostExecute(Void result) {
+                        if (progressDialog != null) {
+                            progressDialog.dismiss();
+                            if(retorno == ConstantesAplicacao.MENSAGEM_SUCESSO){
+                                showPopUpComentario();
+                            }else {
+                                MensagemUtil.exibirMensagemErro(getLayoutInflater(), context, retorno, (ViewGroup) findViewById(R.id.layout_erro));
+                            }
+                        }
+                    }
+                };
+                task.execute((Void[]) null);
             }
         }
     };
@@ -90,7 +177,7 @@ public class LoginActivity extends AppCompatActivity {
         rat.setNumStars(5);
 
         final AlertDialog.Builder popDialog = new AlertDialog.Builder(this);
-        popDialog.setIcon(android.R.drawable.btn_star_big_on);
+       // popDialog.setIcon(android.R.drawable.btn_star_big_on);
         popDialog.setTitle(" Avaliação ");
 
 
@@ -100,7 +187,6 @@ public class LoginActivity extends AppCompatActivity {
         popDialog.setPositiveButton(android.R.string.ok,
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                     //   txtView.setText(String.valueOf(rating.getProgress()));
                         dialog.dismiss();
                     }
 
@@ -119,56 +205,16 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-
-    /*
-
-    private boolean mayRequestContacts() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            return true;
-        }
-        if (checkSelfPermission(READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
-            return true;
-        }
-        if (shouldShowRequestPermissionRationale(READ_CONTACTS)) {
-            Snackbar.make(mEmailView, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
-                    .setAction(android.R.string.ok, new View.OnClickListener() {
-                        @Override
-                        @TargetApi(Build.VERSION_CODES.M)
-                        public void onClick(View v) {
-                            requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
-                        }
-                    });
-        } else {
-            requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
-        }
-        return false;
-    }*/
-
-    /**
-     * Callback received when a permissions request has been completed.
-     */
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-      /**  if (requestCode == REQUEST_READ_CONTACTS) {
-            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                populateAutoComplete();
-            }
-        }*/
-    }
-
     private void resetErrors(){
+        nome.setError(null);
         emailView.setError(null);
         password.setError(null);
         passwordConfirm.setError(null);
     }
 
-    private boolean validarCampos() {
+    private boolean validarCampos(String nomeUsuario,String email,String senha) {
         resetErrors();
 
-        // Store values at the time of the login attempt.
-        String email = emailView.getText().toString();
-        String senha = password.getText().toString();
         String senhaConfirmacao = passwordConfirm.getText().toString();
 
         boolean isValido = true;
@@ -187,111 +233,45 @@ public class LoginActivity extends AppCompatActivity {
             }
         }
 
+        if (TextUtils.isEmpty(nomeUsuario)) {
+            nome.setError(getString(R.string.error_nome_obrigatorio));
+            focusView = nome;
+            isValido = false;
+        }else if(isNomeValido(nomeUsuario)){
+            nome.setError(getString(R.string.error_nome_invalido));
+            focusView = nome;
+            isValido = false;
+        }
+
         // Check for a valid email address.
         if (TextUtils.isEmpty(email)) {
             emailView.setError(getString(R.string.error_email_obrigatorio));
             focusView = emailView;
             isValido = false;
-        } else if (!isEmailValid(email)) {
+        } else if (!isEmailValido(email)) {
             emailView.setError(getString(R.string.error_invalido_email));
             focusView = emailView;
             isValido = false;
         }
 
-        if (!isValido)// {
+        if (!isValido)
             focusView.requestFocus();
-      //  } else {
-         //   showProgress(true);
-         //   mAuthTask = new UserLoginTask(email, password);
-         //   mAuthTask.execute((Void) null);
-      //  }
+
         return isValido;
     }
-    private boolean isEmailValid(String email) {
+
+    private boolean isNomeValido(String nome) {
+        Pattern p = Pattern.compile("[^A-Za-z]");
+        Matcher m = p.matcher(nome);
+        return m.find() || nome.length()<3;
+    }
+
+    private boolean isEmailValido(String email) {
         return email.contains("@");
     }
 
     private boolean isPasswordValid(String senha) {
         return senha.length() >= 6;
     }
-
-    /**
-     * Shows the progress UI and hides the login form.
-     */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-    private void showProgress(final boolean show) {
-        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-        // for very easy animations. If available, use these APIs to fade-in
-        // the progress spinner.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
-
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-            mLoginFormView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-                }
-            });
-
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mProgressView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-                }
-            });
-        } else {
-            // The ViewPropertyAnimator APIs are not available, so simply show
-            // and hide the relevant UI components.
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-        }
-    }
-
-  /**  @Override
-    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        return new CursorLoader(this,
-                // Retrieve data rows for the device user's 'profile' contact.
-                Uri.withAppendedPath(ContactsContract.Profile.CONTENT_URI,
-                        ContactsContract.Contacts.Data.CONTENT_DIRECTORY), ProfileQuery.PROJECTION,
-
-                // Select only email addresses.
-                ContactsContract.Contacts.Data.MIMETYPE +
-                        " = ?", new String[]{ContactsContract.CommonDataKinds.Email
-                                                                     .CONTENT_ITEM_TYPE},
-
-                // Show primary email addresses first. Note that there won't be
-                // a primary email address if the user hasn't specified one.
-                ContactsContract.Contacts.Data.IS_PRIMARY + " DESC");
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-        List<String> emails = new ArrayList<>();
-        cursor.moveToFirst();
-        while (!cursor.isAfterLast()) {
-            emails.add(cursor.getString(ProfileQuery.ADDRESS));
-            cursor.moveToNext();
-        }
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> cursorLoader) {}
-
-    private interface ProfileQuery {
-        String[] PROJECTION = {
-                ContactsContract.CommonDataKinds.Email.ADDRESS,
-                ContactsContract.CommonDataKinds.Email.IS_PRIMARY,
-        };
-
-        int ADDRESS = 0;
-        int IS_PRIMARY = 1;
-    }
-
-*/
-
 }
 

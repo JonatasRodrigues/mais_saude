@@ -5,7 +5,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import br.com.civico.mais.saude.R;
 import br.com.civico.mais.saude.controle.ComentarioActivity;
-import br.com.civico.mais.saude.controle.UnidadeActivity;
 
 import android.widget.BaseExpandableListAdapter;
 import android.content.Context;
@@ -13,7 +12,6 @@ import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.HashMap;
 import java.util.List;
