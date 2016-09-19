@@ -10,7 +10,16 @@
         android:layout_height="wrap_content"
         android:id="@+id/ratingBar"
         android:rating="5.0"
-        android:layout_gravity="center_horizontal"/>
+        android:progressTint="@color/goldenYellow"
+        android:progressBackgroundTint="color/goldenYellow"
+        android:secondaryProgressTint="color/goldenYellow"
+        android:layout_gravity="center_horizontal"
+        style="?android:attr/ratingBarStyle"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/colorPrimaryDark"/>
 
     <Space
         android:layout_width="match_parent"
@@ -48,10 +57,6 @@
 
         </android.support.design.widget.TextInputLayout>
 
-
     </LinearLayout>
-
-
-
 
 </LinearLayout>
