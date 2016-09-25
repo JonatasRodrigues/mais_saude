@@ -6,13 +6,14 @@ package br.com.civico.mais.saude.constantes;
 public class ConstantesAplicacao {
 
     public static final String URL_BASE = "http://mobile-aceite.tcu.gov.br/mapa-da-saude";
+    public static final String URL_BASE_METAMODELO = "http://mobile-aceite.tcu.gov.br:80/appCivicoRS";
 
-    public static final Integer STATUS_OK=200;
-    public static final Integer STATUS_CADASTRO_SUCESSO=201;
-    public static final Integer STATUS_PARAMETRO_INVALIDO=400;
-    public static final Integer STATUS_CREDENCIAIS_INVALIDAS=401;
-    public static final Integer STATUS_EMAIL_NAO_CADASTRADO=404;
-    public static final Integer STATUS_SERVICO_NOT_FOUND_CADASTRO=404;
+    public static final int STATUS_OK=200;
+    public static final int STATUS_CADASTRO_SUCESSO=201;
+    public static final int STATUS_PARAMETRO_INVALIDO=400;
+    public static final int STATUS_CREDENCIAIS_INVALIDAS=401;
+    public static final int STATUS_EMAIL_NAO_CADASTRADO=404;
+    public static final int STATUS_SERVICO_NOT_FOUND_CADASTRO=404;
 
     public static final String MENSAGEM_SUCESSO="Sucesso";
     public static final String MENSAGEM_PARAMETRO_INVALIDO="Email já se encontra cadastrado";

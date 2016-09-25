@@ -44,7 +44,8 @@
             android:theme="@style/MyTheme" />
         <activity
             android:name=".controle.LoginActivity"
-            android:label="@style/MyTheme" >
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" >
         </activity>
         <activity
             android:name=".controle.MedicamentoActivity"

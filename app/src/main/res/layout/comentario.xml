@@ -11,10 +11,7 @@
         android:id="@+id/ratingBar"
         android:rating="5.0"
         android:progressTint="@color/goldenYellow"
-        android:progressBackgroundTint="color/goldenYellow"
-        android:secondaryProgressTint="color/goldenYellow"
-        android:layout_gravity="center_horizontal"
-        style="?android:attr/ratingBarStyle"/>
+        android:layout_gravity="center_horizontal"/>
 
     <View
         android:layout_width="match_parent"

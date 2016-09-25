@@ -9,6 +9,7 @@ import android.os.AsyncTask;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -18,6 +19,8 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RatingBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONException;
 
@@ -52,7 +55,7 @@ public class LoginActivity extends Activity {
         btnNovaConta = (Button) findViewById(R.id.btnNovaConta );
         btnLogin = (Button) findViewById(R.id.btnLogin );
         chkCadastrado = (CheckBox) findViewById(R.id.chkCadastrado);
-        context=this;
+        this.context=this;
 
         chkCadastrado.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
@@ -82,12 +85,11 @@ public class LoginActivity extends Activity {
             final String senhaUsuario = password.getText().toString();
             final String emailUsuario = emailView.getText().toString();
 
-            AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>() {
-                String retorno;
+            AsyncTask<Void, Void, String> task = new AsyncTask<Void, Void, String>() {
 
                 @Override
                 protected void onPreExecute() {
-                    progressDialog = new ProgressDialog(context);
+                    progressDialog = new ProgressDialog(LoginActivity.this);
                     progressDialog.setMessage("Processando...");
                     progressDialog.setCancelable(false);
                     progressDialog.setIndeterminate(true);
@@ -95,10 +97,10 @@ public class LoginActivity extends Activity {
                 }
 
                 @Override
-                protected Void doInBackground(Void... voids) {
+                protected String doInBackground(Void... voids) {
                     try {
                         LoginService service = new LoginService(nomeUsuario,senhaUsuario,emailUsuario);
-                        retorno = service.autenticarUsuario();
+                        return service.autenticarUsuario();
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -106,14 +108,15 @@ public class LoginActivity extends Activity {
                 }
 
                 @Override
-                protected void onPostExecute(Void result) {
+                protected void onPostExecute(String mensagem) {
                     if (progressDialog != null) {
                         progressDialog.dismiss();
-                        if(retorno == ConstantesAplicacao.MENSAGEM_SUCESSO){
-                            showPopUpComentario();
-                        }else {
-                            MensagemUtil.exibirMensagemErro(getLayoutInflater(), context, retorno, (ViewGroup) findViewById(R.id.layout_erro));
-                        }
+                    }
+
+                    if(mensagem.equals(ConstantesAplicacao.MENSAGEM_SUCESSO)){
+                        showPopUpComentario();
+                    }else {
+                        exibirMsgErro(mensagem);
                     }
                 }
 
@@ -129,8 +132,7 @@ public class LoginActivity extends Activity {
             final String emailUsuario = emailView.getText().toString();
 
             if(validarCampos(nomeUsuario,emailUsuario,senhaUsuario)) {
-                AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>() {
-                    String retorno;
+                AsyncTask<Void, Void, String> task = new AsyncTask<Void, Void, String>() {
 
                     @Override
                     protected void onPreExecute() {
@@ -142,10 +144,10 @@ public class LoginActivity extends Activity {
                     }
 
                     @Override
-                    protected Void doInBackground(Void... voids) {
+                    protected String doInBackground(Void... voids) {
                         try {
                             LoginService service = new LoginService(nomeUsuario, senhaUsuario, emailUsuario);
-                            retorno = service.cadastrarUsuario();
+                            return service.cadastrarUsuario();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -153,14 +155,15 @@ public class LoginActivity extends Activity {
                     }
 
                     @Override
-                    protected void onPostExecute(Void result) {
+                    protected void onPostExecute(String mensagem) {
                         if (progressDialog != null) {
                             progressDialog.dismiss();
-                            if(retorno == ConstantesAplicacao.MENSAGEM_SUCESSO){
-                                showPopUpComentario();
-                            }else {
-                                MensagemUtil.exibirMensagemErro(getLayoutInflater(), context, retorno, (ViewGroup) findViewById(R.id.layout_erro));
-                            }
+                        }
+
+                        if(mensagem.equals(ConstantesAplicacao.MENSAGEM_SUCESSO)){
+                            showPopUpComentario();
+                        }else {
+                            exibirMsgErro(mensagem);
                         }
                     }
                 };
@@ -178,7 +181,7 @@ public class LoginActivity extends Activity {
 
         final AlertDialog.Builder popDialog = new AlertDialog.Builder(this);
        // popDialog.setIcon(android.R.drawable.btn_star_big_on);
-        popDialog.setTitle(" Avaliação ");
+     //   popDialog.setTitle(" Avaliação ");
 
 
         popDialog.setView(root);
@@ -261,7 +264,7 @@ public class LoginActivity extends Activity {
     }
 
     private boolean isNomeValido(String nome) {
-        Pattern p = Pattern.compile("[^A-Za-z]");
+        Pattern p = Pattern.compile("/^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ ]+$/");
         Matcher m = p.matcher(nome);
         return m.find() || nome.length()<3;
     }
@@ -273,5 +276,20 @@ public class LoginActivity extends Activity {
     private boolean isPasswordValid(String senha) {
         return senha.length() >= 6;
     }
+
+    private void exibirMsgErro(String mensagem){
+        LayoutInflater inflater = getLayoutInflater();
+        View layout = inflater.inflate(R.layout.toast_erro,(ViewGroup) findViewById(R.id.layout_erro));
+
+        TextView text = (TextView) layout.findViewById(R.id.textErro);
+        text.setText(mensagem);
+
+        Toast toast = new Toast(getApplicationContext());
+        toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
+        toast.setDuration(Toast.LENGTH_LONG);
+        toast.setView(layout);
+        toast.show();
+    }
+
 }
 

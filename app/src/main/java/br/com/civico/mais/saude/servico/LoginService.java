@@ -2,16 +2,26 @@ package br.com.civico.mais.saude.servico;
 
 import android.util.Log;
 
+import com.loopj.android.http.HttpGet;
+
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.Date;
+
 import br.com.civico.mais.saude.constantes.ConstantesAplicacao;
 import cz.msebera.android.httpclient.HttpResponse;
 import cz.msebera.android.httpclient.client.HttpClient;
 import cz.msebera.android.httpclient.client.methods.HttpPost;
 import cz.msebera.android.httpclient.entity.StringEntity;
 import cz.msebera.android.httpclient.impl.client.DefaultHttpClient;
+import cz.msebera.android.httpclient.message.BasicHeader;
+import cz.msebera.android.httpclient.protocol.HTTP;
 import cz.msebera.android.httpclient.util.EntityUtils;
 
 /**
@@ -32,67 +42,71 @@ public class LoginService {
 
 
     public String autenticarUsuario() throws JSONException {
+        String mensagem="Ocorreu um erro. Tente Novamente.";
+
         try {
-            String url= ConstantesAplicacao.URL_BASE + "/rest/pessoas/autenticar";
+
+            String url= ConstantesAplicacao.URL_BASE_METAMODELO + "/rest/pessoas/autenticar";
             HttpClient httpclient = new DefaultHttpClient();
-            HttpPost post = new HttpPost(url);
 
-            JSONObject jsonobj = new JSONObject();
-            jsonobj.put("email", this.email);
-            jsonobj.put("senha ", this.senha);
+            HttpGet httpget = new HttpGet(url);
+            httpget.setHeader("email", this.email);
+            httpget.setHeader("senha", this.senha);
 
-            StringEntity se = new StringEntity(jsonobj.toString());
-            post.setEntity(se);
-            HttpResponse httpresponse = httpclient.execute(post);
+            HttpResponse httpresponse = httpclient.execute(httpget);
 
              if(httpresponse.getStatusLine().getStatusCode() == ConstantesAplicacao.STATUS_CREDENCIAIS_INVALIDAS)
-                 return ConstantesAplicacao.MENSAGEM_CRENDECIAIS_INVALIDAS;
+                 mensagem= ConstantesAplicacao.MENSAGEM_CRENDECIAIS_INVALIDAS;
 
             if(httpresponse.getStatusLine().getStatusCode() == ConstantesAplicacao.STATUS_EMAIL_NAO_CADASTRADO)
-                return ConstantesAplicacao.MENSAGEM_EMAIL_NAO_CADASTRADO;
+                mensagem= ConstantesAplicacao.MENSAGEM_EMAIL_NAO_CADASTRADO;
 
             if(httpresponse.getStatusLine().getStatusCode() == ConstantesAplicacao.STATUS_OK)
-                return ConstantesAplicacao.MENSAGEM_SUCESSO;
+                mensagem= ConstantesAplicacao.MENSAGEM_SUCESSO;
 
         } catch (IOException e) {
             e.printStackTrace();
             Log.i("Parse Exception", e + "");
         }
-        return null;
+        return mensagem;
     }
 
 
 
     public String cadastrarUsuario() throws JSONException {
+        String mensagem="Ocorreu um erro. Tente Novamente.";
+
         try {
 
-            String url= ConstantesAplicacao.URL_BASE + "/rest/pessoas";
+            String url= ConstantesAplicacao.URL_BASE_METAMODELO + "/rest/pessoas";
             HttpClient httpclient = new DefaultHttpClient();
             HttpPost post = new HttpPost(url);
 
             JSONObject jsonobj = new JSONObject();
-            jsonobj.put("nomeCompleto", this.nome);
-            jsonobj.put("email", this.email);
-            jsonobj.put("senha ", this.senha);
+            jsonobj.accumulate("email", this.email);
+            jsonobj.accumulate("nomeCompleto", this.nome);
+            jsonobj.accumulate("nomeUsuario", this.nome);
+            jsonobj.accumulate("senha", this.senha);
 
             StringEntity se = new StringEntity(jsonobj.toString());
+            post.setHeader("Content-type", "application/json");
             post.setEntity(se);
             HttpResponse httpresponse = httpclient.execute(post);
 
             if(httpresponse.getStatusLine().getStatusCode() == ConstantesAplicacao.STATUS_CADASTRO_SUCESSO)
-                return ConstantesAplicacao.MENSAGEM_SUCESSO;
+                mensagem= ConstantesAplicacao.MENSAGEM_SUCESSO;
 
             if(httpresponse.getStatusLine().getStatusCode() == ConstantesAplicacao.STATUS_PARAMETRO_INVALIDO)
-                return ConstantesAplicacao.MENSAGEM_PARAMETRO_INVALIDO;
+                mensagem= ConstantesAplicacao.MENSAGEM_PARAMETRO_INVALIDO;
 
             if(httpresponse.getStatusLine().getStatusCode() == ConstantesAplicacao.STATUS_SERVICO_NOT_FOUND_CADASTRO)
-                return ConstantesAplicacao.MENSAGEM_SERVICO_NOT_FOUND_CADASTRO;
+                mensagem= ConstantesAplicacao.MENSAGEM_SERVICO_NOT_FOUND_CADASTRO;
 
         } catch (IOException e) {
             e.printStackTrace();
             Log.i("Parse Exception", e + "");
         }
 
-        return null;
+        return mensagem;
     }
 }
