@@ -8,6 +8,10 @@ public class ConstantesAplicacao {
     public static final String URL_BASE = "http://mobile-aceite.tcu.gov.br/mapa-da-saude";
     public static final String URL_BASE_METAMODELO = "http://mobile-aceite.tcu.gov.br:80/appCivicoRS";
 
+    public static final String APP_IDENTIFICADOR="199";
+    public static final long TIPO_POSTAGEM=79;
+
+
     public static final int STATUS_OK=200;
     public static final int STATUS_CADASTRO_SUCESSO=201;
     public static final int STATUS_PARAMETRO_INVALIDO=400;

@@ -15,6 +15,10 @@ import java.io.InputStreamReader;
 import java.util.Date;
 
 import br.com.civico.mais.saude.constantes.ConstantesAplicacao;
+import br.com.civico.mais.saude.converter.StreamConverter;
+import br.com.civico.mais.saude.dto.Response;
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.HttpEntity;
 import cz.msebera.android.httpclient.HttpResponse;
 import cz.msebera.android.httpclient.client.HttpClient;
 import cz.msebera.android.httpclient.client.methods.HttpPost;
@@ -41,8 +45,10 @@ public class LoginService {
     }
 
 
-    public String autenticarUsuario() throws JSONException {
-        String mensagem="Ocorreu um erro. Tente Novamente.";
+    public Response autenticarUsuario() throws JSONException {
+        Response response = new Response();
+        response.setMensagem("Ocorreu um erro. Tente Novamente.");
+        String result="";
 
         try {
 
@@ -55,27 +61,37 @@ public class LoginService {
 
             HttpResponse httpresponse = httpclient.execute(httpget);
 
-             if(httpresponse.getStatusLine().getStatusCode() == ConstantesAplicacao.STATUS_CREDENCIAIS_INVALIDAS)
-                 mensagem= ConstantesAplicacao.MENSAGEM_CRENDECIAIS_INVALIDAS;
+            response.setStatusCodigo(httpresponse.getStatusLine().getStatusCode());
 
-            if(httpresponse.getStatusLine().getStatusCode() == ConstantesAplicacao.STATUS_EMAIL_NAO_CADASTRADO)
-                mensagem= ConstantesAplicacao.MENSAGEM_EMAIL_NAO_CADASTRADO;
+             if(response.getStatusCodigo() == ConstantesAplicacao.STATUS_CREDENCIAIS_INVALIDAS)
+                 response.setMensagem(ConstantesAplicacao.MENSAGEM_CRENDECIAIS_INVALIDAS);
 
-            if(httpresponse.getStatusLine().getStatusCode() == ConstantesAplicacao.STATUS_OK)
-                mensagem= ConstantesAplicacao.MENSAGEM_SUCESSO;
+            if(response.getStatusCodigo() == ConstantesAplicacao.STATUS_EMAIL_NAO_CADASTRADO)
+                response.setMensagem(ConstantesAplicacao.MENSAGEM_EMAIL_NAO_CADASTRADO);
 
-        } catch (IOException e) {
+            if(response.getStatusCodigo() == ConstantesAplicacao.STATUS_OK){
+                HttpEntity entity = httpresponse.getEntity();
+                if (entity != null) {
+                    InputStream instream = entity.getContent();
+                    result= StreamConverter.convertStreamToString(instream);
+                    instream.close();
+                }
+                response.setToken(httpresponse.getFirstHeader("apptoken").getValue().toString());
+                response.setCodigoUsuario(getCodigoUsuario(result));
+                response.setMensagem(ConstantesAplicacao.MENSAGEM_SUCESSO);
+            }
+         } catch (IOException e) {
             e.printStackTrace();
             Log.i("Parse Exception", e + "");
         }
-        return mensagem;
+        return response;
     }
 
 
 
-    public String cadastrarUsuario() throws JSONException {
-        String mensagem="Ocorreu um erro. Tente Novamente.";
-
+    public Response cadastrarUsuario() throws JSONException {
+        Response response = new Response();
+        response.setMensagem("Ocorreu um erro. Tente Novamente.");
         try {
 
             String url= ConstantesAplicacao.URL_BASE_METAMODELO + "/rest/pessoas";
@@ -93,20 +109,38 @@ public class LoginService {
             post.setEntity(se);
             HttpResponse httpresponse = httpclient.execute(post);
 
-            if(httpresponse.getStatusLine().getStatusCode() == ConstantesAplicacao.STATUS_CADASTRO_SUCESSO)
-                mensagem= ConstantesAplicacao.MENSAGEM_SUCESSO;
+            response.setStatusCodigo(httpresponse.getStatusLine().getStatusCode());
 
-            if(httpresponse.getStatusLine().getStatusCode() == ConstantesAplicacao.STATUS_PARAMETRO_INVALIDO)
-                mensagem= ConstantesAplicacao.MENSAGEM_PARAMETRO_INVALIDO;
+            if(response.getStatusCodigo() == ConstantesAplicacao.STATUS_CADASTRO_SUCESSO){
+                String result="";
+                HttpEntity entity = httpresponse.getEntity();
+                if (entity != null) {
+                    InputStream instream = entity.getContent();
+                    result= StreamConverter.convertStreamToString(instream);
+                    instream.close();
+                }
+                response.setToken(httpresponse.getFirstHeader("apptoken").getValue().toString());
+                response.setCodigoUsuario(getCodigoUsuario(result));
+                response.setMensagem(ConstantesAplicacao.MENSAGEM_SUCESSO);
+            }
 
-            if(httpresponse.getStatusLine().getStatusCode() == ConstantesAplicacao.STATUS_SERVICO_NOT_FOUND_CADASTRO)
-                mensagem= ConstantesAplicacao.MENSAGEM_SERVICO_NOT_FOUND_CADASTRO;
+            if(response.getStatusCodigo() == ConstantesAplicacao.STATUS_PARAMETRO_INVALIDO)
+                response.setMensagem(ConstantesAplicacao.MENSAGEM_PARAMETRO_INVALIDO);
+
+            if(response.getStatusCodigo() == ConstantesAplicacao.STATUS_SERVICO_NOT_FOUND_CADASTRO)
+                response.setMensagem(ConstantesAplicacao.MENSAGEM_SERVICO_NOT_FOUND_CADASTRO);
 
         } catch (IOException e) {
             e.printStackTrace();
             Log.i("Parse Exception", e + "");
         }
 
-        return mensagem;
+        return response;
     }
+
+    private Long getCodigoUsuario(String json) throws JSONException {
+        JSONObject obj = new JSONObject(json);
+        return Long.valueOf(obj.getString("cod"));
+    }
+
 }

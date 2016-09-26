@@ -29,7 +29,9 @@ import java.util.regex.Pattern;
 
 import br.com.civico.mais.saude.R;
 import br.com.civico.mais.saude.constantes.ConstantesAplicacao;
+import br.com.civico.mais.saude.dto.Response;
 import br.com.civico.mais.saude.servico.LoginService;
+import br.com.civico.mais.saude.servico.PostagemService;
 import br.com.civico.mais.saude.util.MensagemUtil;
 
 public class LoginActivity extends Activity {
@@ -85,7 +87,7 @@ public class LoginActivity extends Activity {
             final String senhaUsuario = password.getText().toString();
             final String emailUsuario = emailView.getText().toString();
 
-            AsyncTask<Void, Void, String> task = new AsyncTask<Void, Void, String>() {
+            AsyncTask<Void, Void, Response> task = new AsyncTask<Void, Void, Response>() {
 
                 @Override
                 protected void onPreExecute() {
@@ -97,7 +99,7 @@ public class LoginActivity extends Activity {
                 }
 
                 @Override
-                protected String doInBackground(Void... voids) {
+                protected Response doInBackground(Void... voids) {
                     try {
                         LoginService service = new LoginService(nomeUsuario,senhaUsuario,emailUsuario);
                         return service.autenticarUsuario();
@@ -108,15 +110,15 @@ public class LoginActivity extends Activity {
                 }
 
                 @Override
-                protected void onPostExecute(String mensagem) {
+                protected void onPostExecute(Response result) {
                     if (progressDialog != null) {
                         progressDialog.dismiss();
                     }
 
-                    if(mensagem.equals(ConstantesAplicacao.MENSAGEM_SUCESSO)){
-                        showPopUpComentario();
+                    if(ConstantesAplicacao.STATUS_OK==result.getStatusCodigo()){
+                        showPopUpComentario(result.getToken(),result.getCodigoUsuario());
                     }else {
-                        exibirMsgErro(mensagem);
+                        exibirMsgErro(result.getMensagem());
                     }
                 }
 
@@ -132,7 +134,7 @@ public class LoginActivity extends Activity {
             final String emailUsuario = emailView.getText().toString();
 
             if(validarCampos(nomeUsuario,emailUsuario,senhaUsuario)) {
-                AsyncTask<Void, Void, String> task = new AsyncTask<Void, Void, String>() {
+                AsyncTask<Void, Void, Response> task = new AsyncTask<Void, Void, Response>() {
 
                     @Override
                     protected void onPreExecute() {
@@ -144,7 +146,7 @@ public class LoginActivity extends Activity {
                     }
 
                     @Override
-                    protected String doInBackground(Void... voids) {
+                    protected Response doInBackground(Void... voids) {
                         try {
                             LoginService service = new LoginService(nomeUsuario, senhaUsuario, emailUsuario);
                             return service.cadastrarUsuario();
@@ -155,15 +157,15 @@ public class LoginActivity extends Activity {
                     }
 
                     @Override
-                    protected void onPostExecute(String mensagem) {
+                    protected void onPostExecute(Response result) {
                         if (progressDialog != null) {
                             progressDialog.dismiss();
                         }
 
-                        if(mensagem.equals(ConstantesAplicacao.MENSAGEM_SUCESSO)){
-                            showPopUpComentario();
+                        if(ConstantesAplicacao.STATUS_OK==result.getStatusCodigo()){
+                            showPopUpComentario(result.getToken(),result.getCodigoUsuario());
                         }else {
-                            exibirMsgErro(mensagem);
+                            exibirMsgErro(result.getMensagem());
                         }
                     }
                 };
@@ -173,35 +175,64 @@ public class LoginActivity extends Activity {
     };
 
 
-    public void showPopUpComentario(){
+    public void showPopUpComentario(final String token, final long codigoUsuario){
 
         View root = ((LayoutInflater)LoginActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.comentario, null);
         final RatingBar rat = (RatingBar)root.findViewById(R.id.ratingBar);
         rat.setNumStars(5);
+        TextView labelUnidade = (TextView) root.findViewById(R.id.labelUnidade);
+        labelUnidade.setText(getIntent().getStringExtra("nomeUnidade"));
 
         final AlertDialog.Builder popDialog = new AlertDialog.Builder(this);
-       // popDialog.setIcon(android.R.drawable.btn_star_big_on);
-     //   popDialog.setTitle(" Avaliação ");
-
 
         popDialog.setView(root);
+        final EditText editText = (EditText) root.findViewById(R.id.comentario);
 
         // Button OK
         popDialog.setPositiveButton(android.R.string.ok,
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
+                      final String comentario = editText.getText().toString();
+                      final int pontuacao = rat.getNumStars();
+                        AsyncTask<Void, Void, Response> task = new AsyncTask<Void, Void, Response>() {
+
+                            @Override
+                            protected void onPreExecute() {
+                                progressDialog = new ProgressDialog(LoginActivity.this);
+                                progressDialog.setMessage("Processando...");
+                                progressDialog.setCancelable(false);
+                                progressDialog.setIndeterminate(true);
+                                progressDialog.show();
+                            }
+
+                            @Override
+                            protected Response doInBackground(Void... voids) {
+                                PostagemService postagemService = new PostagemService();
+                                postagemService.cadastrarPostagem(token,codigoUsuario,comentario,pontuacao,
+                                        Long.valueOf(getIntent().getStringExtra("codigoUnidade")));
+                                return null;
+                            }
+
+                            @Override
+                            protected void onPostExecute(Response result) {
+                                if (progressDialog != null) {
+                                    progressDialog.dismiss();
+                                }
+                            }
+                        };
+                        task.execute((Void[]) null);
+
                         dialog.dismiss();
                     }
-
                 })
 
                 // Button Cancel
                 .setNegativeButton("Cancel",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                            }
-                        });
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.cancel();
+                        }
+                    });
 
         popDialog.create();
         popDialog.show();

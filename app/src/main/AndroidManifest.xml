@@ -39,7 +39,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/MyTheme" />
         <activity
-            android:name=".controle.ComentarioActivity"
+            android:name=".controle.PostagemActivity"
             android:screenOrientation="portrait"
             android:theme="@style/MyTheme" />
         <activity

@@ -10,7 +10,7 @@ import android.widget.Button;
 
 import br.com.civico.mais.saude.R;
 
-public class ComentarioActivity extends Activity {
+public class PostagemActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,7 +24,9 @@ public class ComentarioActivity extends Activity {
 
     private View.OnClickListener onClickListener = new View.OnClickListener() {
         public void onClick(final View v) {
-            Intent intent = new Intent(ComentarioActivity.this,LoginActivity.class);
+            Intent intent = new Intent(PostagemActivity.this,LoginActivity.class);
+            intent.putExtra("codigoUnidade",getIntent().getStringExtra("codigoUnidade"));
+            intent.putExtra("nomeUnidade",getIntent().getStringExtra("nomeUnidade"));
             startActivity(intent);
         }
     };
