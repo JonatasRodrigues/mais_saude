@@ -37,6 +37,4 @@ public abstract class AbstractService<T> extends AsyncTask<String, Void, T> impl
     public JSONArray getJson(String json) throws JSONException {
         return new JSONArray(json);
     }
-
-
 }

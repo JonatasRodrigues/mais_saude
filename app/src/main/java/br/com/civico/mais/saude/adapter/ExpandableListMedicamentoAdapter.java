@@ -1,7 +1,6 @@
 package br.com.civico.mais.saude.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +13,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import br.com.civico.mais.saude.R;
-import br.com.civico.mais.saude.controle.ComentarioActivity;
 
 /**
  * Created by Jônatas Rodrigues on 29/08/2016.

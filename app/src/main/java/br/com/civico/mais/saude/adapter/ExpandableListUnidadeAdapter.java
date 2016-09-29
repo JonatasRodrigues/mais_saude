@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
 import br.com.civico.mais.saude.R;
-import br.com.civico.mais.saude.controle.ComentarioActivity;
+import br.com.civico.mais.saude.controle.PostagemActivity;
 
 import android.widget.BaseExpandableListAdapter;
 import android.content.Context;
@@ -60,9 +60,11 @@ public class ExpandableListUnidadeAdapter extends BaseExpandableListAdapter{
     }
 
     @Override
-    public View getChildView(int groupPosition, final int childPosition,boolean isLastChild, View convertView, ViewGroup parent) {
+    public View getChildView(final int groupPosition, final int childPosition,boolean isLastChild, View convertView, ViewGroup parent) {
         final String childText = (String) getChild(groupPosition, childPosition);
-        final String codigo = (String) getChild(groupPosition, 2);
+        final String child = (String) getChild(groupPosition, 2);
+        final String[]codigoUnidade = child.split(":");
+
         ViewHolder holder;
         if (convertView == null) {
             holder = new ViewHolder();
@@ -75,7 +77,9 @@ public class ExpandableListUnidadeAdapter extends BaseExpandableListAdapter{
                 holder.btnComentario.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent intent = new Intent(_context, ComentarioActivity.class);
+                        Intent intent = new Intent(_context, PostagemActivity.class);
+                        intent.putExtra("codigoUnidade",codigoUnidade[1].trim());
+                        intent.putExtra("nomeUnidade", (String) getGroup(groupPosition));
                         _context.startActivity(intent);
                     }
                 });

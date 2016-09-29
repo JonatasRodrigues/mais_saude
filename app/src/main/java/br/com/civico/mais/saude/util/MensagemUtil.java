@@ -17,26 +17,19 @@ import br.com.civico.mais.saude.R;
 public class MensagemUtil {
 
     public static void exibirMensagemErro(LayoutInflater inflater,Context context,String mensagem,ViewGroup viewGroup){
+       // LayoutInflater inflater =inflater;
+        // Inflate the Layout
         View layout = inflater.inflate(R.layout.toast_erro,viewGroup);
+
         TextView text = (TextView) layout.findViewById(R.id.textErro);
+        // Set the Text to show in TextView
         text.setText(mensagem);
 
-        final Toast toast = new Toast(context);
+        Toast toast = new Toast(context);
         toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
         toast.setDuration(Toast.LENGTH_LONG);
         toast.setView(layout);
-
-        //Configurar tempo de exibição
-        int toastDurationInMilliSeconds = 10000;
-        CountDownTimer toastCountDown = new CountDownTimer(toastDurationInMilliSeconds, 1 /*Tick duration*/) {
-            public void onTick(long millisUntilFinished) {
-                toast.show();
-            }
-            public void onFinish() {
-                toast.cancel();
-            }
-        };
-        toastCountDown.start();
+        toast.show();
     }
 
     public static void exibirMensagemSucesso(LayoutInflater inflater,Context context,String mensagem,ViewGroup viewGroup){

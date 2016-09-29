@@ -1,6 +1,6 @@
 package br.com.civico.mais.saude.servico;
 
- import android.content.Context;
+import android.content.Context;
 import android.location.Location;
 
 import com.loopj.android.http.HttpGet;
@@ -57,7 +57,7 @@ public class UnidadeService extends AbstractService<ExpandableDTO> {
             HttpResponse response = httpclient.execute(httpget);
 
             if(response.getStatusLine().getStatusCode() != ConstantesAplicacao.STATUS_OK)
-               throw new ErroServicoTCUException("Erro ao recuperar informações. Por favor, tente mais tarde.");
+                throw new ErroServicoTCUException("Erro ao recuperar informações. Por favor, tente mais tarde.");
 
             HttpEntity entity = response.getEntity();
 
@@ -79,7 +79,7 @@ public class UnidadeService extends AbstractService<ExpandableDTO> {
         HashMap<String, List<String>> listDataChild = new HashMap<>();
         for (int i=0; i < jsonArray.length(); i++) {
             try {
-                 listaDados = new ArrayList<String>();
+                listaDados = new ArrayList<String>();
                 JSONObject oneObject = jsonArray.getJSONObject(i);
                 listaHeader.add(oneObject.getString("nomeFantasia"));
                 listaDados.add("  ");
@@ -102,7 +102,7 @@ public class UnidadeService extends AbstractService<ExpandableDTO> {
                 e.printStackTrace();
             }
         }
-       return new ExpandableDTO(listaHeader,listDataChild);
+        return new ExpandableDTO(listaHeader,listDataChild);
     }
 
 }
