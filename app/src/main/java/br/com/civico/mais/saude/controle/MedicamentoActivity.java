@@ -25,6 +25,7 @@ import br.com.civico.mais.saude.R;
 import br.com.civico.mais.saude.adapter.ExpandableListMedicamentoAdapter;
 import br.com.civico.mais.saude.adapter.ExpandableListUnidadeAdapter;
 import br.com.civico.mais.saude.dto.ExpandableDTO;
+import br.com.civico.mais.saude.dto.medicamento.MedicamentoExpandableDTO;
 import br.com.civico.mais.saude.exception.ErroServicoTCUException;
 import br.com.civico.mais.saude.servico.MedicamentoService;
 
@@ -36,7 +37,7 @@ public class MedicamentoActivity extends Activity {
         setContentView(R.layout.medicamento_consulta);
 
         try {
-            ExpandableDTO dto = MedicamentoService.getInstance().execute(new String()).get();
+            MedicamentoExpandableDTO dto = MedicamentoService.getInstance().execute(new String()).get();
             expListView = (ExpandableListView) findViewById(R.id.medicamentoListView);
 
             ExpandableListAdapter listAdapter = new ExpandableListMedicamentoAdapter(this, dto.getListDataHeader(),

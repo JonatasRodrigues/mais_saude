@@ -16,15 +16,15 @@ import br.com.civico.mais.saude.dto.ExpandableDTO;
 /**
  * Created by Jônatas Rodrigues on 30/08/2016.
  */
-public abstract class AbstractService extends AsyncTask<String, Void, ExpandableDTO> implements Service<ExpandableDTO>{
+public abstract class AbstractService<T> extends AsyncTask<String, Void, T> implements Service<T>{
 
 
 
-    public abstract ExpandableDTO consumirServicoTCU()throws JSONException;
+    public abstract T consumirServicoTCU()throws JSONException;
 
 
     @Override
-    protected ExpandableDTO doInBackground(String... params) {
+    protected T doInBackground(String... params) {
         try {
             return consumirServicoTCU();
         } catch (JSONException e) {

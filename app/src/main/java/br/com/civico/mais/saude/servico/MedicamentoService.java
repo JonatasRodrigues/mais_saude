@@ -14,17 +14,20 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import br.com.civico.mais.saude.constantes.ConstantesAplicacao;
 import br.com.civico.mais.saude.converter.StreamConverter;
 import br.com.civico.mais.saude.dto.ExpandableDTO;
+import br.com.civico.mais.saude.dto.medicamento.MedicamentoExpandableDTO;
 import br.com.civico.mais.saude.exception.ErroServicoTCUException;
 import cz.msebera.android.httpclient.HttpEntity;
 import cz.msebera.android.httpclient.HttpResponse;
 import cz.msebera.android.httpclient.client.HttpClient;
 import cz.msebera.android.httpclient.impl.client.DefaultHttpClient;
 
-public class MedicamentoService extends AbstractService  {
+public class MedicamentoService extends AbstractService<MedicamentoExpandableDTO>  {
 
     private static MedicamentoService medicamentoService ;
 
@@ -36,7 +39,7 @@ public class MedicamentoService extends AbstractService  {
     }
 
     @Override
-    public ExpandableDTO consumirServicoTCU() throws JSONException {
+    public MedicamentoExpandableDTO consumirServicoTCU() throws JSONException {
         String result="";
         try {
             String url = ConstantesAplicacao.URL_BASE + "/rest/remedios?quantidade=30";
@@ -83,15 +86,16 @@ public class MedicamentoService extends AbstractService  {
         return converterJsonParaObject(getJson(result));
     }
 
-    private ExpandableDTO converterJsonParaObject(JSONArray jsonArray){
-        List<String> listaHeader = new ArrayList<String>();
-        List<String> listaDados;
-        HashMap<String, List<String>> listDataChild = new HashMap<>();
+    private MedicamentoExpandableDTO converterJsonParaObject(JSONArray jsonArray){
+        Set<String> listaHeader = new TreeSet<>();
+        Set<String> listaDados;
+        HashMap<String, Set<String>> listDataChild = new HashMap<>();
         for (int i=0; i < jsonArray.length(); i++) {
             try {
-                listaDados = new ArrayList<String>();
+                listaDados = new TreeSet<>();
                 JSONObject oneObject = jsonArray.getJSONObject(i);
-                listaHeader.add(oneObject.getString("produto"));
+                String produto = oneObject.getString("produto");
+                listaHeader.add(produto);
                 listaDados.add("  ");
                 listaDados.add("Laboratório: " + oneObject.getString("laboratorio"));
                 listaDados.add("CNPJ: " + oneObject.getString("cnpj"));
@@ -100,11 +104,11 @@ public class MedicamentoService extends AbstractService  {
                 listaDados.add("Registro: " + oneObject.getString("registro"));
                 listaDados.add("Apresentação: " + oneObject.getString("apresentacao"));
                 listaDados.add("Última Alteração: " + oneObject.getString("ultimaAlteracao"));
-                listDataChild.put(listaHeader.get(i), listaDados);
+                listDataChild.put(produto, listaDados);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
-        return new ExpandableDTO(listaHeader,listDataChild);
+        return new MedicamentoExpandableDTO(listaHeader,listDataChild);
     }
 }

@@ -26,7 +26,7 @@ import cz.msebera.android.httpclient.impl.client.DefaultHttpClient;
 /**
  * Created by Jônatas Rodrigues on 27/08/2016.
  */
-public class UnidadeService extends AbstractService {
+public class UnidadeService extends AbstractService<ExpandableDTO> {
 
     private Location location;
     private static final Integer RAIO = 30;
