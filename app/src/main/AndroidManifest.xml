@@ -41,7 +41,7 @@
         <activity
             android:name=".controle.PostagemActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/MyTheme" />
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".controle.LoginActivity"
             android:screenOrientation="portrait"

@@ -1,6 +1,6 @@
 package br.com.civico.mais.saude.servico;
 
-import android.content.Context;
+ import android.content.Context;
 import android.location.Location;
 
 import com.loopj.android.http.HttpGet;

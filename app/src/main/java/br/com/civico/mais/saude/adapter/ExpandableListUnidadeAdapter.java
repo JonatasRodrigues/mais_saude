@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
 import br.com.civico.mais.saude.R;
+import br.com.civico.mais.saude.controle.LoginActivity;
 import br.com.civico.mais.saude.controle.PostagemActivity;
 
 import android.widget.BaseExpandableListAdapter;
@@ -77,7 +78,7 @@ public class ExpandableListUnidadeAdapter extends BaseExpandableListAdapter{
                 holder.btnComentario.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent intent = new Intent(_context, PostagemActivity.class);
+                        Intent intent = new Intent(_context, LoginActivity.class);
                         intent.putExtra("codigoUnidade",codigoUnidade[1].trim());
                         intent.putExtra("nomeUnidade", (String) getGroup(groupPosition));
                         _context.startActivity(intent);
@@ -97,8 +98,6 @@ public class ExpandableListUnidadeAdapter extends BaseExpandableListAdapter{
         holder.textView.setText(childText);
         return convertView;
     }
-
-
 
     @Override
     public int getChildrenCount(int groupPosition) {

@@ -4,15 +4,20 @@ import android.util.Log;
 
 import com.loopj.android.http.HttpGet;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import br.com.civico.mais.saude.constantes.ConstantesAplicacao;
 import br.com.civico.mais.saude.converter.StreamConverter;
+import br.com.civico.mais.saude.dto.ExpandableDTO;
 import br.com.civico.mais.saude.dto.PostagemDTO;
 import cz.msebera.android.httpclient.HttpEntity;
 import cz.msebera.android.httpclient.HttpResponse;
@@ -28,8 +33,8 @@ import cz.msebera.android.httpclient.impl.client.DefaultHttpClient;
 public class PostagemService {
 
 
-    public List<PostagemDTO> buscarPostagensPorUnidade(String codigoUnidade,String token,String codigoAplicativo) {
-
+    public List<PostagemDTO> buscarPostagensPorUnidade(String codigoUnidade,String token) {
+        String result=null;
         try {
             String url = ConstantesAplicacao.URL_BASE_METAMODELO + "/rest/postagens/timeline?codObjetoDestino=" + codigoUnidade + "&codAplicativo=" +
                     ConstantesAplicacao.APP_IDENTIFICADOR;
@@ -38,34 +43,49 @@ public class PostagemService {
             HttpGet httpget = new HttpGet(url);
             httpget.setHeader("appToken", token);
 
-            HttpResponse httpresponse = null;
+            HttpResponse httpresponse = httpclient.execute(httpget);
 
-            httpresponse = httpclient.execute(httpget);
-/**
-            response.setStatusCodigo(httpresponse.getStatusLine().getStatusCode());
-
-            if (response.getStatusCodigo() == ConstantesAplicacao.STATUS_CREDENCIAIS_INVALIDAS)
-                response.setMensagem(ConstantesAplicacao.MENSAGEM_CRENDECIAIS_INVALIDAS);
-
-            if (response.getStatusCodigo() == ConstantesAplicacao.STATUS_EMAIL_NAO_CADASTRADO)
-                response.setMensagem(ConstantesAplicacao.MENSAGEM_EMAIL_NAO_CADASTRADO);
-
-            if (response.getStatusCodigo() == ConstantesAplicacao.STATUS_OK) {
+            if (httpresponse.getStatusLine().getStatusCode() == ConstantesAplicacao.STATUS_OK) {
                 HttpEntity entity = httpresponse.getEntity();
                 if (entity != null) {
                     InputStream instream = entity.getContent();
-                    result = StreamConverter.convertStreamToString(instream);
+                     result = StreamConverter.convertStreamToString(instream);
                     instream.close();
                 }
-                response.setToken(httpresponse.getFirstHeader("apptoken").getValue().toString());
-                response.setCodigoUsuario(getCodigoUsuario(result));
-                response.setMensagem(ConstantesAplicacao.MENSAGEM_SUCESSO);
-            }**/
+
+                return converterJsonParaObject(getJson(result));
+            }
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
-            return null;
+        return null;
     }
+
+    public JSONArray getJson(String json) throws JSONException {
+        return new JSONArray(json);
+    }
+    private List<PostagemDTO> converterJsonParaObject(JSONArray jsonArray){
+       List<PostagemDTO> lista = new ArrayList<>();
+        for (int i=0; i < jsonArray.length(); i++) {
+            try {
+                PostagemDTO dto = new PostagemDTO();
+                JSONObject oneObject = jsonArray.getJSONObject(i);
+                dto.setNomeAutor(oneObject.getString("nomeAutor"));
+                dto.setDataPostagem(oneObject.getString("dataHoraPostagem"));
+                JSONArray conteudoArray = oneObject.getJSONArray("conteudos");
+                dto.setComentario(conteudoArray.getJSONObject(0).getString("texto"));
+                dto.setPontuacao(Double.valueOf(conteudoArray.getJSONObject(0).getString("valor")));
+                lista.add(dto);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return lista;
+    }
+
     public void cadastrarPostagem(String token, long codigoUsuario, String comentario, double pontuacao, long codigoUnidade) {
 
         try {
