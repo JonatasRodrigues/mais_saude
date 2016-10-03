@@ -1,5 +1,6 @@
 package br.com.civico.mais.saude.controle;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -17,7 +18,6 @@ import android.preference.PreferenceManager;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.StyleSpan;
-import android.text.style.UnderlineSpan;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -28,12 +28,15 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONException;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -41,7 +44,6 @@ import br.com.civico.mais.saude.R;
 import br.com.civico.mais.saude.constantes.ConstantesAplicacao;
 import br.com.civico.mais.saude.dto.Response;
 import br.com.civico.mais.saude.servico.LoginService;
-import br.com.civico.mais.saude.servico.PostagemService;
 import br.com.civico.mais.saude.util.MensagemUtil;
 
 public class LoginActivity extends Activity {
@@ -57,73 +59,87 @@ public class LoginActivity extends Activity {
     private Context context;
     private SharedPreferences settings ;
     private SharedPreferences.Editor editor;
-     AlertDialog.Builder popDialog;
+    private AlertDialog.Builder popDialog;
+    private DateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
+    @SuppressLint("NewApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        popDialog = new AlertDialog.Builder(this);
+        this.popDialog = new AlertDialog.Builder(this);
         this.context=this;
-        settings = PreferenceManager.getDefaultSharedPreferences(this);
-        editor = settings.edit();
-        editor.putString("codigoUnidade", getIntent().getStringExtra("codigoUnidade"));
-        editor.putString("nomeUnidade", getIntent().getStringExtra("nomeUnidade"));
+        this.settings = PreferenceManager.getDefaultSharedPreferences(this);
+        this.editor = settings.edit();
+        this.editor.putString("codigoUnidade", getIntent().getStringExtra("codigoUnidade"));
+        this.editor.putString("nomeUnidade", getIntent().getStringExtra("nomeUnidade"));
         String auth_token_string = settings.getString("token", "");
+        String dataExpiracao =  settings.getString("dataExpiracaoToken", "");
+        controlarAutenticacao(dataExpiracao,auth_token_string);
 
-        if(auth_token_string==""){
-            showPopUpAutenticacao();
+    }
+
+    private void controlarAutenticacao(String dataExpiracao,String auth_token_string){
+        if(!dataExpiracao.isEmpty() && !auth_token_string.isEmpty()){
+            try {
+                Calendar hoje = Calendar.getInstance();
+                Calendar dataExpiracaoToken  = Calendar.getInstance();
+                dataExpiracaoToken.setTime(sdf.parse(dataExpiracao));
+                if(hoje.compareTo(dataExpiracaoToken)<=0){
+                    editor.commit();
+                    Intent intent = new Intent(context, PostagemActivity.class);
+                    context.startActivity(intent);
+                }else{
+                    editor.clear();     // CLEAR ALL FIELDS
+                    editor.commit();    // COMMIT CHANGES
+
+                    TextView myMsg = new TextView(this);
+                    myMsg.setText(ConstantesAplicacao.MENSAGEM_SESSAO_EXPIRADA);
+                    myMsg.setPadding(10, 10, 10, 10);
+                    myMsg.setGravity(Gravity.CENTER);
+                    myMsg.setTextSize(20);
+                    myMsg.setTextColor(Color.BLACK);
+
+                    new AlertDialog.Builder(context)
+                     .setView(myMsg).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            showPopUpAutenticacao();
+                        }
+                     }).show();
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
         }else{
-            editor.commit();
-            Intent intent = new Intent(context, PostagemActivity.class);
-            context.startActivity(intent);
+            showPopUpAutenticacao();
         }
     }
 
-
     private void showPopUpAutenticacao(){
-
         View root = ((LayoutInflater)LoginActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.login, null);
 
-        emailView = (AutoCompleteTextView) root.findViewById(R.id.email);
-        nome = (EditText) root.findViewById(R.id.nome);
-        password = (EditText) root.findViewById(R.id.password);
-        passwordConfirm = (EditText) root.findViewById(R.id.passwordConfirm);
-        btnNovaConta = (Button) root.findViewById(R.id.btnNovaConta);
-        btnLogin = (Button) root.findViewById(R.id.btnLogin);
-        chkCadastrado = (CheckBox) root.findViewById(R.id.chkCadastrado);
+        this.emailView = (AutoCompleteTextView) root.findViewById(R.id.email);
+        this.nome = (EditText) root.findViewById(R.id.nome);
+        this.password = (EditText) root.findViewById(R.id.password);
+        this.passwordConfirm = (EditText) root.findViewById(R.id.passwordConfirm);
+        this.btnNovaConta = (Button) root.findViewById(R.id.btnNovaConta);
+        this.btnLogin = (Button) root.findViewById(R.id.btnLogin);
+        this.chkCadastrado = (CheckBox) root.findViewById(R.id.chkCadastrado);
 
-        chkCadastrado.setOnClickListener(new OnClickListener() {
-            public void onClick(View v) {
-                if (((CheckBox) v).isChecked()) {
-                    nome.setVisibility(View.GONE);
-                    passwordConfirm.setVisibility(View.GONE);
-                    btnNovaConta.setVisibility(View.GONE);
-                    btnLogin.setVisibility(View.VISIBLE);
-                } else {
-                    nome.setVisibility(View.VISIBLE);
-                    View focusView = nome;
-                    focusView.requestFocus();
-                    passwordConfirm.setVisibility(View.VISIBLE);
-                    btnNovaConta.setVisibility(View.VISIBLE);
-                    btnLogin.setVisibility(View.GONE);
-                }
-            }
-        });
+        this.chkCadastrado.setOnClickListener(onClickListenerCheck);
+        this.btnNovaConta.setOnClickListener(onClickListenerCriarConta);
+        this. btnLogin.setOnClickListener(onClickListenerLogin);
 
-        btnNovaConta.setOnClickListener(onClickCriarContaListener);
-        btnLogin.setOnClickListener(onClickLoginListener);
-
-        String tempString="Autenticação";
+        String titulo="Autenticação";
         TextView myMsg = new TextView(this);
-        SpannableString spanString = new SpannableString(tempString);
+        SpannableString spanString = new SpannableString(titulo);
         spanString.setSpan(new StyleSpan(Typeface.BOLD), 0, spanString.length(), 0);
         myMsg.setText(spanString);
 
         myMsg.setGravity(Gravity.CENTER_HORIZONTAL);
         myMsg.setTextSize(20);
         myMsg.setTextColor(Color.WHITE);
-        myMsg.setBackgroundColor(Color.GRAY);
+        myMsg.setBackgroundColor(Color.BLUE);
         popDialog.setView(root);
         popDialog.setCustomTitle(myMsg);
         popDialog.create();
@@ -146,8 +162,26 @@ public class LoginActivity extends Activity {
         popDialog.show();
     }
 
+    private View.OnClickListener onClickListenerCheck = new View.OnClickListener() {
+        public void onClick(final View v) {
+            if (((CheckBox) v).isChecked()) {
+                nome.setVisibility(View.GONE);
+                passwordConfirm.setVisibility(View.GONE);
+                btnNovaConta.setVisibility(View.GONE);
+                btnLogin.setVisibility(View.VISIBLE);
+            } else {
+                nome.setVisibility(View.VISIBLE);
+                View focusView = nome;
+                focusView.requestFocus();
+                passwordConfirm.setVisibility(View.VISIBLE);
+                btnNovaConta.setVisibility(View.VISIBLE);
+                btnLogin.setVisibility(View.GONE);
+            }
+        }
+    };
 
-    public View.OnClickListener onClickLoginListener = new View.OnClickListener() {
+
+    private View.OnClickListener onClickListenerLogin = new View.OnClickListener() {
         public void onClick(final View v) {
 
             final String nomeUsuario = nome.getText().toString();
@@ -183,6 +217,9 @@ public class LoginActivity extends Activity {
                     }
 
                     if(ConstantesAplicacao.STATUS_OK==result.getStatusCodigo()){
+                        Calendar calendar = Calendar.getInstance();
+                        calendar.add(Calendar.DATE, +7);//Token é válido por 07 dias
+                        editor.putString("dataExpiracaoToken",sdf.format(calendar.getTime()));
                         editor.putString("token", result.getToken());
                         editor.putString("codigoUsuario", String.valueOf(result.getCodigoUsuario()));
                         editor.commit();
@@ -199,7 +236,7 @@ public class LoginActivity extends Activity {
         }
     };
 
-    private View.OnClickListener onClickCriarContaListener = new View.OnClickListener() {
+    private View.OnClickListener onClickListenerCriarConta = new View.OnClickListener() {
         public void onClick(final View v) {
             final String nomeUsuario = nome.getText().toString();
             final String senhaUsuario = password.getText().toString();
@@ -235,6 +272,9 @@ public class LoginActivity extends Activity {
                         }
 
                         if(ConstantesAplicacao.STATUS_OK==result.getStatusCodigo()){
+                            Calendar calendar = Calendar.getInstance();
+                            calendar.add(Calendar.DATE, +7);//Token é válido por 07 dias
+                            editor.putString("dataExpiracaoToken",sdf.format(calendar.getTime()));
                             editor.putString("token", result.getToken());
                             editor.putString("codigoUsuario", String.valueOf(result.getCodigoUsuario()));
                             editor.commit();
@@ -267,7 +307,7 @@ public class LoginActivity extends Activity {
         View focusView = null;
 
         // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(senha) && !isPasswordValid(senha)) {
+        if (TextUtils.isEmpty(senha) || !isPasswordValid(senha)) {
             password.setError(getString(R.string.error_invalido_password));
             focusView = password;
             isValido = false;
@@ -307,7 +347,7 @@ public class LoginActivity extends Activity {
     }
 
     private boolean isNomeValido(String nome) {
-        Pattern p = Pattern.compile("/^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ ]+$/");
+        Pattern p = Pattern.compile("[0-9]");
         Matcher m = p.matcher(nome);
         return m.find() || nome.length()<3;
     }
@@ -334,8 +374,7 @@ public class LoginActivity extends Activity {
         toast.show();
     }
 
-
-    public void voltar() {
+    private void voltar() {
         Intent intent = new Intent(this, UnidadeActivity.class);
         startActivity(intent);
     }

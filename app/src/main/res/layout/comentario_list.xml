@@ -1,8 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:fitsSystemWindows="true"
+    tools:context=".controle.PostagemActivity">
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
 
     <LinearLayout
@@ -22,19 +31,22 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="3dp"
-            android:background="@android:color/darker_gray"/>
+            android:background="@android:color/darker_gray"
+            android:layout_marginTop="3dp"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="@string/label_comentario"
-            android:id="@+id/textView2" />
+            android:id="@+id/tituloComentario"
+            android:textSize="18dp"
+            android:layout_marginLeft="8dp"/>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@android:color/darker_gray"/>
+            android:background="@android:color/darker_gray"
+            android:visibility="visible" />
 
     </LinearLayout>
 
@@ -65,4 +77,22 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Nenhuma avaliação para esta unidade. Seja o primeiro!"
+        android:id="@+id/semComentario"
+        android:layout_below="@+id/linearLayout"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:textSize="14dp"
+        android:gravity="center_horizontal"
+        android:visibility="gone" />
+
 </RelativeLayout>
+
+
+</android.support.design.widget.CoordinatorLayout>

@@ -14,12 +14,13 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import java.util.List;
 
@@ -34,13 +35,18 @@ public class PostagemActivity extends Activity {
     private ProgressDialog progressDialog;
     private Context context;
     private ListView listView;
+    private TextView lblSemComentario;
+    private TextView tituloComentario;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.comentario_list);
         context = this;
-        listView = (ListView) findViewById(R.id.listComentario);
+        this.listView = (ListView) findViewById(R.id.listComentario);
+        this.lblSemComentario = (TextView) findViewById(R.id.semComentario);
+        this.lblSemComentario.setVisibility(View.GONE);
+        this.tituloComentario = (TextView) findViewById(R.id.tituloComentario);
         carregarPostagens();
 
         Button btnCriarPostagem = (Button) findViewById(R.id.btnNovoComentario);
@@ -73,7 +79,12 @@ public class PostagemActivity extends Activity {
                 if (progressDialog != null) {
                     progressDialog.dismiss();
                 }
-                listView.setAdapter(adapter);
+                tituloComentario.setText("Comentários(" + adapter.getCount() + ")");
+                if(adapter.getCount()==0){
+                    lblSemComentario.setVisibility(View.VISIBLE);
+                }else{
+                    listView.setAdapter(adapter);
+                }
             }
         };
         task.execute((Void[]) null);
@@ -115,7 +126,7 @@ public class PostagemActivity extends Activity {
                             @Override
                             protected void onPreExecute() {
                                 progressDialog = new ProgressDialog(PostagemActivity.this);
-                                progressDialog.setMessage("Processando...");
+                                progressDialog.setMessage("Enviando...");
                                 progressDialog.setCancelable(false);
                                 progressDialog.setIndeterminate(true);
                                 progressDialog.show();
@@ -140,20 +151,17 @@ public class PostagemActivity extends Activity {
                         dialog.dismiss();
                     }
                 })
-
                 // Button Cancel
-                .setNegativeButton("Cancel",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                            }
-                        });
+                .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
 
         popDialog.create();
         popDialog.show();
 
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -163,12 +171,16 @@ public class PostagemActivity extends Activity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-    //    if (id == R.id.action_settings) {
-      //      return true;
-      //  }
-
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        voltar();
+    }
+
+    private void voltar(){
+        Intent intent = new Intent(this, UnidadeActivity.class);
+        startActivity(intent);
     }
 }

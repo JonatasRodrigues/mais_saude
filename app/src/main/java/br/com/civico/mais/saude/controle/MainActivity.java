@@ -1,37 +1,41 @@
 package br.com.civico.mais.saude.controle;
 
-import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 
 import br.com.civico.mais.saude.R;
-import br.com.civico.mais.saude.servico.GPSService;
 
 public class MainActivity extends Activity {
 
-    ProgressDialog progressDialog;
+    private ProgressDialog progressDialog;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        this.context=this;
 
         Button  btnUnidade = (Button) findViewById(R.id.btnUnidade);
-        btnUnidade.setOnClickListener(onClickListener);
+        btnUnidade.setOnClickListener(onClickListenerUnidade);
 
         Button  btnMedicamento = (Button) findViewById(R.id.btnMedicamento);
         btnMedicamento.setOnClickListener(onClickListenerMedicamento);
+
+        Button  btnSair = (Button) findViewById(R.id.btnSair);
+        btnSair.setOnClickListener(onClickListenerSair);
 
     }
 
@@ -68,7 +72,7 @@ public class MainActivity extends Activity {
         }
     };
 
-    private View.OnClickListener onClickListener = new View.OnClickListener() {
+    private View.OnClickListener onClickListenerUnidade = new View.OnClickListener() {
         public void onClick(final View v) {
             if(v.getId()== R.id.btnUnidade){
                 Intent intent = new Intent(MainActivity.this, UnidadeActivity.class);
@@ -77,25 +81,49 @@ public class MainActivity extends Activity {
         }
     };
 
+    private View.OnClickListener onClickListenerSair = new View.OnClickListener() {
+        public void onClick(final View v) {
+            if(v.getId()== R.id.btnSair){
+                DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which){
+                            case DialogInterface.BUTTON_POSITIVE:
+                                SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+                                SharedPreferences.Editor editor = settings.edit();
+                                editor.clear();     // CLEAR ALL FILEDS
+                                editor.commit();    // COMMIT CHANGES
+
+                                Intent startMain = new Intent(Intent.ACTION_MAIN);
+                                startMain.addCategory(Intent.CATEGORY_HOME);
+                                startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startMain.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(startMain);
+                                break;
+
+                            case DialogInterface.BUTTON_NEGATIVE:
+                                dialog.dismiss();
+                                break;
+                        }
+                    }
+                };
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setMessage("Deseja encerrar o aplicativo?").setPositiveButton("Ok", dialogClickListener)
+                        .setNegativeButton("Cancelar", dialogClickListener).show();
+            }
+        }
+    };
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        //    if (id == R.id.action_settings) {
-        //      return true;
-        //  }
-
         return super.onOptionsItemSelected(item);
     }
 }

@@ -2,7 +2,6 @@ package br.com.civico.mais.saude.controle;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -11,41 +10,27 @@ import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.support.v4.app.ActivityCompat;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import org.json.JSONException;
 
-import java.util.concurrent.ExecutionException;
-
 import br.com.civico.mais.saude.R;
 import br.com.civico.mais.saude.adapter.ExpandableListUnidadeAdapter;
-import br.com.civico.mais.saude.constantes.ConstantesAplicacao;
 import br.com.civico.mais.saude.dto.ExpandableDTO;
-import br.com.civico.mais.saude.dto.Response;
-import br.com.civico.mais.saude.exception.ErroServicoTCUException;
-import br.com.civico.mais.saude.exception.GPSException;
 import br.com.civico.mais.saude.servico.GPSService;
-import br.com.civico.mais.saude.servico.LoginService;
 import br.com.civico.mais.saude.servico.UnidadeService;
-import br.com.civico.mais.saude.util.MensagemUtil;
 
 public class UnidadeActivity extends Activity {
 
-    ExpandableListView expListView;
+    private ExpandableListView expListView;
     private ProgressDialog progressDialog;
     private Context context;
-    Location location;
+    private Location location;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -115,11 +100,6 @@ public class UnidadeActivity extends Activity {
         expListView.setDividerHeight(2);
     }
 
-    private void voltarMenu(){
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
-    }
-
     private boolean hasPermissions(){
         boolean permissionFineLocation = ActivityCompat.checkSelfPermission(UnidadeActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
         boolean permissionCoarseLocation = ActivityCompat.checkSelfPermission(UnidadeActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
@@ -129,24 +109,24 @@ public class UnidadeActivity extends Activity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        //    if (id == R.id.action_settings) {
-        //        return true;
-        //    }
-
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        voltarMenu();
+    }
+
+    private void voltarMenu(){
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
     }
 
 }

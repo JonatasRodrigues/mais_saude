@@ -11,6 +11,7 @@
     <color name="darkGreen">#006400</color>
     <color name="goldenYellow">#FFDF00</color>
     <color name="transparente">#00000000</color>
+    <color name="red">#FF0000</color>
 
 
 </resources>

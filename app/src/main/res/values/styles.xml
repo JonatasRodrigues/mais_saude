@@ -19,7 +19,7 @@
 
     <style name="TitleBarTextColor" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
         <item name="android:textColor">@color/white</item>,l nçlok,mn /TextAppearance.AppCompat.Widget.ActionBar.Title0
-        <item name="android:textStyle">bold</item>
+
     </style>
 
 

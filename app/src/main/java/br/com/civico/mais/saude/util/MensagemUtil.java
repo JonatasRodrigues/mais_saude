@@ -31,28 +31,4 @@ public class MensagemUtil {
         toast.setView(layout);
         toast.show();
     }
-
-    public static void exibirMensagemSucesso(LayoutInflater inflater,Context context,String mensagem,ViewGroup viewGroup){
-        View layout = inflater.inflate(R.layout.toast_sucesso,viewGroup);
-        TextView text = (TextView) layout.findViewById(R.id.textSucesso);
-        text.setText(mensagem);
-
-        final Toast toast = new Toast(context);
-        toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
-        toast.setDuration(Toast.LENGTH_LONG);
-        toast.setView(layout);
-
-        //Configurar tempo de exibição
-        int toastDurationInMilliSeconds = 10000;
-        CountDownTimer toastCountDown = new CountDownTimer(toastDurationInMilliSeconds, 1 /*Tick duration*/) {
-            public void onTick(long millisUntilFinished) {
-                toast.show();
-            }
-            public void onFinish() {
-                toast.cancel();
-            }
-        };
-        toastCountDown.start();
-    }
-
 }

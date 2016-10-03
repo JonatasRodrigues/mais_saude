@@ -76,6 +76,9 @@ public class ListViewPostagemAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
+        if(postagemDTOList==null){
+            return 0;
+        }
         return postagemDTOList.size();
     }
 

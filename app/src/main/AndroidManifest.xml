@@ -41,10 +41,12 @@
         <activity
             android:name=".controle.PostagemActivity"
             android:screenOrientation="portrait"
+            android:label="@string/label_comentario"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".controle.LoginActivity"
             android:screenOrientation="portrait"
+            android:label="@string/title_activity_login"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
         <activity
