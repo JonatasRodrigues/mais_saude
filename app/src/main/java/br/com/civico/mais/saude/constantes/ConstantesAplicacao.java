@@ -25,4 +25,5 @@ public class ConstantesAplicacao {
     public static final String MENSAGEM_EMAIL_NAO_CADASTRADO="Ocorreu um erro ao encontrar o e-mail informado";
     public static final String MENSAGEM_SERVICO_NOT_FOUND_CADASTRO="Ocorreu um erro no cadastro. Por favor, tente novamente mais tarde.";
     public static final String MENSAGEM_SESSAO_EXPIRADA="Sessão expirada";
+    public static final String SPLIT_CARACTER="_";
 }

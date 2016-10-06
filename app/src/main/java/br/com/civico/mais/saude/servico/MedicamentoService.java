@@ -42,7 +42,7 @@ public class MedicamentoService extends AbstractService<MedicamentoExpandableDTO
     public MedicamentoExpandableDTO consumirServicoTCU() throws JSONException {
         String result="";
         try {
-            String url = ConstantesAplicacao.URL_BASE + "/rest/remedios?quantidade=30";
+            String url = ConstantesAplicacao.URL_BASE + "/rest/remedios?quantidade=12&pagina=0";
 
             HttpClient httpclient = new DefaultHttpClient();
 
@@ -87,15 +87,17 @@ public class MedicamentoService extends AbstractService<MedicamentoExpandableDTO
     }
 
     private MedicamentoExpandableDTO converterJsonParaObject(JSONArray jsonArray){
-        Set<String> listaHeader = new TreeSet<>();
-        Set<String> listaDados;
-        HashMap<String, Set<String>> listDataChild = new HashMap<>();
+        List<String> listaHeader = new ArrayList<>();
+        List<String> listaDados;
+        HashMap<String, List<String>> listDataChild = new HashMap<>();
         for (int i=0; i < jsonArray.length(); i++) {
             try {
-                listaDados = new TreeSet<>();
+                listaDados = new ArrayList<>();
                 JSONObject oneObject = jsonArray.getJSONObject(i);
                 String produto = oneObject.getString("produto");
-                listaHeader.add(produto);
+                String codigoBarra = oneObject.getString("codBarraEan");
+                String idHash = produto + ConstantesAplicacao.SPLIT_CARACTER + codigoBarra;
+                listaHeader.add(idHash);
                 listaDados.add("  ");
                 listaDados.add("Laboratório: " + oneObject.getString("laboratorio"));
                 listaDados.add("CNPJ: " + oneObject.getString("cnpj"));
@@ -103,8 +105,9 @@ public class MedicamentoService extends AbstractService<MedicamentoExpandableDTO
                 listaDados.add("Classe Terapêutica: " + oneObject.getString("classeTerapeutica"));
                 listaDados.add("Registro: " + oneObject.getString("registro"));
                 listaDados.add("Apresentação: " + oneObject.getString("apresentacao"));
+                listaDados.add("Código de Barra: " + oneObject.getString("codBarraEan"));
                 listaDados.add("Última Alteração: " + oneObject.getString("ultimaAlteracao"));
-                listDataChild.put(produto, listaDados);
+                listDataChild.put(idHash, listaDados);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
