@@ -18,15 +18,8 @@ public class MedicamentoExpandableDTO {
         return listDataHeader;
     }
 
-    public void setListDataHeader(List<String> listDataHeader) {
-        this.listDataHeader = listDataHeader;
-    }
-
     public HashMap<String, List<String>> getListDataChild() {
         return listDataChild;
     }
 
-    public void setListDataChild(HashMap<String, List<String>> listDataChild) {
-        this.listDataChild = listDataChild;
-    }
 }

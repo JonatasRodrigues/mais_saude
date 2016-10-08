@@ -10,9 +10,9 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.List;
 
 import br.com.civico.mais.saude.constantes.ConstantesAplicacao;
 import br.com.civico.mais.saude.converter.StreamConverter;
