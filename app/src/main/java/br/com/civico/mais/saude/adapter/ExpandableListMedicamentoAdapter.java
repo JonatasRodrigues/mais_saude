@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import br.com.civico.mais.saude.R;
+import br.com.civico.mais.saude.constantes.ConstantesAplicacao;
 
 /**
  * Created by Jônatas Rodrigues on 29/08/2016.
@@ -114,7 +115,7 @@ public class ExpandableListMedicamentoAdapter extends BaseExpandableListAdapter{
         lblListHeader.setTypeface(null, Typeface.BOLD);
         lblListHeader.setHeight(70);
         lblListHeader.setTextColor(_context.getResources().getColor(R.color.DodgerBlue));
-        lblListHeader.setText(headerTitle);
+        lblListHeader.setText(headerTitle.split(ConstantesAplicacao.SPLIT_CARACTER)[0]);
 
         return convertView;
     }
