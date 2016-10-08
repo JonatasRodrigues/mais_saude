@@ -2,85 +2,95 @@ package br.com.civico.mais.saude.controle;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONException;
 
-import java.util.concurrent.ExecutionException;
-
 import br.com.civico.mais.saude.R;
-import br.com.civico.mais.saude.adapter.ExpandableListMedicamentoAdapter;
 import br.com.civico.mais.saude.adapter.ExpandableListUnidadeAdapter;
-import br.com.civico.mais.saude.dto.ExpandableDTO;
-import br.com.civico.mais.saude.dto.medicamento.MedicamentoExpandableDTO;
-import br.com.civico.mais.saude.exception.ErroServicoTCUException;
+import br.com.civico.mais.saude.constantes.ConstantesAplicacao;
+import br.com.civico.mais.saude.dto.medicamento.MedicamentoResponse;
 import br.com.civico.mais.saude.servico.MedicamentoService;
 
-public class MedicamentoActivity extends Activity {
-    ExpandableListView expListView;
+public class  MedicamentoActivity extends Activity {
+    private ExpandableListView expListView;
+    private ProgressDialog progressDialog;
+    private Context context;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.medicamento_consulta);
+        expListView = (ExpandableListView) findViewById(R.id.medicamentoListView);
+        context = this;
 
-        try {
-            MedicamentoExpandableDTO dto = MedicamentoService.getInstance().execute(new String()).get();
-            expListView = (ExpandableListView) findViewById(R.id.medicamentoListView);
+        AsyncTask<Void, Void, MedicamentoResponse> task = new AsyncTask<Void, Void, MedicamentoResponse>() {
 
-            ExpandableListAdapter listAdapter = new ExpandableListMedicamentoAdapter(this, dto.getListDataHeader(),
-                    dto.getListDataChild());
+            @Override
+            protected void onPreExecute() {
+                progressDialog = new ProgressDialog(MedicamentoActivity.this);
+                progressDialog.setMessage("Carregando...");
+                progressDialog.setCancelable(false);
+                progressDialog.setIndeterminate(true);
+                progressDialog.show();
+            }
 
-            configurarExpList();
-            expListView.setAdapter(listAdapter);
-        } catch (ErroServicoTCUException e) {
-            exibirMensagemErro(e.getMessage());
-            voltarMenu();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
+            @Override
+            protected MedicamentoResponse doInBackground(Void... voids) {
+                try {
+                    MedicamentoService medicamentoService = new MedicamentoService();
+                    return medicamentoService.consumirServicoTCU();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(MedicamentoResponse medicamentoResponse) {
+                if (progressDialog != null) {
+                    progressDialog.dismiss();
+                }
+
+                if(medicamentoResponse.getStatusCodigo()== ConstantesAplicacao.STATUS_OK){
+                    ExpandableListUnidadeAdapter adapter = new ExpandableListUnidadeAdapter(context, medicamentoResponse.getMedicamentoExpandableDTO().getListDataHeader(),
+                            medicamentoResponse.getMedicamentoExpandableDTO().getListDataChild());
+                    configurarExpList();
+                    expListView.setAdapter(adapter);
+                }else{
+                    exibirMsgErro(medicamentoResponse.getMensagem());
+                    voltarMenu();
+                }
+            }
+        };
+        task.execute((Void[]) null);
     }
 
-    private void exibirMensagemErro(String mensagem){
+    private void exibirMsgErro(String mensagem){
         LayoutInflater inflater = getLayoutInflater();
         View layout = inflater.inflate(R.layout.toast_erro,(ViewGroup) findViewById(R.id.layout_erro));
+
         TextView text = (TextView) layout.findViewById(R.id.textErro);
         text.setText(mensagem);
 
-        final Toast toast = new Toast(getApplicationContext());
+        Toast toast = new Toast(getApplicationContext());
         toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
         toast.setDuration(Toast.LENGTH_LONG);
         toast.setView(layout);
-
-        //Configurar tempo de exibição
-        int toastDurationInMilliSeconds = 10000;
-        CountDownTimer toastCountDown = new CountDownTimer(toastDurationInMilliSeconds, 1 /*Tick duration*/) {
-            public void onTick(long millisUntilFinished) {
-                toast.show();
-            }
-            public void onFinish() {
-                toast.cancel();
-            }
-        };
-
-        // Show the toast and starts the countdown
-        // toast.show();
-        toastCountDown.start();
-
+        toast.show();
     }
 
     private void voltarMenu(){

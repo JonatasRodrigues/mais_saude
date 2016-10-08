@@ -12,6 +12,7 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.widget.Button;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import java.util.HashMap;
@@ -35,6 +36,7 @@ public class ExpandableListUnidadeAdapter extends BaseExpandableListAdapter{
     static class ViewHolder {
         TextView textView;
         Button btnComentario,btnMapa;
+        RatingBar ratingBarMedia;
     }
 
     @Override
@@ -74,6 +76,7 @@ public class ExpandableListUnidadeAdapter extends BaseExpandableListAdapter{
                 convertView = infalInflater.inflate(R.layout.customer_unidade_row_com_btn, parent, false);
                 holder.btnComentario = (Button) convertView.findViewById(R.id.btnComentario);
                 holder.btnMapa = (Button) convertView.findViewById(R.id.btnMapa);
+                holder.ratingBarMedia = (RatingBar) convertView.findViewById(R.id.ratingBarMedia);
 
                 holder.btnComentario.setOnClickListener(new View.OnClickListener() {
                     @Override

@@ -86,10 +86,6 @@ public class GPSService extends Service implements LocationListener {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        if(location==null)
-             throw new GPSException("Ocorreu um erro ao tentar recuperar sua localização. Por favor, verifique sua conexão ou GPS.");
-
         return location;
     }
 

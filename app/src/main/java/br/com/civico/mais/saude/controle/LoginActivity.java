@@ -22,7 +22,6 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -42,9 +41,8 @@ import java.util.regex.Pattern;
 
 import br.com.civico.mais.saude.R;
 import br.com.civico.mais.saude.constantes.ConstantesAplicacao;
-import br.com.civico.mais.saude.dto.Response;
+import br.com.civico.mais.saude.dto.LoginResponse;
 import br.com.civico.mais.saude.servico.LoginService;
-import br.com.civico.mais.saude.util.MensagemUtil;
 
 public class LoginActivity extends Activity {
 
@@ -188,7 +186,7 @@ public class LoginActivity extends Activity {
             final String senhaUsuario = password.getText().toString();
             final String emailUsuario = emailView.getText().toString();
 
-            AsyncTask<Void, Void, Response> task = new AsyncTask<Void, Void, Response>() {
+            AsyncTask<Void, Void, LoginResponse> task = new AsyncTask<Void, Void, LoginResponse>() {
 
                 @Override
                 protected void onPreExecute() {
@@ -200,7 +198,7 @@ public class LoginActivity extends Activity {
                 }
 
                 @Override
-                protected Response doInBackground(Void... voids) {
+                protected LoginResponse doInBackground(Void... voids) {
                     try {
                         LoginService service = new LoginService(nomeUsuario,senhaUsuario,emailUsuario);
                         return service.autenticarUsuario();
@@ -211,7 +209,7 @@ public class LoginActivity extends Activity {
                 }
 
                 @Override
-                protected void onPostExecute(Response result) {
+                protected void onPostExecute(LoginResponse result) {
                     if (progressDialog != null) {
                         progressDialog.dismiss();
                     }
@@ -243,7 +241,7 @@ public class LoginActivity extends Activity {
             final String emailUsuario = emailView.getText().toString();
 
             if(validarCampos(nomeUsuario,emailUsuario,senhaUsuario)) {
-                AsyncTask<Void, Void, Response> task = new AsyncTask<Void, Void, Response>() {
+                AsyncTask<Void, Void, LoginResponse> task = new AsyncTask<Void, Void, LoginResponse>() {
 
                     @Override
                     protected void onPreExecute() {
@@ -255,7 +253,7 @@ public class LoginActivity extends Activity {
                     }
 
                     @Override
-                    protected Response doInBackground(Void... voids) {
+                    protected LoginResponse doInBackground(Void... voids) {
                         try {
                             LoginService service = new LoginService(nomeUsuario, senhaUsuario, emailUsuario);
                             return service.cadastrarUsuario();
@@ -266,7 +264,7 @@ public class LoginActivity extends Activity {
                     }
 
                     @Override
-                    protected void onPostExecute(Response result) {
+                    protected void onPostExecute(LoginResponse result) {
                         if (progressDialog != null) {
                             progressDialog.dismiss();
                         }

@@ -3,7 +3,7 @@ package br.com.civico.mais.saude.dto;
 /**
  * Created by Jônatas Rodrigues on 25/09/2016.
  */
-public class Response {
+public class LoginResponse {
 
     private int statusCodigo;
     private String mensagem;

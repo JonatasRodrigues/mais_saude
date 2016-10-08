@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import java.util.List;
@@ -31,6 +32,7 @@ public class ListViewPostagemAdapter extends BaseAdapter {
 
     static class ViewHolder {
         TextView nomeAutor,dataPostagem,comentario;
+        RatingBar rating;
     }
 
 
@@ -55,6 +57,7 @@ public class ListViewPostagemAdapter extends BaseAdapter {
                 holder.nomeAutor = (TextView) view.findViewById(R.id.lblNomeAutor);
                 holder.dataPostagem = (TextView) view.findViewById(R.id.lblDataPostagem);
                 holder.comentario = (TextView) view.findViewById(R.id.lblPostagem);
+                holder.rating = (RatingBar) view.findViewById(R.id.ratingBarIndicador);
 
                 if ( holder.nomeAutor != null) {
                     holder.nomeAutor.setText(postagemDTO.getNomeAutor());
@@ -66,6 +69,10 @@ public class ListViewPostagemAdapter extends BaseAdapter {
 
                 if ( holder.comentario != null) {
                     holder.comentario.setText(postagemDTO.getComentario());
+                }
+
+                if ( holder.rating != null) {
+                    holder.rating.setRating(postagemDTO.getPontuacao());
                 }
 
                 view.setTag(holder);

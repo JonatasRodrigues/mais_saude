@@ -11,7 +11,7 @@ import java.util.Date;
 public class PostagemDTO {
     private String comentario;
     private String dataPostagem;
-    private double pontuacao;
+    private float pontuacao;
     private String nomeAutor;
 
     public String getComentario() {
@@ -37,11 +37,11 @@ public class PostagemDTO {
         this.dataPostagem = dataPostagem;
     }
 
-    public double getPontuacao() {
+    public float getPontuacao() {
         return pontuacao;
     }
 
-    public void setPontuacao(double pontuacao) {
+    public void setPontuacao(float pontuacao) {
         this.pontuacao = pontuacao;
     }
 

@@ -10,24 +10,26 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
+import android.widget.Toast;
 
 import java.util.List;
 
 import br.com.civico.mais.saude.R;
 import br.com.civico.mais.saude.adapter.ListViewPostagemAdapter;
 import br.com.civico.mais.saude.dto.PostagemDTO;
-import br.com.civico.mais.saude.dto.Response;
+import br.com.civico.mais.saude.dto.LoginResponse;
 import br.com.civico.mais.saude.servico.PostagemService;
 
 public class PostagemActivity extends Activity {
@@ -37,6 +39,7 @@ public class PostagemActivity extends Activity {
     private ListView listView;
     private TextView lblSemComentario;
     private TextView tituloComentario;
+    private float pontuacao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,7 +107,7 @@ public class PostagemActivity extends Activity {
 
 
     public void showPopUpComentario(final String token, final long codigoUsuario,final Long codigoUnidade, final String nomeUnidade){
-        View root = ((LayoutInflater)PostagemActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.comentario, null);
+        final View root = ((LayoutInflater)PostagemActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.comentario, null);
         final RatingBar rat = (RatingBar)root.findViewById(R.id.ratingBar);
         rat.setNumStars(5);
         TextView labelUnidade = (TextView) root.findViewById(R.id.labelUnidade);
@@ -113,43 +116,17 @@ public class PostagemActivity extends Activity {
         final AlertDialog.Builder popDialog = new AlertDialog.Builder(this);
 
         popDialog.setView(root);
-        final EditText editText = (EditText) root.findViewById(R.id.comentario);
+
+        rat.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+                 pontuacao=rating;
+            }
+        });
 
         // Button OK
         popDialog.setPositiveButton(android.R.string.ok,
                 new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        final String comentario = editText.getText().toString();
-                        final int pontuacao = rat.getNumStars();
-                        AsyncTask<Void, Void, Response> task = new AsyncTask<Void, Void, Response>() {
-
-                            @Override
-                            protected void onPreExecute() {
-                                progressDialog = new ProgressDialog(PostagemActivity.this);
-                                progressDialog.setMessage("Enviando...");
-                                progressDialog.setCancelable(false);
-                                progressDialog.setIndeterminate(true);
-                                progressDialog.show();
-                            }
-
-                            @Override
-                            protected Response doInBackground(Void... voids) {
-                                PostagemService postagemService = new PostagemService();
-                                postagemService.cadastrarPostagem(token, codigoUsuario, comentario, pontuacao,codigoUnidade);
-                                return null;
-                            }
-
-                            @Override
-                            protected void onPostExecute(Response result) {
-                                if (progressDialog != null) {
-                                    progressDialog.dismiss();
-                                }
-                            }
-                        };
-                        task.execute((Void[]) null);
-
-                        dialog.dismiss();
-                    }
+                    public void onClick(DialogInterface dialog, int which) {}
                 })
                 // Button Cancel
                 .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
@@ -158,9 +135,65 @@ public class PostagemActivity extends Activity {
                     }
                 });
 
-        popDialog.create();
-        popDialog.show();
+       final AlertDialog dialog = popDialog.create();
+        dialog.show();
 
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final EditText comentarioText = (EditText) root.findViewById(R.id.comentario);
+                final String comentario = comentarioText.getText().toString();
+                if (TextUtils.isEmpty(comentario)) {
+                    comentarioText.setError(getString(R.string.error_comentario_obrigatorio));
+                }else{
+                    AsyncTask<Void, Void, String> task = new AsyncTask<Void, Void, String>() {
+
+                        @Override
+                        protected void onPreExecute() {
+                            progressDialog = new ProgressDialog(PostagemActivity.this);
+                            progressDialog.setMessage("Enviando...");
+                            progressDialog.setCancelable(false);
+                            progressDialog.setIndeterminate(true);
+                            progressDialog.show();
+                        }
+
+                        @Override
+                        protected String doInBackground(Void... voids) {
+                            PostagemService postagemService = new PostagemService();
+                            postagemService.cadastrarPostagem(token, codigoUsuario, comentario, pontuacao,codigoUnidade);
+                            return null;
+                        }
+
+                        @Override
+                        protected void onPostExecute(String result) {
+                            if (progressDialog != null) {
+                                progressDialog.dismiss();
+                            }
+
+                            if(result!=null){
+                                exibirMsgErro(result);
+                            }
+                        }
+                    };
+                    task.execute((Void[]) null);
+                    dialog.dismiss();
+                }
+            }
+        });
+    }
+
+    private void exibirMsgErro(String mensagem){
+        LayoutInflater inflater = getLayoutInflater();
+        View layout = inflater.inflate(R.layout.toast_erro,(ViewGroup) findViewById(R.id.layout_erro));
+
+        TextView text = (TextView) layout.findViewById(R.id.textErro);
+        text.setText(mensagem);
+
+        Toast toast = new Toast(getApplicationContext());
+        toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
+        toast.setDuration(Toast.LENGTH_LONG);
+        toast.setView(layout);
+        toast.show();
     }
 
     @Override

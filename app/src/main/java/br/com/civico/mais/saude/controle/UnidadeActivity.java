@@ -11,16 +11,22 @@ import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ExpandableListAdapter;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ExpandableListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONException;
 
 import br.com.civico.mais.saude.R;
 import br.com.civico.mais.saude.adapter.ExpandableListUnidadeAdapter;
-import br.com.civico.mais.saude.dto.ExpandableDTO;
+import br.com.civico.mais.saude.constantes.ConstantesAplicacao;
+import br.com.civico.mais.saude.dto.unidade.UnidadeResponse;
 import br.com.civico.mais.saude.servico.GPSService;
 import br.com.civico.mais.saude.servico.UnidadeService;
 
@@ -40,57 +46,68 @@ public class UnidadeActivity extends Activity {
 
         if(hasPermissions()) {
             location = new GPSService(context).getLocation();
-            AsyncTask<Void, Void, ExpandableListAdapter> task = new AsyncTask<Void, Void, ExpandableListAdapter>() {
+            if(location==null){
+                exibirMsgErro("Ocorreu um erro ao tentar recuperar sua localização. Por favor, verifique sua conexão ou GPS.");
+                voltarMenu();
+            }else{
+                AsyncTask<Void, Void, UnidadeResponse> task = new AsyncTask<Void, Void, UnidadeResponse>() {
 
-                @Override
-                protected void onPreExecute() {
-                    progressDialog = new ProgressDialog(UnidadeActivity.this);
-                    progressDialog.setMessage("Carregando...");
-                    progressDialog.setCancelable(false);
-                    progressDialog.setIndeterminate(true);
-                    progressDialog.show();
-                }
-
-                @Override
-                protected ExpandableListAdapter doInBackground(Void... voids) {
-                    try {
-                        ExpandableDTO dto = UnidadeService.getInstance(location).consumirServicoTCU();
-
-                       return new ExpandableListUnidadeAdapter(context, dto.getListDataHeader(),
-                                dto.getListDataChild());
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    return null;
-                }
-
-                @Override
-                protected void onPostExecute(ExpandableListAdapter result) {
-                    if (progressDialog != null) {
-                        progressDialog.dismiss();
+                    @Override
+                    protected void onPreExecute() {
+                        progressDialog = new ProgressDialog(UnidadeActivity.this);
+                        progressDialog.setMessage("Carregando...");
+                        progressDialog.setCancelable(false);
+                        progressDialog.setIndeterminate(true);
+                        progressDialog.show();
                     }
 
-                    configurarExpList();
-                    expListView.setAdapter(result);
-                }
+                    @Override
+                    protected UnidadeResponse doInBackground(Void... voids) {
+                        try {
+                            UnidadeService unidadeService = new UnidadeService(location);
+                            return unidadeService.consumirServicoTCU();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        return null;
+                    }
 
-            };
-            task.execute((Void[]) null);
+                    @Override
+                    protected void onPostExecute(UnidadeResponse unidadeResponse) {
+                        if (progressDialog != null) {
+                            progressDialog.dismiss();
+                        }
 
-         //   } catch (ErroServicoTCUException e) {
-         //       MensagemUtil.exibirMensagemErro(getLayoutInflater(), this, e.getMessage(), (ViewGroup) findViewById(R.id.layout_erro));
-         //       voltarMenu();
-         //   } catch (GPSException e) {
-           //     MensagemUtil.exibirMensagemErro(getLayoutInflater(), this, e.getMessage(), (ViewGroup) findViewById(R.id.layout_erro));
-             //   voltarMenu();
-          //  } catch (JSONException e) {
-            //    e.printStackTrace();
-           // }
-
+                        if(unidadeResponse.getStatusCodigo()== ConstantesAplicacao.STATUS_OK){
+                            ExpandableListUnidadeAdapter adapter = new ExpandableListUnidadeAdapter(context, unidadeResponse.getExpandableUnidadeDTO().getListDataHeader(),
+                                    unidadeResponse.getExpandableUnidadeDTO().getListDataChild());
+                            configurarExpList();
+                            expListView.setAdapter(adapter);
+                        }else{
+                            exibirMsgErro(unidadeResponse.getMensagem());
+                            voltarMenu();
+                        }
+                    }
+                };
+                task.execute((Void[]) null);
+            }
         } else {
             ActivityCompat.requestPermissions(UnidadeActivity.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION}, 200);
         }
+    }
+
+    private void exibirMsgErro(String mensagem){
+        LayoutInflater inflater = getLayoutInflater();
+        View layout = inflater.inflate(R.layout.toast_erro,(ViewGroup) findViewById(R.id.layout_erro));
+
+        TextView text = (TextView) layout.findViewById(R.id.textErro);
+        text.setText(mensagem);
+
+        Toast toast = new Toast(getApplicationContext());
+        toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
+        toast.setDuration(Toast.LENGTH_LONG);
+        toast.setView(layout);
+        toast.show();
     }
 
     private void configurarExpList(){

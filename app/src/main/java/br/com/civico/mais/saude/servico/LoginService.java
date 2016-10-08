@@ -4,29 +4,21 @@ import android.util.Log;
 
 import com.loopj.android.http.HttpGet;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.Date;
 
 import br.com.civico.mais.saude.constantes.ConstantesAplicacao;
 import br.com.civico.mais.saude.converter.StreamConverter;
-import br.com.civico.mais.saude.dto.Response;
-import cz.msebera.android.httpclient.Header;
+import br.com.civico.mais.saude.dto.LoginResponse;
 import cz.msebera.android.httpclient.HttpEntity;
 import cz.msebera.android.httpclient.HttpResponse;
 import cz.msebera.android.httpclient.client.HttpClient;
 import cz.msebera.android.httpclient.client.methods.HttpPost;
 import cz.msebera.android.httpclient.entity.StringEntity;
 import cz.msebera.android.httpclient.impl.client.DefaultHttpClient;
-import cz.msebera.android.httpclient.message.BasicHeader;
-import cz.msebera.android.httpclient.protocol.HTTP;
-import cz.msebera.android.httpclient.util.EntityUtils;
 
 /**
  * Created by Jônatas Rodrigues on 11/09/2016.
@@ -45,9 +37,9 @@ public class LoginService {
     }
 
 
-    public Response autenticarUsuario() throws JSONException {
-        Response response = new Response();
-        response.setMensagem("Ocorreu um erro. Tente Novamente.");
+    public LoginResponse autenticarUsuario() throws JSONException {
+        LoginResponse loginResponse = new LoginResponse();
+        loginResponse.setMensagem("Ocorreu um erro. Tente Novamente.");
         String result="";
 
         try {
@@ -61,37 +53,37 @@ public class LoginService {
 
             HttpResponse httpresponse = httpclient.execute(httpget);
 
-            response.setStatusCodigo(httpresponse.getStatusLine().getStatusCode());
+            loginResponse.setStatusCodigo(httpresponse.getStatusLine().getStatusCode());
 
-             if(response.getStatusCodigo() == ConstantesAplicacao.STATUS_CREDENCIAIS_INVALIDAS)
-                 response.setMensagem(ConstantesAplicacao.MENSAGEM_CRENDECIAIS_INVALIDAS);
+             if(loginResponse.getStatusCodigo() == ConstantesAplicacao.STATUS_CREDENCIAIS_INVALIDAS)
+                 loginResponse.setMensagem(ConstantesAplicacao.MENSAGEM_CRENDECIAIS_INVALIDAS);
 
-            if(response.getStatusCodigo() == ConstantesAplicacao.STATUS_EMAIL_NAO_CADASTRADO)
-                response.setMensagem(ConstantesAplicacao.MENSAGEM_EMAIL_NAO_CADASTRADO);
+            if(loginResponse.getStatusCodigo() == ConstantesAplicacao.STATUS_EMAIL_NAO_CADASTRADO)
+                loginResponse.setMensagem(ConstantesAplicacao.MENSAGEM_EMAIL_NAO_CADASTRADO);
 
-            if(response.getStatusCodigo() == ConstantesAplicacao.STATUS_OK){
+            if(loginResponse.getStatusCodigo() == ConstantesAplicacao.STATUS_OK){
                 HttpEntity entity = httpresponse.getEntity();
                 if (entity != null) {
                     InputStream instream = entity.getContent();
                     result= StreamConverter.convertStreamToString(instream);
                     instream.close();
                 }
-                response.setToken(httpresponse.getFirstHeader("apptoken").getValue().toString());
-                response.setCodigoUsuario(getCodigoUsuario(result));
-                response.setMensagem(ConstantesAplicacao.MENSAGEM_SUCESSO);
+                loginResponse.setToken(httpresponse.getFirstHeader("apptoken").getValue().toString());
+                loginResponse.setCodigoUsuario(getCodigoUsuario(result));
+                loginResponse.setMensagem(ConstantesAplicacao.MENSAGEM_SUCESSO);
             }
          } catch (IOException e) {
             e.printStackTrace();
             Log.i("Parse Exception", e + "");
         }
-        return response;
+        return loginResponse;
     }
 
 
 
-    public Response cadastrarUsuario() throws JSONException {
-        Response response = new Response();
-        response.setMensagem("Ocorreu um erro. Tente Novamente.");
+    public LoginResponse cadastrarUsuario() throws JSONException {
+        LoginResponse loginResponse = new LoginResponse();
+        loginResponse.setMensagem("Ocorreu um erro. Tente Novamente.");
         try {
 
             String url= ConstantesAplicacao.URL_BASE_METAMODELO + "/rest/pessoas";
@@ -109,9 +101,9 @@ public class LoginService {
             post.setEntity(se);
             HttpResponse httpresponse = httpclient.execute(post);
 
-            response.setStatusCodigo(httpresponse.getStatusLine().getStatusCode());
+            loginResponse.setStatusCodigo(httpresponse.getStatusLine().getStatusCode());
 
-            if(response.getStatusCodigo() == ConstantesAplicacao.STATUS_CADASTRO_SUCESSO){
+            if(loginResponse.getStatusCodigo() == ConstantesAplicacao.STATUS_CADASTRO_SUCESSO){
                 String result="";
                 HttpEntity entity = httpresponse.getEntity();
                 if (entity != null) {
@@ -119,23 +111,23 @@ public class LoginService {
                     result= StreamConverter.convertStreamToString(instream);
                     instream.close();
                 }
-                response.setToken(httpresponse.getFirstHeader("apptoken").getValue().toString());
-                response.setCodigoUsuario(getCodigoUsuario(result));
-                response.setMensagem(ConstantesAplicacao.MENSAGEM_SUCESSO);
+                loginResponse.setToken(httpresponse.getFirstHeader("apptoken").getValue().toString());
+                loginResponse.setCodigoUsuario(getCodigoUsuario(result));
+                loginResponse.setMensagem(ConstantesAplicacao.MENSAGEM_SUCESSO);
             }
 
-            if(response.getStatusCodigo() == ConstantesAplicacao.STATUS_PARAMETRO_INVALIDO)
-                response.setMensagem(ConstantesAplicacao.MENSAGEM_PARAMETRO_INVALIDO);
+            if(loginResponse.getStatusCodigo() == ConstantesAplicacao.STATUS_PARAMETRO_INVALIDO)
+                loginResponse.setMensagem(ConstantesAplicacao.MENSAGEM_PARAMETRO_INVALIDO);
 
-            if(response.getStatusCodigo() == ConstantesAplicacao.STATUS_SERVICO_NOT_FOUND_CADASTRO)
-                response.setMensagem(ConstantesAplicacao.MENSAGEM_SERVICO_NOT_FOUND_CADASTRO);
+            if(loginResponse.getStatusCodigo() == ConstantesAplicacao.STATUS_SERVICO_NOT_FOUND_CADASTRO)
+                loginResponse.setMensagem(ConstantesAplicacao.MENSAGEM_SERVICO_NOT_FOUND_CADASTRO);
 
         } catch (IOException e) {
             e.printStackTrace();
             Log.i("Parse Exception", e + "");
         }
 
-        return response;
+        return loginResponse;
     }
 
     private Long getCodigoUsuario(String json) throws JSONException {

@@ -25,5 +25,6 @@
     <string name="error_email_obrigatorio">O campo email é obrigatório</string>
     <string name="error_nome_obrigatorio">O campo nome é obrigatório</string>
     <string name="error_password_nao_confere">Confirmação da senha não confere</string>
+    <string name="error_comentario_obrigatorio">Escreva seu comentário.</string>
 
 </resources>

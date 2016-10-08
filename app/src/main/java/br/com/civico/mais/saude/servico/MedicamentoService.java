@@ -1,6 +1,5 @@
 package br.com.civico.mais.saude.servico;
 
-import android.location.Location;
 import android.os.NetworkOnMainThreadException;
 
 import com.loopj.android.http.HttpGet;
@@ -11,35 +10,28 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
 import br.com.civico.mais.saude.constantes.ConstantesAplicacao;
 import br.com.civico.mais.saude.converter.StreamConverter;
-import br.com.civico.mais.saude.dto.ExpandableDTO;
 import br.com.civico.mais.saude.dto.medicamento.MedicamentoExpandableDTO;
-import br.com.civico.mais.saude.exception.ErroServicoTCUException;
+import br.com.civico.mais.saude.dto.medicamento.MedicamentoResponse;
 import cz.msebera.android.httpclient.HttpEntity;
 import cz.msebera.android.httpclient.HttpResponse;
 import cz.msebera.android.httpclient.client.HttpClient;
 import cz.msebera.android.httpclient.impl.client.DefaultHttpClient;
 
-public class MedicamentoService extends AbstractService<MedicamentoExpandableDTO>  {
+public class MedicamentoService extends AbstractService<MedicamentoResponse>  {
 
-    private static MedicamentoService medicamentoService ;
+    public MedicamentoService(){
 
-    public static MedicamentoService getInstance(){
-        if(medicamentoService==null){
-            medicamentoService= new MedicamentoService();
-        }
-        return medicamentoService;
     }
 
     @Override
-    public MedicamentoExpandableDTO consumirServicoTCU() throws JSONException {
+    public MedicamentoResponse consumirServicoTCU() throws JSONException {
+        MedicamentoResponse medicamentoResponse = new MedicamentoResponse();
         String result="";
         try {
             String url = ConstantesAplicacao.URL_BASE + "/rest/remedios?quantidade=30";
@@ -49,15 +41,20 @@ public class MedicamentoService extends AbstractService<MedicamentoExpandableDTO
             HttpGet httpget = new HttpGet(url);
             HttpResponse response = httpclient.execute(httpget);
 
-            if(response.getStatusLine().getStatusCode() != ConstantesAplicacao.STATUS_OK)
-                throw new ErroServicoTCUException("Erro ao recuperar informações. Por favor, tente mais tarde.");
+            medicamentoResponse.setStatusCodigo(response.getStatusLine().getStatusCode());
 
-            HttpEntity entity = response.getEntity();
+            if( medicamentoResponse.getStatusCodigo() == ConstantesAplicacao.STATUS_OK){
+                HttpEntity entity = response.getEntity();
 
-            if (entity != null) {
-                InputStream instream = entity.getContent();
-                result= StreamConverter.convertStreamToString(instream);
-                instream.close();
+                if (entity != null) {
+                    InputStream instream = entity.getContent();
+                    result= StreamConverter.convertStreamToString(instream);
+                    instream.close();
+                }
+                medicamentoResponse.setMedicamentoExpandableDTO(converterJsonParaObject(getJson(result)));
+
+            }else{
+                medicamentoResponse.setMensagem("Erro ao recuperar informações. Por favor, tente mais tarde.");
             }
         } catch (NetworkOnMainThreadException e){
             result="[{\n" +
@@ -78,12 +75,13 @@ public class MedicamentoService extends AbstractService<MedicamentoExpandableDTO
                     "  \"laboratorio\": \"Laboratorio C\",\n" +
                     "  \"ultimaAlteracao\": \"Ultima Alteracao C\"\n" +
                     "}]";
+
+            medicamentoResponse.setMedicamentoExpandableDTO(converterJsonParaObject(getJson(result)));
         }
         catch (IOException e) {
             e.printStackTrace();
         }
-
-        return converterJsonParaObject(getJson(result));
+        return medicamentoResponse;
     }
 
     private MedicamentoExpandableDTO converterJsonParaObject(JSONArray jsonArray){

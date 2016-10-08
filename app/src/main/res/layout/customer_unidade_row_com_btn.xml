@@ -37,6 +37,19 @@
             android:layout_alignParentRight="true"
             android:layout_marginRight="25dp"
             android:background="@drawable/icon_mapa"/>
+
+        <RatingBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/ratingBarMedia"
+            style="?android:attr/ratingBarStyleSmall"
+            android:progressTint="@color/goldenYellow"
+            android:isIndicator="true"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp" />
     </RelativeLayout>
 
 
