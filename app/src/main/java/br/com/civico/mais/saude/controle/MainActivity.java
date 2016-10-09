@@ -34,6 +34,9 @@ public class MainActivity extends Activity {
         Button  btnMedicamento = (Button) findViewById(R.id.btnMedicamento);
         btnMedicamento.setOnClickListener(onClickListenerMedicamento);
 
+        Button  btnSobre = (Button) findViewById(R.id.btnSobre);
+        btnSobre.setOnClickListener(onClickListenerSobre );
+
         Button  btnSair = (Button) findViewById(R.id.btnSair);
         btnSair.setOnClickListener(onClickListenerSair);
 
@@ -68,6 +71,15 @@ public class MainActivity extends Activity {
                     }
                 };
                 task.execute((Void[]) null);
+            }
+        }
+    };
+
+    private View.OnClickListener onClickListenerSobre = new View.OnClickListener() {
+        public void onClick(final View v) {
+            if(v.getId()== R.id.btnUnidade){
+                Intent intent = new Intent(MainActivity.this, SobreActivity.class);
+                startActivity(intent);
             }
         }
     };
