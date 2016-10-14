@@ -110,6 +110,7 @@ public class PostagemActivity extends Activity {
         final View root = ((LayoutInflater)PostagemActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.comentario, null);
         final RatingBar rat = (RatingBar)root.findViewById(R.id.ratingBar);
         rat.setNumStars(5);
+        rat.setRating(5);
         TextView labelUnidade = (TextView) root.findViewById(R.id.labelUnidade);
         labelUnidade.setText(nomeUnidade);
 

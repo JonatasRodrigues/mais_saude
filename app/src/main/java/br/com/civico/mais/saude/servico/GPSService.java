@@ -13,8 +13,6 @@ import android.os.IBinder;
 import android.provider.Settings;
 import android.util.Log;
 
-import br.com.civico.mais.saude.exception.GPSException;
-
 /**
  * Created by Jônatas Rodrigues on 04/09/2016.
  */
@@ -42,7 +40,7 @@ public class GPSService extends Service implements LocationListener {
         this.mContext = context;
     }
 
-    public Location getLocation() throws GPSException{
+    public Location getLocation(){
         try {
             locationManager = (LocationManager) mContext.getSystemService(LOCATION_SERVICE);
             // getting GPS status

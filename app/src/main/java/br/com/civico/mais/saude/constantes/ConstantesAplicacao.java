@@ -10,7 +10,7 @@ public class ConstantesAplicacao {
 
     public static final String COD_APP_IDENTIFICADOR ="199";
     public static final long COD_TIPO_POSTAGEM =79;
-    public static final long COD_TIPO_OBJETO =79;
+    public static final long COD_TIPO_OBJETO =100;
 
 
     public static final int STATUS_OK=200;

@@ -41,60 +41,94 @@ public class UnidadeActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.unidade_consulta);
+        context=this;
         expListView = (ExpandableListView) findViewById(R.id.unidadeListView);
-         context=this;
+
+        expListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+            @Override
+            public boolean onGroupClick(ExpandableListView parent, View v,int groupPosition, long id) {
+                ExpandableListUnidadeAdapter customExpandAdapter = (ExpandableListUnidadeAdapter)expListView.getExpandableListAdapter();
+
+                if(!parent.isGroupExpanded(groupPosition)){
+                    final String childUnidade = (String) customExpandAdapter.getChild(groupPosition, 2);
+                    final String[]codigoUnidade = childUnidade.split(":");
+                    customExpandAdapter.setCodigoUnidade(codigoUnidade[1].trim());
+                 }
+
+                return false;
+            }
+        });
 
         if(hasPermissions()) {
-            location = new GPSService(context).getLocation();
-            if(location==null){
-                exibirMsgErro("Ocorreu um erro ao tentar recuperar sua localização. Por favor, verifique sua conexão ou GPS.");
-                voltarMenu();
-            }else{
-                AsyncTask<Void, Void, UnidadeResponse> task = new AsyncTask<Void, Void, UnidadeResponse>() {
-
-                    @Override
-                    protected void onPreExecute() {
-                        progressDialog = new ProgressDialog(UnidadeActivity.this);
-                        progressDialog.setMessage("Carregando...");
-                        progressDialog.setCancelable(false);
-                        progressDialog.setIndeterminate(true);
-                        progressDialog.show();
-                    }
-
-                    @Override
-                    protected UnidadeResponse doInBackground(Void... voids) {
-                        try {
-                            UnidadeService unidadeService = new UnidadeService(location);
-                            return unidadeService.consumirServicoTCU();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        return null;
-                    }
-
-                    @Override
-                    protected void onPostExecute(UnidadeResponse unidadeResponse) {
-                        if (progressDialog != null) {
-                            progressDialog.dismiss();
-                        }
-
-                        if(unidadeResponse.getStatusCodigo()== ConstantesAplicacao.STATUS_OK){
-                            ExpandableListUnidadeAdapter adapter = new ExpandableListUnidadeAdapter(context, unidadeResponse.getExpandableUnidadeDTO().getListDataHeader(),
-                                    unidadeResponse.getExpandableUnidadeDTO().getListDataChild());
-                            configurarExpList();
-                            expListView.setAdapter(adapter);
-                        }else{
-                            exibirMsgErro(unidadeResponse.getMensagem());
-                            voltarMenu();
-                        }
-                    }
-                };
-                task.execute((Void[]) null);
-            }
+            carregarUnidades();
         } else {
             ActivityCompat.requestPermissions(UnidadeActivity.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION}, 200);
         }
     }
+
+    private void carregarUnidades(){
+        location = new GPSService(context).getLocation();
+        if(location==null){
+            exibirMsgErro("Ocorreu um erro ao tentar recuperar sua localização. Por favor, verifique sua conexão ou GPS.");
+            voltarMenu();
+        }else{
+            AsyncTask<Void, Void, UnidadeResponse> task = new AsyncTask<Void, Void, UnidadeResponse>() {
+
+                @Override
+                protected void onPreExecute() {
+                    progressDialog = new ProgressDialog(UnidadeActivity.this);
+                    progressDialog.setMessage("Carregando...");
+                    progressDialog.setCancelable(false);
+                    progressDialog.setIndeterminate(true);
+                    progressDialog.show();
+                }
+
+                @Override
+                protected UnidadeResponse doInBackground(Void... voids) {
+                    try {
+                        UnidadeService unidadeService = new UnidadeService(location);
+                        return unidadeService.consumirServicoTCU();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                }
+
+                @Override
+                protected void onPostExecute(UnidadeResponse unidadeResponse) {
+                    if (progressDialog != null) {
+                        progressDialog.dismiss();
+                    }
+
+                    if(unidadeResponse.getStatusCodigo()== ConstantesAplicacao.STATUS_OK){
+                        ExpandableListUnidadeAdapter adapter = new ExpandableListUnidadeAdapter(context, unidadeResponse.getExpandableUnidadeDTO().getListDataHeader(),
+                                unidadeResponse.getExpandableUnidadeDTO().getListDataChild(),unidadeResponse.getExpandableUnidadeDTO().getListMediaChild());
+
+                        expListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+                            @Override
+                            public void onGroupExpand(int groupPosition) {
+                                ExpandableListUnidadeAdapter customExpandAdapter = (ExpandableListUnidadeAdapter)expListView.getExpandableListAdapter();
+                                if (customExpandAdapter == null) {return;}
+                                for (int i = 0; i < customExpandAdapter.getGroupCount(); i++) {
+                                    if (i != groupPosition) {
+                                        expListView.collapseGroup(i);
+                                    }
+                                }
+                            }
+                        });
+
+                        configurarExpList();
+                        expListView.setAdapter(adapter);
+                    }else{
+                        exibirMsgErro(unidadeResponse.getMensagem());
+                        voltarMenu();
+                    }
+                }
+            };
+            task.execute((Void[]) null);
+        }
+    }
+
 
     private void exibirMsgErro(String mensagem){
         LayoutInflater inflater = getLayoutInflater();

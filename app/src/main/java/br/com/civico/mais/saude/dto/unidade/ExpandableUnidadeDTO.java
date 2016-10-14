@@ -9,10 +9,13 @@ import java.util.List;
 public class ExpandableUnidadeDTO {
     private List<String> listDataHeader;
     private HashMap<String, List<String>> listDataChild;
+    private HashMap<String, String> listMediaChild;
 
-    public ExpandableUnidadeDTO(List<String> listDataHeader, HashMap<String, List<String>> listDataChild) {
+    public ExpandableUnidadeDTO(List<String> listDataHeader, HashMap<String, List<String>> listDataChild,
+            HashMap<String, String> listMediaChild) {
         this.listDataHeader = listDataHeader;
         this.listDataChild = listDataChild;
+        this.listMediaChild =listMediaChild;
     }
 
     public List<String> getListDataHeader() {
@@ -21,5 +24,9 @@ public class ExpandableUnidadeDTO {
 
     public HashMap<String, List<String>> getListDataChild() {
         return listDataChild;
+    }
+
+    public HashMap<String, String> getListMediaChild() {
+        return listMediaChild;
     }
 }

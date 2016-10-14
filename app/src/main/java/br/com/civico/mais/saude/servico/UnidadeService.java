@@ -15,9 +15,8 @@ import java.util.List;
 
 import br.com.civico.mais.saude.constantes.ConstantesAplicacao;
 import br.com.civico.mais.saude.converter.StreamConverter;
-import br.com.civico.mais.saude.dto.unidade.ExpandableUnidadeDTO;
+ import br.com.civico.mais.saude.dto.unidade.ExpandableUnidadeDTO;
  import br.com.civico.mais.saude.dto.unidade.UnidadeResponse;
- import br.com.civico.mais.saude.exception.ErroServicoTCUException;
 import cz.msebera.android.httpclient.HttpEntity;
 import cz.msebera.android.httpclient.HttpResponse;
 import cz.msebera.android.httpclient.client.HttpClient;
@@ -33,6 +32,44 @@ public class UnidadeService extends AbstractService<UnidadeResponse> {
 
     public UnidadeService(Location location){
         this.location=location;
+    }
+
+    private String getMediaAvaliacaoPorUnidade(String codigoUnidade) {
+        String result=null;
+        try {
+            String url = ConstantesAplicacao.URL_BASE_METAMODELO + "/rest/postagens/tipopostagem/" +
+                    ConstantesAplicacao.COD_TIPO_POSTAGEM + "/tipoobjeto/" + ConstantesAplicacao.COD_TIPO_OBJETO +
+                    "/objeto/" + codigoUnidade;
+
+            HttpClient httpclient = new DefaultHttpClient();
+            HttpGet httpget = new HttpGet(url);
+
+            HttpResponse httpresponse = httpclient.execute(httpget);
+
+            if (httpresponse.getStatusLine().getStatusCode() == ConstantesAplicacao.STATUS_OK) {
+                HttpEntity entity = httpresponse.getEntity();
+                if (entity != null) {
+                    InputStream instream = entity.getContent();
+                    result = StreamConverter.convertStreamToString(instream);
+                    instream.close();
+                }
+                return converterJsonParaObjectMedia(result);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
+    private String converterJsonParaObjectMedia(String result){
+        try {
+            JSONObject obj = new JSONObject(result);
+            return obj.getString("media");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @Override
@@ -73,6 +110,7 @@ public class UnidadeService extends AbstractService<UnidadeResponse> {
         List<String> listaHeader = new ArrayList<String>();
         List<String> listaDados;
         HashMap<String, List<String>> listDataChild = new HashMap<>();
+        HashMap<String, String> listMediaChild = new HashMap<>();
         for (int i=0; i < jsonArray.length(); i++) {
             try {
                 listaDados = new ArrayList<String>();
@@ -80,7 +118,9 @@ public class UnidadeService extends AbstractService<UnidadeResponse> {
                 listaHeader.add(oneObject.getString("nomeFantasia"));
                 listaDados.add("  ");
                 listaDados.add("Tipo Unidade: " + oneObject.getString("tipoUnidade"));
-                listaDados.add("Código: " + oneObject.getString("codUnidade"));
+                String codigoUnidade = oneObject.getString("codUnidade");
+                listaDados.add("Código: " + codigoUnidade);
+                String mediaAvaliacao = getMediaAvaliacaoPorUnidade(codigoUnidade);
                 listaDados.add("Vinculo SUS: " + oneObject.getString("vinculoSus"));
                 listaDados.add("Emergência:  " + oneObject.getString("temAtendimentoUrgencia")+ "       " + "Centro Cirúrgico: " + oneObject.getString("temCentroCirurgico"));
                 listaDados.add("Ambulatório: " + oneObject.getString("temAtendimentoAmbulatorial")+ "       " + "Obstetria: " + oneObject.getString("temObstetra"));
@@ -94,11 +134,12 @@ public class UnidadeService extends AbstractService<UnidadeResponse> {
                 }
                 listaDados.add("Atendimento: " + oneObject.getString("turnoAtendimento"));
                 listDataChild.put(listaHeader.get(i), listaDados);
+                listMediaChild.put(codigoUnidade, mediaAvaliacao);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
-        return new ExpandableUnidadeDTO(listaHeader,listDataChild);
+        return new ExpandableUnidadeDTO(listaHeader,listDataChild,listMediaChild);
     }
 
 }

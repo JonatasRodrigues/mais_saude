@@ -24,24 +24,31 @@ import java.util.List;
 public class ExpandableListUnidadeAdapter extends BaseExpandableListAdapter{
     private Context _context;
     private List<String> _listDataHeader; // header titles
-    // child data in format of header title, child title
     private HashMap<String, List<String>> _listDataChild;
+    private HashMap<String, String> listMediaChild;
+    private String codigoUnidade;
 
-    public ExpandableListUnidadeAdapter(Context context, List<String> listDataHeader,HashMap<String, List<String>> listChildData) {
+    public ExpandableListUnidadeAdapter(Context context, List<String> listDataHeader,HashMap<String, List<String>> listChildData,
+          HashMap<String, String> listMediaChild) {
         this._context = context;
         this._listDataHeader = listDataHeader;
         this._listDataChild = listChildData;
+        this.listMediaChild =listMediaChild;
     }
 
     static class ViewHolder {
         TextView textView;
         Button btnComentario,btnMapa;
-        RatingBar ratingBarMedia;
+        RatingBar ratingBar;
     }
 
     @Override
     public Object getChild(int groupPosition, int childPosititon) {
         return this._listDataChild.get(this._listDataHeader.get(groupPosition)).get(childPosititon);
+    }
+
+    public String getMediaChild(String codigoUnidade) {
+        return this.listMediaChild.get(codigoUnidade);
     }
 
     @Override
@@ -65,32 +72,28 @@ public class ExpandableListUnidadeAdapter extends BaseExpandableListAdapter{
     @Override
     public View getChildView(final int groupPosition, final int childPosition,boolean isLastChild, View convertView, ViewGroup parent) {
         final String childText = (String) getChild(groupPosition, childPosition);
-        final String child = (String) getChild(groupPosition, 2);
-        final String[]codigoUnidade = child.split(":");
 
+        LayoutInflater infalInflater = (LayoutInflater) this._context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         ViewHolder holder;
+
         if (convertView == null) {
             holder = new ViewHolder();
             if(childPosition == 0){
-                LayoutInflater infalInflater = (LayoutInflater) this._context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 convertView = infalInflater.inflate(R.layout.customer_unidade_row_com_btn, parent, false);
                 holder.btnComentario = (Button) convertView.findViewById(R.id.btnComentario);
                 holder.btnMapa = (Button) convertView.findViewById(R.id.btnMapa);
-                holder.ratingBarMedia = (RatingBar) convertView.findViewById(R.id.ratingBarMedia);
+                holder.ratingBar = (RatingBar) convertView.findViewById(R.id.ratingBarMedia);
 
                 holder.btnComentario.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Intent intent = new Intent(_context, LoginActivity.class);
-                        intent.putExtra("codigoUnidade",codigoUnidade[1].trim());
+                        intent.putExtra("codigoUnidade", getCodigoUnidade());
                         intent.putExtra("nomeUnidade", (String) getGroup(groupPosition));
                         _context.startActivity(intent);
                     }
                 });
-
             }else {
-                // Other views
-                LayoutInflater infalInflater = (LayoutInflater) this._context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 convertView = infalInflater.inflate(R.layout.customer_unidade_row_sem_btn, parent, false);
             }
             holder.textView = (TextView) convertView.findViewById(R.id.descUnidade);
@@ -98,8 +101,23 @@ public class ExpandableListUnidadeAdapter extends BaseExpandableListAdapter{
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
+
+        if(childPosition == 0){
+            String mediaAvaliacao = getMediaChild(getCodigoUnidade());
+            holder.ratingBar.setRating(mediaAvaliacao != null ? Float.valueOf(mediaAvaliacao) : 0);
+        }
+
+
         holder.textView.setText(childText);
         return convertView;
+    }
+
+    public void setCodigoUnidade(String codigoUnidade){
+        this.codigoUnidade=codigoUnidade;
+    }
+
+    public String getCodigoUnidade(){
+        return this.codigoUnidade;
     }
 
     @Override

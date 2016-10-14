@@ -20,6 +20,7 @@ import android.widget.Toast;
 import org.json.JSONException;
 
 import br.com.civico.mais.saude.R;
+import br.com.civico.mais.saude.adapter.ExpandableListMedicamentoAdapter;
 import br.com.civico.mais.saude.adapter.ExpandableListUnidadeAdapter;
 import br.com.civico.mais.saude.constantes.ConstantesAplicacao;
 import br.com.civico.mais.saude.dto.medicamento.MedicamentoResponse;
@@ -66,7 +67,7 @@ public class  MedicamentoActivity extends Activity {
                 }
 
                 if(medicamentoResponse.getStatusCodigo()== ConstantesAplicacao.STATUS_OK){
-                    ExpandableListUnidadeAdapter adapter = new ExpandableListUnidadeAdapter(context, medicamentoResponse.getMedicamentoExpandableDTO().getListDataHeader(),
+                    ExpandableListMedicamentoAdapter adapter = new ExpandableListMedicamentoAdapter(context, medicamentoResponse.getMedicamentoExpandableDTO().getListDataHeader(),
                             medicamentoResponse.getMedicamentoExpandableDTO().getListDataChild());
                     configurarExpList();
                     expListView.setAdapter(adapter);

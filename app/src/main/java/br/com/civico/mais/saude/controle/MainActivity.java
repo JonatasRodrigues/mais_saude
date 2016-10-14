@@ -35,7 +35,7 @@ public class MainActivity extends Activity {
         btnMedicamento.setOnClickListener(onClickListenerMedicamento);
 
         Button  btnSobre = (Button) findViewById(R.id.btnSobre);
-        btnSobre.setOnClickListener(onClickListenerSobre );
+        btnSobre.setOnClickListener(onClickListenerSobre);
 
         Button  btnSair = (Button) findViewById(R.id.btnSair);
         btnSair.setOnClickListener(onClickListenerSair);
@@ -77,7 +77,7 @@ public class MainActivity extends Activity {
 
     private View.OnClickListener onClickListenerSobre = new View.OnClickListener() {
         public void onClick(final View v) {
-            if(v.getId()== R.id.btnUnidade){
+            if(v.getId()== R.id.btnSobre){
                 Intent intent = new Intent(MainActivity.this, SobreActivity.class);
                 startActivity(intent);
             }
@@ -138,4 +138,7 @@ public class MainActivity extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    public void onBackPressed() {}
 }

@@ -27,36 +27,6 @@ import cz.msebera.android.httpclient.impl.client.DefaultHttpClient;
  */
 public class PostagemService {
 
-    public List<PostagemDTO> getMediaAvaliacaoPorUnidade(String codigoUnidade) {
-        String result=null;
-        try {
-            String url = ConstantesAplicacao.URL_BASE_METAMODELO + "/rest/postagens/tipopostagem/" +
-                    ConstantesAplicacao.COD_TIPO_POSTAGEM + "/tipoobjeto/" + ConstantesAplicacao.COD_TIPO_OBJETO +
-                        "/objeto/" + codigoUnidade;
-
-            HttpClient httpclient = new DefaultHttpClient();
-            HttpGet httpget = new HttpGet(url);
-
-            HttpResponse httpresponse = httpclient.execute(httpget);
-
-            if (httpresponse.getStatusLine().getStatusCode() == ConstantesAplicacao.STATUS_OK) {
-                HttpEntity entity = httpresponse.getEntity();
-                if (entity != null) {
-                    InputStream instream = entity.getContent();
-                    result = StreamConverter.convertStreamToString(instream);
-                    instream.close();
-                }
-
-                return converterJsonParaObject(getJson(result));
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
     public List<PostagemDTO> buscarPostagensPorUnidade(String codigoUnidade,String token) {
         String result=null;
         try {
@@ -166,6 +136,7 @@ public class PostagemService {
 
             jsonObj.accumulate("tipo", jsonTipo);
             jsonObj.accumulate("codObjetoDestino", codigoUnidade);
+            jsonObj.accumulate("codTipoObjetoDestino", ConstantesAplicacao.COD_TIPO_OBJETO);
 
             StringEntity se = new StringEntity(jsonObj.toString());
             post.setHeader("Content-type", "application/json");
