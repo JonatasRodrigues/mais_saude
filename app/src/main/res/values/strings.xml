@@ -11,6 +11,7 @@
     <string name="title_activity_login">Login</string>
     <string name="chck_cadastrado">Já sou cadastrado.</string>
 
+
     <!-- Strings related to login -->
     <string name="prompt_nome">Nome</string>
     <string name="prompt_email">Email</string>
@@ -28,6 +29,10 @@
     <string name="error_password_nao_confere">Confirmação da senha não confere</string>
     <string name="error_comentario_obrigatorio">Escreva seu comentário.</string>
 
+
+    <string name="sem_conexao_internet">Verifique sua conexão com a internet e tente novamente.</string>
+
+    <!-- Strings related to Sobre -->
     <string name="label_aplicativo">- Aplicativo:</string>
     <string name="label_versao">- Versão:</string>
     <string name="label_descricao">Descrição:</string>

@@ -1,6 +1,5 @@
 package br.com.civico.mais.saude.controle;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -11,35 +10,32 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 
 import br.com.civico.mais.saude.R;
 import br.com.civico.mais.saude.adapter.ListViewPostagemAdapter;
 import br.com.civico.mais.saude.dto.PostagemDTO;
-import br.com.civico.mais.saude.dto.LoginResponse;
+import br.com.civico.mais.saude.util.ConexaoUtil;
 import br.com.civico.mais.saude.servico.PostagemService;
 
-public class PostagemActivity extends Activity {
+public class PostagemActivity extends BaseActivity {
 
     private ProgressDialog progressDialog;
     private Context context;
     private ListView listView;
     private TextView lblSemComentario;
     private TextView tituloComentario;
-    private float pontuacao;
+    private float pontuacao=5;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,13 +46,19 @@ public class PostagemActivity extends Activity {
         this.lblSemComentario = (TextView) findViewById(R.id.semComentario);
         this.lblSemComentario.setVisibility(View.GONE);
         this.tituloComentario = (TextView) findViewById(R.id.tituloComentario);
-        carregarPostagens();
+
+        if(ConexaoUtil.hasConnection(context)){
+            carregarPostagens();
+        }else{
+            exibirMsgErro(String.valueOf(R.string.sem_conexao_internet));
+        }
 
         Button btnCriarPostagem = (Button) findViewById(R.id.btnNovoComentario);
         btnCriarPostagem.setOnClickListener(onCriarPostagemListener);
     }
 
     private void carregarPostagens(){
+        this.lblSemComentario.setVisibility(View.GONE);
         AsyncTask<Void, Void, ListViewPostagemAdapter> task = new AsyncTask<Void, Void, ListViewPostagemAdapter>() {
 
             @Override
@@ -104,8 +106,6 @@ public class PostagemActivity extends Activity {
         }
     };
 
-
-
     public void showPopUpComentario(final String token, final long codigoUsuario,final Long codigoUnidade, final String nomeUnidade){
         final View root = ((LayoutInflater)PostagemActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.comentario, null);
         final RatingBar rat = (RatingBar)root.findViewById(R.id.ratingBar);
@@ -120,7 +120,7 @@ public class PostagemActivity extends Activity {
 
         rat.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-                 pontuacao=rating;
+                pontuacao = rating;
             }
         });
 
@@ -146,7 +146,7 @@ public class PostagemActivity extends Activity {
                 final String comentario = comentarioText.getText().toString();
                 if (TextUtils.isEmpty(comentario)) {
                     comentarioText.setError(getString(R.string.error_comentario_obrigatorio));
-                }else{
+                } else {
                     AsyncTask<Void, Void, String> task = new AsyncTask<Void, Void, String>() {
 
                         @Override
@@ -161,7 +161,7 @@ public class PostagemActivity extends Activity {
                         @Override
                         protected String doInBackground(Void... voids) {
                             PostagemService postagemService = new PostagemService();
-                            postagemService.cadastrarPostagem(token, codigoUsuario, comentario, pontuacao,codigoUnidade);
+                            postagemService.cadastrarPostagem(token, codigoUsuario, comentario, pontuacao, codigoUnidade);
                             return null;
                         }
 
@@ -171,7 +171,9 @@ public class PostagemActivity extends Activity {
                                 progressDialog.dismiss();
                             }
 
-                            if(result!=null){
+                            if (result == null) {
+                                carregarPostagens();
+                            }else{
                                 exibirMsgErro(result);
                             }
                         }
@@ -181,20 +183,6 @@ public class PostagemActivity extends Activity {
                 }
             }
         });
-    }
-
-    private void exibirMsgErro(String mensagem){
-        LayoutInflater inflater = getLayoutInflater();
-        View layout = inflater.inflate(R.layout.toast_erro,(ViewGroup) findViewById(R.id.layout_erro));
-
-        TextView text = (TextView) layout.findViewById(R.id.textErro);
-        text.setText(mensagem);
-
-        Toast toast = new Toast(getApplicationContext());
-        toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
-        toast.setDuration(Toast.LENGTH_LONG);
-        toast.setView(layout);
-        toast.show();
     }
 
     @Override

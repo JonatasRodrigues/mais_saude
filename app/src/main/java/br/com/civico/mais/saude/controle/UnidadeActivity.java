@@ -1,7 +1,6 @@
 package br.com.civico.mais.saude.controle;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -11,15 +10,10 @@ import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ExpandableListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import org.json.JSONException;
 
@@ -27,10 +21,13 @@ import br.com.civico.mais.saude.R;
 import br.com.civico.mais.saude.adapter.ExpandableListUnidadeAdapter;
 import br.com.civico.mais.saude.constantes.ConstantesAplicacao;
 import br.com.civico.mais.saude.dto.unidade.UnidadeResponse;
+import br.com.civico.mais.saude.util.ConexaoUtil;
 import br.com.civico.mais.saude.servico.GPSService;
+import br.com.civico.mais.saude.util.LocationPermissionsUtil;
 import br.com.civico.mais.saude.servico.UnidadeService;
 
-public class UnidadeActivity extends Activity {
+public class UnidadeActivity extends BaseActivity {
+
 
     private ExpandableListView expListView;
     private ProgressDialog progressDialog;
@@ -54,22 +51,21 @@ public class UnidadeActivity extends Activity {
                     final String[]codigoUnidade = childUnidade.split(":");
                     customExpandAdapter.setCodigoUnidade(codigoUnidade[1].trim());
                  }
-
                 return false;
             }
         });
 
-        if(hasPermissions()) {
+        if(ConexaoUtil.hasConnection(context)){
             carregarUnidades();
-        } else {
-            ActivityCompat.requestPermissions(UnidadeActivity.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION}, 200);
+        }else{
+            exibirMsgErro(String.valueOf(R.string.sem_conexao_internet));
         }
     }
 
     private void carregarUnidades(){
         location = new GPSService(context).getLocation();
         if(location==null){
-            exibirMsgErro("Ocorreu um erro ao tentar recuperar sua localização. Por favor, verifique sua conexão ou GPS.");
+            exibirMsgErro("Por favor, ative o serviço de localização do aparelho em 'Configurar -> Localização'.");
             voltarMenu();
         }else{
             AsyncTask<Void, Void, UnidadeResponse> task = new AsyncTask<Void, Void, UnidadeResponse>() {
@@ -104,6 +100,7 @@ public class UnidadeActivity extends Activity {
                         ExpandableListUnidadeAdapter adapter = new ExpandableListUnidadeAdapter(context, unidadeResponse.getExpandableUnidadeDTO().getListDataHeader(),
                                 unidadeResponse.getExpandableUnidadeDTO().getListDataChild(),unidadeResponse.getExpandableUnidadeDTO().getListMediaChild());
 
+                        //mantém apenas um group aberto
                         expListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
                             @Override
                             public void onGroupExpand(int groupPosition) {
@@ -129,21 +126,6 @@ public class UnidadeActivity extends Activity {
         }
     }
 
-
-    private void exibirMsgErro(String mensagem){
-        LayoutInflater inflater = getLayoutInflater();
-        View layout = inflater.inflate(R.layout.toast_erro,(ViewGroup) findViewById(R.id.layout_erro));
-
-        TextView text = (TextView) layout.findViewById(R.id.textErro);
-        text.setText(mensagem);
-
-        Toast toast = new Toast(getApplicationContext());
-        toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
-        toast.setDuration(Toast.LENGTH_LONG);
-        toast.setView(layout);
-        toast.show();
-    }
-
     private void configurarExpList(){
         ColorDrawable linhaColor = new ColorDrawable(this.getResources().getColor(R.color.lime));
         expListView.setChildDivider(getResources().getDrawable(R.color.transparente));
@@ -151,12 +133,6 @@ public class UnidadeActivity extends Activity {
         expListView.setDividerHeight(2);
     }
 
-    private boolean hasPermissions(){
-        boolean permissionFineLocation = ActivityCompat.checkSelfPermission(UnidadeActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
-        boolean permissionCoarseLocation = ActivityCompat.checkSelfPermission(UnidadeActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
-
-        return (permissionCoarseLocation && permissionFineLocation);
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

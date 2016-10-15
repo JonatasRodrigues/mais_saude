@@ -25,7 +25,7 @@ import cz.msebera.android.httpclient.impl.client.DefaultHttpClient;
 /**
  * Created by Jônatas Rodrigues on 25/09/2016.
  */
-public class PostagemService {
+public class  PostagemService {
 
     public List<PostagemDTO> buscarPostagensPorUnidade(String codigoUnidade,String token) {
         String result=null;

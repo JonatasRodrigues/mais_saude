@@ -10,7 +10,6 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -18,25 +17,31 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.List;
-
 import br.com.civico.mais.saude.R;
-import br.com.civico.mais.saude.adapter.ListViewPostagemAdapter;
-import br.com.civico.mais.saude.dto.PostagemDTO;
-import br.com.civico.mais.saude.servico.PostagemService;
 
-public class SobreActivity extends BaseActivity {
+public class BaseActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.sobre);
+
+    }
+
+    protected void exibirMsgErro(String mensagem){
+        LayoutInflater inflater = getLayoutInflater();
+        View layout = inflater.inflate(R.layout.toast_erro,(ViewGroup) findViewById(R.id.layout_erro));
+
+        TextView text = (TextView) layout.findViewById(R.id.textErro);
+        text.setText(mensagem);
+
+        Toast toast = new Toast(getApplicationContext());
+        toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
+        toast.setDuration(Toast.LENGTH_LONG);
+        toast.setView(layout);
+        toast.show();
     }
 
     @Override
@@ -51,9 +56,5 @@ public class SobreActivity extends BaseActivity {
     }
 
     @Override
-    public void onBackPressed() {
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
-    }
-
+    public void onBackPressed() {}
 }

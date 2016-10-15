@@ -44,7 +44,7 @@ import br.com.civico.mais.saude.constantes.ConstantesAplicacao;
 import br.com.civico.mais.saude.dto.LoginResponse;
 import br.com.civico.mais.saude.servico.LoginService;
 
-public class LoginActivity extends Activity {
+public class LoginActivity extends BaseActivity {
 
     private AutoCompleteTextView emailView;
     private EditText nome;
@@ -356,20 +356,6 @@ public class LoginActivity extends Activity {
 
     private boolean isPasswordValid(String senha) {
         return senha.length() >= 6;
-    }
-
-    private void exibirMsgErro(String mensagem){
-        LayoutInflater inflater = getLayoutInflater();
-        View layout = inflater.inflate(R.layout.toast_erro,(ViewGroup) findViewById(R.id.layout_erro));
-
-        TextView text = (TextView) layout.findViewById(R.id.textErro);
-        text.setText(mensagem);
-
-        Toast toast = new Toast(getApplicationContext());
-        toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
-        toast.setDuration(Toast.LENGTH_LONG);
-        toast.setView(layout);
-        toast.show();
     }
 
     private void voltar() {

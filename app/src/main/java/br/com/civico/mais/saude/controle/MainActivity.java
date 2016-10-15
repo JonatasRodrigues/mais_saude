@@ -1,24 +1,28 @@
 package br.com.civico.mais.saude.controle;
 
-import android.app.Activity;
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.ActivityCompat;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 
 import br.com.civico.mais.saude.R;
+import br.com.civico.mais.saude.util.LocationPermissionsUtil;
 
-public class MainActivity extends Activity {
+public class MainActivity extends BaseActivity {
 
+    public static final int LOCATION_PERMISSION_REQUEST_CODE = 100;
     private ProgressDialog progressDialog;
     private Context context;
 
@@ -87,8 +91,13 @@ public class MainActivity extends Activity {
     private View.OnClickListener onClickListenerUnidade = new View.OnClickListener() {
         public void onClick(final View v) {
             if(v.getId()== R.id.btnUnidade){
-                Intent intent = new Intent(MainActivity.this, UnidadeActivity.class);
-                startActivity(intent);
+                if(hasPermissions()){
+                    Intent intent = new Intent(MainActivity.this, UnidadeActivity.class);
+                    startActivity(intent);
+                }else{
+                    LocationPermissionsUtil permissions = new LocationPermissionsUtil(MainActivity.this);
+                    permissions.requestLocationPermission();
+                }
             }
         }
     };
@@ -127,6 +136,26 @@ public class MainActivity extends Activity {
         }
     };
 
+    private boolean hasPermissions(){
+        boolean permissionFineLocation = ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+        boolean permissionCoarseLocation = ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+
+        return (permissionCoarseLocation && permissionFineLocation);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case LOCATION_PERMISSION_REQUEST_CODE:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Intent intent = new Intent(MainActivity.this, UnidadeActivity.class);
+                    startActivity(intent);
+                }
+                break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -138,7 +167,4 @@ public class MainActivity extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         return super.onOptionsItemSelected(item);
     }
-
-    @Override
-    public void onBackPressed() {}
 }
