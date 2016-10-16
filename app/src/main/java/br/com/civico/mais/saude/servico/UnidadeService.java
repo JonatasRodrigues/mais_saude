@@ -25,7 +25,7 @@ import cz.msebera.android.httpclient.impl.client.DefaultHttpClient;
 /**
  * Created by Jônatas Rodrigues on 27/08/2016.
  */
-public class UnidadeService extends AbstractService<UnidadeResponse> {
+public class UnidadeService {
 
     private Location location;
     private static final Integer RAIO = 30;
@@ -72,13 +72,12 @@ public class UnidadeService extends AbstractService<UnidadeResponse> {
         return null;
     }
 
-    @Override
-    public UnidadeResponse consumirServicoTCU() throws JSONException{
+    public UnidadeResponse consumirServicoTCU(Integer currentPage) throws JSONException{
         UnidadeResponse unidadeResponse = new UnidadeResponse();
         String result="";
         try {
             String url = ConstantesAplicacao.URL_BASE + "/rest/estabelecimentos/latitude/" + this.location.getLatitude()
-                    + "/longitude/" + this.location.getLongitude() + "/raio/" + RAIO;
+                    + "/longitude/" + this.location.getLongitude() + "/raio/" + RAIO + "?pagina=" + currentPage;
 
             HttpClient httpclient = new DefaultHttpClient();
 
@@ -140,6 +139,10 @@ public class UnidadeService extends AbstractService<UnidadeResponse> {
             }
         }
         return new ExpandableUnidadeDTO(listaHeader,listDataChild,listMediaChild);
+    }
+
+    public JSONArray getJson(String json) throws JSONException {
+        return new JSONArray(json);
     }
 
 }

@@ -161,9 +161,16 @@ public class ExpandableListUnidadeAdapter extends BaseExpandableListAdapter{
         return convertView;
     }
 
+    public void updateData( List<String> listDataHeader,HashMap<String, List<String>> listChildData,
+                            HashMap<String, String> listMediaChild) {
+        this._listDataHeader.addAll(listDataHeader);
+        this._listDataChild.putAll(listChildData);
+        this.listMediaChild.putAll(listMediaChild);
+    }
+
     @Override
     public boolean hasStableIds() {
-        return false;
+        return true;
     }
 
     @Override
