@@ -2,7 +2,6 @@ package br.com.civico.mais.saude.controle;
 
 import  android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.os.AsyncTask;
@@ -14,7 +13,6 @@ import android.widget.AbsListView;
 import android.widget.ExpandableListView;
 
 import org.json.JSONException;
-
 
 import br.com.civico.mais.saude.R;
 import br.com.civico.mais.saude.adapter.ExpandableListUnidadeAdapter;
@@ -51,8 +49,16 @@ public class UnidadeActivity extends BaseActivity {
 
                 if(!parent.isGroupExpanded(groupPosition)){
                     final String childUnidade = (String) customExpandAdapter.getChild(groupPosition, 2);
+                    final String childLat = (String) customExpandAdapter.getChild(groupPosition, 14);
+                    final String childLong = (String) customExpandAdapter.getChild(groupPosition, 15);
+
                     final String[]codigoUnidade = childUnidade.split(":");
+                    final String[]latitude = childLat.split(":");
+                    final String[]longitude = childLong.split(":");
+
                     customExpandAdapter.setCodigoUnidade(codigoUnidade[1].trim());
+                    customExpandAdapter.setLatitude(Double.valueOf(latitude[1].trim()));
+                    customExpandAdapter.setLongitute(Double.valueOf(longitude[1].trim()));
                  }
                 return false;
             }
@@ -86,7 +92,7 @@ public class UnidadeActivity extends BaseActivity {
         if(ConexaoUtil.hasConnection(context)){
             location = new GPSService(context).getLocation();
             if(location==null){
-                exibirMsgErro("Por favor, ative o serviço de localização do aparelho em 'Configurar -> Localização'.");
+                exibirMsgErro(ConstantesAplicacao.MENSAGEM_NOT_FOUND_LOCATION);
                 voltarMenu();
             }else {
                 AsyncTask<Void, Void, UnidadeResponse> task = new AsyncTask<Void, Void, UnidadeResponse>() {
@@ -158,7 +164,7 @@ public class UnidadeActivity extends BaseActivity {
                 task.execute((Void[]) null);
             }
         }else{
-            exibirMsgErro(String.valueOf(R.string.sem_conexao_internet));
+            exibirMsgErro(ConstantesAplicacao.MENSAGEM_SEM_CONEXAO_INTERNET);
         }
     }
 
@@ -186,10 +192,4 @@ public class UnidadeActivity extends BaseActivity {
     public void onBackPressed() {
         voltarMenu();
     }
-
-    private void voltarMenu(){
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
-    }
-
 }

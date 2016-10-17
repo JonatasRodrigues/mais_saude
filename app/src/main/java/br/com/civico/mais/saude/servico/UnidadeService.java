@@ -28,7 +28,7 @@ import cz.msebera.android.httpclient.impl.client.DefaultHttpClient;
 public class UnidadeService {
 
     private Location location;
-    private static final Integer RAIO = 30;
+    private static final Integer RAIO = 10;
 
     public UnidadeService(Location location){
         this.location=location;
@@ -128,10 +128,17 @@ public class UnidadeService {
                 listaDados.add("Logradouro: " + oneObject.getString("logradouro") + ", " + oneObject.getString("numero"));
                 listaDados.add("Bairro: " + oneObject.getString("bairro"));
                 listaDados.add("Cidade: " + oneObject.getString("cidade") + " - " + oneObject.getString("uf"));
+
                 if (oneObject.has("telefone")) {
                     listaDados.add("Telefone: " + oneObject.getString("telefone"));
+                }else{
+                    listaDados.add("Telefone: - ");
                 }
                 listaDados.add("Atendimento: " + oneObject.getString("turnoAtendimento"));
+                listaDados.add("  ");
+                listaDados.add("Latitude: " + oneObject.getString("lat"));
+                listaDados.add("Longitude: " + oneObject.getString("long"));
+
                 listDataChild.put(listaHeader.get(i), listaDados);
                 listMediaChild.put(codigoUnidade, mediaAvaliacao);
             } catch (JSONException e) {

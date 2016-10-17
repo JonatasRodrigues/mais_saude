@@ -5,7 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import br.com.civico.mais.saude.R;
 import br.com.civico.mais.saude.controle.LoginActivity;
-import br.com.civico.mais.saude.controle.PostagemActivity;
+import br.com.civico.mais.saude.controle.MapsActivity;
 
 import android.widget.BaseExpandableListAdapter;
 import android.content.Context;
@@ -27,6 +27,8 @@ public class ExpandableListUnidadeAdapter extends BaseExpandableListAdapter{
     private HashMap<String, List<String>> _listDataChild;
     private HashMap<String, String> listMediaChild;
     private String codigoUnidade;
+    private Double latitude;
+    private Double longitute;
 
     public ExpandableListUnidadeAdapter(Context context, List<String> listDataHeader,HashMap<String, List<String>> listChildData,
           HashMap<String, String> listMediaChild) {
@@ -93,7 +95,18 @@ public class ExpandableListUnidadeAdapter extends BaseExpandableListAdapter{
                         _context.startActivity(intent);
                     }
                 });
-            }else {
+
+                holder.btnMapa.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(_context, MapsActivity.class);
+                        intent.putExtra("latitude", getLatitude());
+                        intent.putExtra("longitude", getLongitute());
+                        _context.startActivity(intent);
+                    }
+                });
+
+             }else {
                 convertView = infalInflater.inflate(R.layout.customer_unidade_row_sem_btn, parent, false);
             }
             holder.textView = (TextView) convertView.findViewById(R.id.descUnidade);
@@ -118,6 +131,22 @@ public class ExpandableListUnidadeAdapter extends BaseExpandableListAdapter{
 
     public String getCodigoUnidade(){
         return this.codigoUnidade;
+    }
+
+    public Double getLongitute() {
+        return longitute;
+    }
+
+    public void setLongitute(Double longitute) {
+        this.longitute = longitute;
+    }
+
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
     }
 
     @Override

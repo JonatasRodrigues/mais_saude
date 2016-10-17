@@ -46,7 +46,6 @@ public class  PostagemService {
                      result = StreamConverter.convertStreamToString(instream);
                     instream.close();
                 }
-
                 return converterJsonParaObject(getJson(result));
             }
         } catch (IOException e) {

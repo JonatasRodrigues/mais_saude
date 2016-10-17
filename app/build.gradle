@@ -9,12 +9,17 @@ android {
         exclude 'META-INF/LICENSE.txt'
     }
 
+    dexOptions {
+        javaMaxHeapSize "4g"
+    }
+
     defaultConfig {
         applicationId "br.com.civico.mais.saude"
         minSdkVersion 15
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
     }
     buildTypes {
         debug {
@@ -31,16 +36,17 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
 
-    compile 'com.loopj.android:android-async-http:1.4.9'
-    compile 'com.google.android.gms:play-services-maps:7.3.0'
-    compile 'com.google.android.gms:play-services-location:7.3.0'
     compile group: 'commons-io', name: 'commons-io', version: '2.1'
     compile group: 'commons-logging', name: 'commons-logging', version: '1.1.1'
     compile group: 'org.json', name: 'json', version: '20160212'
 
-    compile 'com.android.support:appcompat-v7:23.1.1'
-    compile 'com.android.support:design:23.1.1'
-    compile 'com.android.support:multidex:1.0.0'
 
     androidTestCompile 'junit:junit:4.12'
+    compile 'com.loopj.android:android-async-http:1.4.9'
+    compile 'com.google.android.gms:play-services-maps:9.4.0'
+    compile 'com.google.android.gms:play-services-location:7.3.0'
+    compile 'com.android.support:appcompat-v7:23.2.0'
+    compile 'com.android.support:design:23.2.0'
+    compile 'com.android.support:multidex:1.0.0'
+    compile 'com.google.android.gms:play-services:9.4.0'
 }

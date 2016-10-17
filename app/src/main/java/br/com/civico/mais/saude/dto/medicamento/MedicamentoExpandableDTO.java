@@ -1,9 +1,7 @@
 package br.com.civico.mais.saude.dto.medicamento;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 
 public class MedicamentoExpandableDTO {
     private List<String> listDataHeader;

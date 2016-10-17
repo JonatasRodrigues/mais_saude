@@ -24,6 +24,7 @@ import java.util.List;
 
 import br.com.civico.mais.saude.R;
 import br.com.civico.mais.saude.adapter.ListViewPostagemAdapter;
+import br.com.civico.mais.saude.constantes.ConstantesAplicacao;
 import br.com.civico.mais.saude.dto.PostagemDTO;
 import br.com.civico.mais.saude.util.ConexaoUtil;
 import br.com.civico.mais.saude.servico.PostagemService;
@@ -50,7 +51,7 @@ public class PostagemActivity extends BaseActivity {
         if(ConexaoUtil.hasConnection(context)){
             carregarPostagens();
         }else{
-            exibirMsgErro(String.valueOf(R.string.sem_conexao_internet));
+            exibirMsgErro(ConstantesAplicacao.MENSAGEM_SEM_CONEXAO_INTERNET);
         }
 
         Button btnCriarPostagem = (Button) findViewById(R.id.btnNovoComentario);

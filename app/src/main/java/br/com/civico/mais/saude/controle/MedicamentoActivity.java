@@ -21,7 +21,6 @@ import org.json.JSONException;
 
 import br.com.civico.mais.saude.R;
 import br.com.civico.mais.saude.adapter.ExpandableListMedicamentoAdapter;
-import br.com.civico.mais.saude.adapter.ExpandableListUnidadeAdapter;
 import br.com.civico.mais.saude.constantes.ConstantesAplicacao;
 import br.com.civico.mais.saude.dto.medicamento.MedicamentoResponse;
 import br.com.civico.mais.saude.servico.MedicamentoService;
