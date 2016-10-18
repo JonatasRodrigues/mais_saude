@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,13 +31,22 @@ public class  MedicamentoActivity extends Activity {
     private ProgressDialog progressDialog;
     private Context context;
 
+    private int visibleThreshold = 0;
+    private int currentPage = 0;
+    private int previousTotal = 0;
+    private boolean loading = true;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.medicamento_consulta);
         expListView = (ExpandableListView) findViewById(R.id.medicamentoListView);
         context = this;
+        carregaMedicamentos();
+        expListView.setOnScrollListener(customScrollListener);
+    }
 
+    private void carregaMedicamentos() {
         AsyncTask<Void, Void, MedicamentoResponse> task = new AsyncTask<Void, Void, MedicamentoResponse>() {
 
             @Override
@@ -52,7 +62,7 @@ public class  MedicamentoActivity extends Activity {
             protected MedicamentoResponse doInBackground(Void... voids) {
                 try {
                     MedicamentoService medicamentoService = new MedicamentoService();
-                    return medicamentoService.consumirServicoTCU();
+                    return medicamentoService.consumirServicoTCU(currentPage);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -111,19 +121,29 @@ public class  MedicamentoActivity extends Activity {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
+    private AbsListView.OnScrollListener customScrollListener = new AbsListView.OnScrollListener() {
+        @Override
+        public void onScroll(AbsListView view, int firstVisibleItem,int visibleItemCount, int totalItemCount) {
+            if (loading) {
+                if (totalItemCount > previousTotal) {
+                    loading = false;
+                    previousTotal = totalItemCount;
+                    currentPage++;
+                }
+            }
+            if (!loading && (totalItemCount - visibleItemCount) <= (firstVisibleItem + visibleThreshold)) {
+                carregaMedicamentos();
+                loading = true;
+            }
+        }
+        @Override
+        public void onScrollStateChanged(AbsListView view, int scrollState) {
+        }
 
+    };
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        //    if (id == R.id.action_settings) {
-        //        return true;
-        //    }
-
         return super.onOptionsItemSelected(item);
     }
 }

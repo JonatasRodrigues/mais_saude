@@ -49,32 +49,8 @@ public class MainActivity extends BaseActivity {
     private View.OnClickListener onClickListenerMedicamento = new View.OnClickListener() {
         public void onClick(View view) {
             if(view.getId() == R.id.btnMedicamento){
-                AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>() {
-
-                    @Override
-                    protected void onPreExecute() {
-                        progressDialog = new ProgressDialog(MainActivity.this);
-                        progressDialog.setMessage("Processando...");
-                        progressDialog.setCancelable(false);
-                        progressDialog.setIndeterminate(true);
-                        progressDialog.show();
-                    }
-
-                    @Override
-                    protected Void doInBackground(Void... voids) {
-                        Intent intent = new Intent(MainActivity.this, MedicamentoActivity.class);
-                        startActivity(intent);
-                        return null;
-                    }
-
-                    @Override
-                    protected void onPostExecute(Void result) {
-                        if (progressDialog != null) {
-                            progressDialog.dismiss();
-                        }
-                    }
-                };
-                task.execute((Void[]) null);
+                Intent intent = new Intent(MainActivity.this, MedicamentoActivity.class);
+                startActivity(intent);
             }
         }
     };
