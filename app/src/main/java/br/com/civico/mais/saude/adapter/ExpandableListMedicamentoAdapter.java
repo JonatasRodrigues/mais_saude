@@ -120,6 +120,11 @@ public class ExpandableListMedicamentoAdapter extends BaseExpandableListAdapter{
         return convertView;
     }
 
+    public void updateData( List<String> listDataHeader,HashMap<String, List<String>> listChildData) {
+        this._listDataHeader.addAll(listDataHeader);
+        this._listDataChild.putAll(listChildData);
+    }
+
     @Override
     public boolean hasStableIds() {
         return false;

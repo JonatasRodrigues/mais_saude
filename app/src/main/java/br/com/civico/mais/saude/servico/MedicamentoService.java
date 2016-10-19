@@ -94,7 +94,6 @@ public class MedicamentoService{
                 String codigoBarra = oneObject.getString("codBarraEan");
                 String idHash = produto + ConstantesAplicacao.SPLIT_CARACTER + codigoBarra;
                 listaHeader.add(idHash);
-                listaDados.add("  ");
                 listaDados.add("Laboratório: " + oneObject.getString("laboratorio"));
                 listaDados.add("CNPJ: " + oneObject.getString("cnpj"));
                 listaDados.add("Princípio Ativo: " + oneObject.getString("principioAtivo"));

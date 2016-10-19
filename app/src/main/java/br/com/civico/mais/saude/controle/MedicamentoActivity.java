@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -76,10 +77,17 @@ public class  MedicamentoActivity extends Activity {
                 }
 
                 if(medicamentoResponse.getStatusCodigo()== ConstantesAplicacao.STATUS_OK){
-                    ExpandableListMedicamentoAdapter adapter = new ExpandableListMedicamentoAdapter(context, medicamentoResponse.getMedicamentoExpandableDTO().getListDataHeader(),
-                            medicamentoResponse.getMedicamentoExpandableDTO().getListDataChild());
-                    configurarExpList();
-                    expListView.setAdapter(adapter);
+                    ExpandableListMedicamentoAdapter adapterMedicamento = (ExpandableListMedicamentoAdapter) expListView.getExpandableListAdapter();
+                    if(adapterMedicamento == null) {
+                        ExpandableListMedicamentoAdapter adapter = new ExpandableListMedicamentoAdapter(context, medicamentoResponse.getMedicamentoExpandableDTO().getListDataHeader(),
+                                medicamentoResponse.getMedicamentoExpandableDTO().getListDataChild());
+                        configurarExpList();
+                        expListView.setAdapter(adapter);
+                    }else{
+                        adapterMedicamento.updateData(medicamentoResponse.getMedicamentoExpandableDTO().getListDataHeader(),
+                                medicamentoResponse.getMedicamentoExpandableDTO().getListDataChild());
+                        adapterMedicamento.notifyDataSetChanged();
+                    }
                 }else{
                     exibirMsgErro(medicamentoResponse.getMensagem());
                     voltarMenu();
