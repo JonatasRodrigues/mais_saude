@@ -19,6 +19,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
@@ -35,8 +36,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     private Context context;
     private ProgressDialog progressDialog;
-    LatLng startLatLng;
-    LatLng endLatLng;
+    private LatLng startLatLng;
+    private LatLng endLatLng;
+    private String nomeUnidade;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,16 +61,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             if (location == null) {
                 exibirMsgErro(ConstantesAplicacao.MENSAGEM_NOT_FOUND_LOCATION);
             }else{
-                Double latitudeOrigem = getIntent().getDoubleExtra("latitude",0L);
-                Double longitudeOrigem = getIntent().getDoubleExtra("longitude",0L);
-                Double latitudeDestino =location.getLatitude();
-                Double longitudeDestino = location.getLongitude();
+                Double latitudeDestino = getIntent().getDoubleExtra("latitude",0L);
+                Double longitudeDestino= getIntent().getDoubleExtra("longitude",0L);
+                Double latitudeOrigem=location.getLatitude();
+                Double longitudeOrigem = location.getLongitude();
 
                 startLatLng = new LatLng(latitudeOrigem, longitudeOrigem);
                 endLatLng = new LatLng(latitudeDestino, longitudeDestino);
 
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(startLatLng));
-                mMap.animateCamera(CameraUpdateFactory.zoomTo(12));
+                mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+
+                this.nomeUnidade = getIntent().getStringExtra("nomeUnidade");
 
                 showMapa(latitudeOrigem,longitudeOrigem,latitudeDestino,longitudeDestino);
             }
@@ -85,7 +89,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             protected void onPreExecute() {
                 progressDialog = new ProgressDialog(MapsActivity.this);
-                progressDialog.setMessage("Definindo uma rota...");
+                progressDialog.setMessage("Definindo rota...");
                 progressDialog.setCancelable(false);
                 progressDialog.setIndeterminate(true);
                 progressDialog.show();
@@ -109,14 +113,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     public void drawPath(List<LatLng> list) {
-
-        mMap.addMarker(new MarkerOptions().position(endLatLng));
+        Marker myMarkerDestino =  mMap.addMarker(new MarkerOptions().position(endLatLng).title(nomeUnidade));
+        myMarkerDestino.showInfoWindow();
         mMap.addMarker(new MarkerOptions().position(startLatLng));
+        mMap.getUiSettings().setMapToolbarEnabled(true);
 
         for (int z = 0; z < list.size() - 1; z++) {
             LatLng src = list.get(z);
             LatLng dest = list.get(z + 1);
-             mMap.addPolyline(new PolylineOptions().add(new LatLng(src.latitude, src.longitude),
+            mMap.addPolyline(new PolylineOptions().add(new LatLng(src.latitude, src.longitude),
                     new LatLng(dest.latitude, dest.longitude)).width(5).color(Color.BLUE).geodesic(true));
         }
     }

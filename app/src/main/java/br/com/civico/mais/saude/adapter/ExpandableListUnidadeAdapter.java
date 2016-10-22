@@ -29,6 +29,7 @@ public class ExpandableListUnidadeAdapter extends BaseExpandableListAdapter{
     private String codigoUnidade;
     private Double latitude;
     private Double longitute;
+    private String nomeUnidade;
 
     public ExpandableListUnidadeAdapter(Context context, List<String> listDataHeader,HashMap<String, List<String>> listChildData,
           HashMap<String, String> listMediaChild) {
@@ -91,7 +92,7 @@ public class ExpandableListUnidadeAdapter extends BaseExpandableListAdapter{
                     public void onClick(View v) {
                         Intent intent = new Intent(_context, LoginActivity.class);
                         intent.putExtra("codigoUnidade", getCodigoUnidade());
-                        intent.putExtra("nomeUnidade", (String) getGroup(groupPosition));
+                        intent.putExtra("nomeUnidade", getNomeUnidade());
                         _context.startActivity(intent);
                     }
                 });
@@ -102,6 +103,7 @@ public class ExpandableListUnidadeAdapter extends BaseExpandableListAdapter{
                         Intent intent = new Intent(_context, MapsActivity.class);
                         intent.putExtra("latitude", getLatitude());
                         intent.putExtra("longitude", getLongitute());
+                        intent.putExtra("nomeUnidade",getNomeUnidade());
                         _context.startActivity(intent);
                     }
                 });
@@ -147,6 +149,14 @@ public class ExpandableListUnidadeAdapter extends BaseExpandableListAdapter{
 
     public void setLatitude(Double latitude) {
         this.latitude = latitude;
+    }
+
+    public String getNomeUnidade() {
+        return nomeUnidade;
+    }
+
+    public void setNomeUnidade(String nomeUnidade) {
+        this.nomeUnidade = nomeUnidade;
     }
 
     @Override

@@ -27,7 +27,7 @@
             android:layout_height="@dimen/item_touch_helper_max_drag_scroll_per_frame"
             android:focusable="false"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="5dp"
+            android:layout_marginRight="35dp"
             android:background="@drawable/icon_comentario"/>
 
         <Button
@@ -36,7 +36,7 @@
             android:layout_height="@dimen/item_touch_helper_max_drag_scroll_per_frame"
             android:focusable="false"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="25dp"
+            android:layout_marginRight="10dp"
             android:background="@drawable/icon_mapa"/>
 
         <RatingBar

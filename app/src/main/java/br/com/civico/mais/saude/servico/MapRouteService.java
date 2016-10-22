@@ -28,7 +28,7 @@ public class MapRouteService {
         String result=null;
         try {
             HttpGet http = new HttpGet("https://maps.googleapis.com/maps/api/directions/json?origin=" + latitudeOrigem + "," + longitudeOrigem +
-                    "&destination=" + latitudeDestino +"," + longitudeDestino);
+                    "&destination=" + latitudeDestino +"," + longitudeDestino + "&sensor=false&units=metric&mode=driving");
 
             HttpClient httpclient = new DefaultHttpClient();
 

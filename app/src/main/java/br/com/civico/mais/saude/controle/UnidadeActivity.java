@@ -49,13 +49,14 @@ public class UnidadeActivity extends BaseActivity {
 
                 if(!parent.isGroupExpanded(groupPosition)){
                     final String childUnidade = (String) customExpandAdapter.getChild(groupPosition, 2);
-                    final String childLat = (String) customExpandAdapter.getChild(groupPosition, 14);
-                    final String childLong = (String) customExpandAdapter.getChild(groupPosition, 15);
+                    final String childLatLong = (String) customExpandAdapter.getChild(groupPosition, 12);
+                    String latLong[] = childLatLong.split("/");
 
                     final String[]codigoUnidade = childUnidade.split(":");
-                    final String[]latitude = childLat.split(":");
-                    final String[]longitude = childLong.split(":");
+                    final String[]latitude = latLong[0].split(":");
+                    final String[]longitude = latLong[1].split(":");
 
+                    customExpandAdapter.setNomeUnidade((String) customExpandAdapter.getGroup(groupPosition));
                     customExpandAdapter.setCodigoUnidade(codigoUnidade[1].trim());
                     customExpandAdapter.setLatitude(Double.valueOf(latitude[1].trim()));
                     customExpandAdapter.setLongitute(Double.valueOf(longitude[1].trim()));

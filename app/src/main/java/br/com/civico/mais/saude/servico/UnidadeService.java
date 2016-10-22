@@ -134,10 +134,9 @@ public class UnidadeService {
                 }else{
                     listaDados.add("Telefone: - ");
                 }
-                listaDados.add("Atendimento: " + oneObject.getString("turnoAtendimento"));
+                listaDados.add("Latitude: " + oneObject.getString("lat") + "   /    " + "Longitude: " + oneObject.getString("long"));
                 listaDados.add("  ");
-                listaDados.add("Latitude: " + oneObject.getString("lat"));
-                listaDados.add("Longitude: " + oneObject.getString("long"));
+                listaDados.add("Atendimento: " + oneObject.getString("turnoAtendimento"));
 
                 listDataChild.put(listaHeader.get(i), listaDados);
                 listMediaChild.put(codigoUnidade, mediaAvaliacao);
