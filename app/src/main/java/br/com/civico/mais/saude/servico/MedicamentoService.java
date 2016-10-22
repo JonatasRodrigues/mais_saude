@@ -23,19 +23,17 @@ import cz.msebera.android.httpclient.HttpResponse;
 import cz.msebera.android.httpclient.client.HttpClient;
 import cz.msebera.android.httpclient.impl.client.DefaultHttpClient;
 
-public class MedicamentoService extends AbstractService<MedicamentoResponse>  {
+public class MedicamentoService{
 
     public MedicamentoService(){
 
     }
 
-    @Override
-    public MedicamentoResponse consumirServicoTCU() throws JSONException {
+    public MedicamentoResponse consumirServicoTCU(int pagina) throws JSONException {
         MedicamentoResponse medicamentoResponse = new MedicamentoResponse();
         String result="";
         try {
-            String url = ConstantesAplicacao.URL_BASE + "/rest/remedios?quantidade=12&pagina=0";
-
+            String url = ConstantesAplicacao.URL_BASE + "/rest/remedios?quantidade=15&pagina="+pagina;
             HttpClient httpclient = new DefaultHttpClient();
 
             HttpGet httpget = new HttpGet(url);
@@ -96,7 +94,6 @@ public class MedicamentoService extends AbstractService<MedicamentoResponse>  {
                 String codigoBarra = oneObject.getString("codBarraEan");
                 String idHash = produto + ConstantesAplicacao.SPLIT_CARACTER + codigoBarra;
                 listaHeader.add(idHash);
-                listaDados.add("  ");
                 listaDados.add("Laboratório: " + oneObject.getString("laboratorio"));
                 listaDados.add("CNPJ: " + oneObject.getString("cnpj"));
                 listaDados.add("Princípio Ativo: " + oneObject.getString("principioAtivo"));
@@ -111,5 +108,9 @@ public class MedicamentoService extends AbstractService<MedicamentoResponse>  {
             }
         }
         return new MedicamentoExpandableDTO(listaHeader,listDataChild);
+    }
+
+    public JSONArray getJson(String json) throws JSONException {
+        return new JSONArray(json);
     }
 }
