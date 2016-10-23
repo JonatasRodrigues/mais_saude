@@ -15,6 +15,7 @@ import java.util.List;
 
 import br.com.civico.mais.saude.constantes.ConstantesAplicacao;
 import br.com.civico.mais.saude.converter.StreamConverter;
+ import br.com.civico.mais.saude.dto.AvaliacaoResponse;
  import br.com.civico.mais.saude.dto.unidade.ExpandableUnidadeDTO;
  import br.com.civico.mais.saude.dto.unidade.UnidadeResponse;
 import cz.msebera.android.httpclient.HttpEntity;
@@ -34,7 +35,7 @@ public class UnidadeService {
         this.location=location;
     }
 
-    private String getMediaAvaliacaoPorUnidade(String codigoUnidade) {
+    private AvaliacaoResponse getMediaAvaliacaoPorUnidade(String codigoUnidade) {
         String result=null;
         try {
             String url = ConstantesAplicacao.URL_BASE_METAMODELO + "/rest/postagens/tipopostagem/" +
@@ -62,10 +63,13 @@ public class UnidadeService {
     }
 
 
-    private String converterJsonParaObjectMedia(String result){
+    private AvaliacaoResponse converterJsonParaObjectMedia(String result){
+        AvaliacaoResponse avaliacaoResponse = new AvaliacaoResponse();
         try {
             JSONObject obj = new JSONObject(result);
-            return obj.getString("media");
+            avaliacaoResponse.setMediaAvaliacao(Float.parseFloat(obj.getString("media")));
+            avaliacaoResponse.setQtdAvaliacao(obj.getString("contagem"));
+            return avaliacaoResponse;
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -109,7 +113,7 @@ public class UnidadeService {
         List<String> listaHeader = new ArrayList<String>();
         List<String> listaDados;
         HashMap<String, List<String>> listDataChild = new HashMap<>();
-        HashMap<String, String> listMediaChild = new HashMap<>();
+        HashMap<String, AvaliacaoResponse> listMediaChild = new HashMap<>();
         for (int i=0; i < jsonArray.length(); i++) {
             try {
                 listaDados = new ArrayList<String>();
@@ -119,7 +123,6 @@ public class UnidadeService {
                 listaDados.add("Tipo Unidade: " + oneObject.getString("tipoUnidade"));
                 String codigoUnidade = oneObject.getString("codUnidade");
                 listaDados.add("Código: " + codigoUnidade);
-                String mediaAvaliacao = getMediaAvaliacaoPorUnidade(codigoUnidade);
                 listaDados.add("Vinculo SUS: " + oneObject.getString("vinculoSus"));
                 listaDados.add("Emergência:  " + oneObject.getString("temAtendimentoUrgencia")+ "       " + "Centro Cirúrgico: " + oneObject.getString("temCentroCirurgico"));
                 listaDados.add("Ambulatório: " + oneObject.getString("temAtendimentoAmbulatorial")+ "       " + "Obstetria: " + oneObject.getString("temObstetra"));
@@ -139,7 +142,7 @@ public class UnidadeService {
                 listaDados.add("Atendimento: " + oneObject.getString("turnoAtendimento"));
 
                 listDataChild.put(listaHeader.get(i), listaDados);
-                listMediaChild.put(codigoUnidade, mediaAvaliacao);
+                listMediaChild.put(codigoUnidade, getMediaAvaliacaoPorUnidade(codigoUnidade));
             } catch (JSONException e) {
                 e.printStackTrace();
             }

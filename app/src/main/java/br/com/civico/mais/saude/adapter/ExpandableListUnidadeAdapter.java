@@ -1,11 +1,13 @@
 package br.com.civico.mais.saude.adapter;
 
 import android.content.Intent;
+import android.support.design.widget.FloatingActionButton;
 import android.view.View;
 import android.view.ViewGroup;
 import br.com.civico.mais.saude.R;
 import br.com.civico.mais.saude.controle.LoginActivity;
 import br.com.civico.mais.saude.controle.MapsActivity;
+import br.com.civico.mais.saude.dto.AvaliacaoResponse;
 
 import android.widget.BaseExpandableListAdapter;
 import android.content.Context;
@@ -25,14 +27,14 @@ public class ExpandableListUnidadeAdapter extends BaseExpandableListAdapter{
     private Context _context;
     private List<String> _listDataHeader; // header titles
     private HashMap<String, List<String>> _listDataChild;
-    private HashMap<String, String> listMediaChild;
+    private HashMap<String, AvaliacaoResponse> listMediaChild;
     private String codigoUnidade;
     private Double latitude;
     private Double longitute;
     private String nomeUnidade;
 
     public ExpandableListUnidadeAdapter(Context context, List<String> listDataHeader,HashMap<String, List<String>> listChildData,
-          HashMap<String, String> listMediaChild) {
+          HashMap<String, AvaliacaoResponse> listMediaChild) {
         this._context = context;
         this._listDataHeader = listDataHeader;
         this._listDataChild = listChildData;
@@ -40,8 +42,9 @@ public class ExpandableListUnidadeAdapter extends BaseExpandableListAdapter{
     }
 
     static class ViewHolder {
-        TextView textView;
-        Button btnComentario,btnMapa;
+        TextView descUnidade,qtdAvaliacao;
+        Button btnMapa;
+        Button btnComentario;
         RatingBar ratingBar;
     }
 
@@ -50,7 +53,7 @@ public class ExpandableListUnidadeAdapter extends BaseExpandableListAdapter{
         return this._listDataChild.get(this._listDataHeader.get(groupPosition)).get(childPosititon);
     }
 
-    public String getMediaChild(String codigoUnidade) {
+    public AvaliacaoResponse getMediaChild(String codigoUnidade) {
         return this.listMediaChild.get(codigoUnidade);
     }
 
@@ -86,6 +89,7 @@ public class ExpandableListUnidadeAdapter extends BaseExpandableListAdapter{
                 holder.btnComentario = (Button) convertView.findViewById(R.id.btnComentario);
                 holder.btnMapa = (Button) convertView.findViewById(R.id.btnMapa);
                 holder.ratingBar = (RatingBar) convertView.findViewById(R.id.ratingBarMedia);
+                holder.qtdAvaliacao = (TextView) convertView.findViewById(R.id.qtdComentarios);
 
                 holder.btnComentario.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -111,19 +115,19 @@ public class ExpandableListUnidadeAdapter extends BaseExpandableListAdapter{
              }else {
                 convertView = infalInflater.inflate(R.layout.customer_unidade_row_sem_btn, parent, false);
             }
-            holder.textView = (TextView) convertView.findViewById(R.id.descUnidade);
+            holder.descUnidade = (TextView) convertView.findViewById(R.id.descUnidade);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
 
         if(childPosition == 0){
-            String mediaAvaliacao = getMediaChild(getCodigoUnidade());
-            holder.ratingBar.setRating(mediaAvaliacao != null ? Float.valueOf(mediaAvaliacao) : 0);
+            AvaliacaoResponse avaliacaoResponse = getMediaChild(getCodigoUnidade());
+            holder.ratingBar.setRating(avaliacaoResponse != null ? avaliacaoResponse.getMediaAvaliacao() : 0);
+            holder.qtdAvaliacao.setText(avaliacaoResponse != null ? avaliacaoResponse.getQtdAvaliacao() : "0");
         }
 
-
-        holder.textView.setText(childText);
+        holder.descUnidade.setText(childText);
         return convertView;
     }
 
@@ -201,7 +205,7 @@ public class ExpandableListUnidadeAdapter extends BaseExpandableListAdapter{
     }
 
     public void updateData( List<String> listDataHeader,HashMap<String, List<String>> listChildData,
-                            HashMap<String, String> listMediaChild) {
+                            HashMap<String, AvaliacaoResponse> listMediaChild) {
         this._listDataHeader.addAll(listDataHeader);
         this._listDataChild.putAll(listChildData);
         this.listMediaChild.putAll(listMediaChild);
