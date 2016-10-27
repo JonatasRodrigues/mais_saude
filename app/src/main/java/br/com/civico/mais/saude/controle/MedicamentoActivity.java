@@ -14,7 +14,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-import android.widget.ExpandableListAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,9 +27,11 @@ import br.com.civico.mais.saude.adapter.ExpandableListMedicamentoAdapter;
 import br.com.civico.mais.saude.constantes.ConstantesAplicacao;
 import br.com.civico.mais.saude.dto.medicamento.MedicamentoResponse;
 import br.com.civico.mais.saude.servico.MedicamentoService;
+import br.com.civico.mais.saude.util.LocationPermissionsUtil;
 
 public class  MedicamentoActivity extends Activity {
     private ExpandableListView expListView;
+    private EditText seachTextBox;
     private ProgressDialog progressDialog;
     private Context context;
 
@@ -36,19 +39,34 @@ public class  MedicamentoActivity extends Activity {
     private int currentPage = 0;
     private int previousTotal = 0;
     private boolean loading = true;
+    private String searchValue = new String("");
+    private AsyncTask<Void, Void, MedicamentoResponse> task;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.medicamento_consulta);
         expListView = (ExpandableListView) findViewById(R.id.medicamentoListView);
+        seachTextBox = (EditText) findViewById(R.id.SeachEditText);
         context = this;
         carregaMedicamentos();
         expListView.setOnScrollListener(customScrollListener);
+        Button btnSeachMedicamento = (Button) findViewById(R.id.btnSeachMedicamento);
+        btnSeachMedicamento.setOnClickListener(onClickListenerMedicamento);
     }
+    private View.OnClickListener onClickListenerMedicamento = new View.OnClickListener() {
+        public void onClick(final View v) {
+            if(v.getId()== R.id.btnSeachMedicamento){
+                currentPage = 0;
+                previousTotal = 0;
+                searchValue = String.valueOf(seachTextBox.getText());
+                carregaMedicamentos();
+            }
+        }
+    };
 
     private void carregaMedicamentos() {
-        AsyncTask<Void, Void, MedicamentoResponse> task = new AsyncTask<Void, Void, MedicamentoResponse>() {
+        task = new AsyncTask<Void, Void, MedicamentoResponse>() {
 
             @Override
             protected void onPreExecute() {
@@ -63,7 +81,7 @@ public class  MedicamentoActivity extends Activity {
             protected MedicamentoResponse doInBackground(Void... voids) {
                 try {
                     MedicamentoService medicamentoService = new MedicamentoService();
-                    return medicamentoService.consumirServicoTCU(currentPage);
+                    return medicamentoService.consumirServicoTCU(currentPage, searchValue);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -76,19 +94,26 @@ public class  MedicamentoActivity extends Activity {
                     progressDialog.dismiss();
                 }
 
-                if(medicamentoResponse.getStatusCodigo()== ConstantesAplicacao.STATUS_OK){
+                if (medicamentoResponse.getStatusCodigo() == ConstantesAplicacao.STATUS_OK) {
                     ExpandableListMedicamentoAdapter adapterMedicamento = (ExpandableListMedicamentoAdapter) expListView.getExpandableListAdapter();
-                    if(adapterMedicamento == null) {
+                    if (adapterMedicamento == null) {
                         ExpandableListMedicamentoAdapter adapter = new ExpandableListMedicamentoAdapter(context, medicamentoResponse.getMedicamentoExpandableDTO().getListDataHeader(),
                                 medicamentoResponse.getMedicamentoExpandableDTO().getListDataChild());
                         configurarExpList();
                         expListView.setAdapter(adapter);
-                    }else{
-                        adapterMedicamento.updateData(medicamentoResponse.getMedicamentoExpandableDTO().getListDataHeader(),
-                                medicamentoResponse.getMedicamentoExpandableDTO().getListDataChild());
-                        adapterMedicamento.notifyDataSetChanged();
+                    } else {
+                        if (searchValue != null && !searchValue.isEmpty() && currentPage == 0) {
+                            ExpandableListMedicamentoAdapter adapter = new ExpandableListMedicamentoAdapter(context, medicamentoResponse.getMedicamentoExpandableDTO().getListDataHeader(),
+                                    medicamentoResponse.getMedicamentoExpandableDTO().getListDataChild());
+                            configurarExpList();
+                            expListView.setAdapter(adapter);
+                        }else {
+                            adapterMedicamento.updateData(medicamentoResponse.getMedicamentoExpandableDTO().getListDataHeader(),
+                                    medicamentoResponse.getMedicamentoExpandableDTO().getListDataChild());
+                            adapterMedicamento.notifyDataSetChanged();
+                        }
                     }
-                }else{
+                } else {
                     exibirMsgErro(medicamentoResponse.getMensagem());
                     voltarMenu();
                 }

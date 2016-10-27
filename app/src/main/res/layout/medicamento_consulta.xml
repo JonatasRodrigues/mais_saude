@@ -3,9 +3,28 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+     <EditText
+         android:id="@+id/SeachEditText"
+         android:layout_height="wrap_content"
+         android:layout_width="30px"
+         android:hint="@string/label_seach_medicamento"
+         android:layout_alignParentTop="true"
+         android:layout_alignParentLeft="true"
+         android:layout_toStartOf="@+id/btnSeachMedicamento"
+         android:layout_alignBottom="@+id/btnSeachMedicamento"
+         android:layout_toLeftOf="@+id/btnSeachMedicamento" />
+     <Button
+         android:text="@string/button_seach_medicamento"
+         android:id="@+id/btnSeachMedicamento"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_alignParentTop="true"
+         android:layout_alignParentRight="true"/>
+
      <ExpandableListView
-        android:layout_width="wrap_content"
+         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/medicamentoListView" />
+        android:id="@+id/medicamentoListView"
+         android:layout_below="@+id/SeachEditText" />
 
 </RelativeLayout>

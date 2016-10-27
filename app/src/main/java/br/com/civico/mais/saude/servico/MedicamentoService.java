@@ -29,11 +29,14 @@ public class MedicamentoService{
 
     }
 
-    public MedicamentoResponse consumirServicoTCU(int pagina) throws JSONException {
+    public MedicamentoResponse consumirServicoTCU(int pagina, String produto) throws JSONException {
         MedicamentoResponse medicamentoResponse = new MedicamentoResponse();
         String result="";
         try {
             String url = ConstantesAplicacao.URL_BASE + "/rest/remedios?quantidade=15&pagina="+pagina;
+            if(produto != null && !produto.isEmpty()){
+                url = url + "&produto="+produto;
+            }
             HttpClient httpclient = new DefaultHttpClient();
 
             HttpGet httpget = new HttpGet(url);
