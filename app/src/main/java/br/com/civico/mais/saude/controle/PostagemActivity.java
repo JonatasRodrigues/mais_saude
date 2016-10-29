@@ -90,7 +90,7 @@ public class PostagemActivity extends BaseActivity {
 
     private void carregarPostagens(){
         this.lblSemComentario.setVisibility(View.GONE);
-        AsyncTask<Void, Void, List<PostagemDTO>> task = new AsyncTask<Void, Void, List<PostagemDTO>>() {
+         AsyncTask<Void, Void, List<PostagemDTO>> task = new AsyncTask<Void, Void, List<PostagemDTO>>() {
 
             @Override
             protected void onPreExecute() {
@@ -127,10 +127,10 @@ public class PostagemActivity extends BaseActivity {
                         listView.setAdapter(adapter);
                     }
                 }else{
-                  //  if(result!=null){
+                   if(result!=null){
                         listAdapter.updateData(result);
                         listView.deferNotifyDataSetChanged();
-                  //  }
+                   }
                 }
             }
         };
