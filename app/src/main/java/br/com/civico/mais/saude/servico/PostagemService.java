@@ -27,11 +27,11 @@ import cz.msebera.android.httpclient.impl.client.DefaultHttpClient;
  */
 public class  PostagemService {
 
-    public List<PostagemDTO> buscarPostagensPorUnidade(String codigoUnidade,String token) {
+    public List<PostagemDTO> buscarPostagensPorUnidade(String codigoUnidade,String token,Integer currentPage) {
         String result=null;
         try {
             String url = ConstantesAplicacao.URL_BASE_METAMODELO + "/rest/postagens/timeline?codObjetoDestino=" + codigoUnidade + "&codAplicativo=" +
-                    ConstantesAplicacao.COD_APP_IDENTIFICADOR;
+                    ConstantesAplicacao.COD_APP_IDENTIFICADOR + "&pagina=" + currentPage;
             HttpClient httpclient = new DefaultHttpClient();
 
             HttpGet httpget = new HttpGet(url);
@@ -61,11 +61,7 @@ public class  PostagemService {
         for (int i=0; i < jsonArray.length(); i++) {
             try {
                 PostagemDTO dto = new PostagemDTO();
-                PostagemDTO dto1 = new PostagemDTO();
-                PostagemDTO dto2 = new PostagemDTO();
-                PostagemDTO dto3 = new PostagemDTO();
-                PostagemDTO dto4 = new PostagemDTO();
-                PostagemDTO dto5 = new PostagemDTO();
+
                 JSONObject oneObject = jsonArray.getJSONObject(i);
                 dto.setNomeAutor(oneObject.getString("nomeAutor"));
                 dto.setDataPostagem(oneObject.getString("dataHoraPostagem"));
@@ -73,44 +69,7 @@ public class  PostagemService {
                 dto.setComentario(conteudoArray.getJSONObject(0).getString("texto"));
                 dto.setPontuacao(Float.valueOf(conteudoArray.getJSONObject(0).getString("valor")));
 
-                dto1.setNomeAutor(oneObject.getString("nomeAutor"));
-                dto1.setDataPostagem(oneObject.getString("dataHoraPostagem"));
-                JSONArray conteudoArray1 = oneObject.getJSONArray("conteudos");
-                dto1.setComentario(conteudoArray1.getJSONObject(0).getString("texto"));
-                dto1.setPontuacao(Float.valueOf(conteudoArray1.getJSONObject(0).getString("valor")));
-
-                dto2.setNomeAutor(oneObject.getString("nomeAutor"));
-                dto2.setDataPostagem(oneObject.getString("dataHoraPostagem"));
-                JSONArray conteudoArray2 = oneObject.getJSONArray("conteudos");
-                dto2.setComentario(conteudoArray2.getJSONObject(0).getString("texto"));
-                dto2.setPontuacao(Float.valueOf(conteudoArray2.getJSONObject(0).getString("valor")));
-
-                dto3.setNomeAutor(oneObject.getString("nomeAutor"));
-                dto3.setDataPostagem(oneObject.getString("dataHoraPostagem"));
-                JSONArray conteudoArray3 = oneObject.getJSONArray("conteudos");
-                dto3.setComentario(conteudoArray3.getJSONObject(0).getString("texto"));
-                dto3.setPontuacao(Float.valueOf(conteudoArray3.getJSONObject(0).getString("valor")));
-
-                dto4.setNomeAutor(oneObject.getString("nomeAutor"));
-                dto4.setDataPostagem(oneObject.getString("dataHoraPostagem"));
-                JSONArray conteudoArray4 = oneObject.getJSONArray("conteudos");
-                dto4.setComentario(conteudoArray4.getJSONObject(0).getString("texto"));
-                dto4.setPontuacao(Float.valueOf(conteudoArray4.getJSONObject(0).getString("valor")));
-
-                dto5.setNomeAutor(oneObject.getString("nomeAutor"));
-                dto5.setDataPostagem(oneObject.getString("dataHoraPostagem"));
-                JSONArray conteudoArray5 = oneObject.getJSONArray("conteudos");
-                dto5.setComentario(conteudoArray5.getJSONObject(0).getString("texto"));
-                dto5.setPontuacao(Float.valueOf(conteudoArray5.getJSONObject(0).getString("valor")));
-
                 lista.add(dto);
-                lista.add(dto1);
-                lista.add(dto2);
-                lista.add(dto3);
-                lista.add(dto4);
-                lista.add(dto5);
-
-
             } catch (JSONException e) {
                 e.printStackTrace();
             }

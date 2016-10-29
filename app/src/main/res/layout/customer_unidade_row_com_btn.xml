@@ -26,6 +26,7 @@
             android:id="@+id/ratingBarMedia"
             style="?android:attr/ratingBarStyleSmall"
             android:progressTint="@color/goldenYellow"
+            android:progressBackgroundTintMode="@color/white"
             android:isIndicator="true"
             android:layout_centerVertical="true"
             android:layout_alignParentLeft="true"

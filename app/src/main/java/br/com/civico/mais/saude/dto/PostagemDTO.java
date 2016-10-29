@@ -24,7 +24,7 @@ public class PostagemDTO {
 
     public String getDataPostagem() {
         try {
-            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'BRT'");
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'BRST'");
             Date date = dateFormat.parse(dataPostagem);
             return new SimpleDateFormat("dd/MM/yyyy").format(date);
         } catch (ParseException e) {

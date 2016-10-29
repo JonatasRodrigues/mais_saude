@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -23,6 +24,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import br.com.civico.mais.saude.R;
+import br.com.civico.mais.saude.adapter.ExpandableListUnidadeAdapter;
 import br.com.civico.mais.saude.adapter.ListViewPostagemAdapter;
 import br.com.civico.mais.saude.constantes.ConstantesAplicacao;
 import br.com.civico.mais.saude.dto.PostagemDTO;
@@ -38,12 +40,19 @@ public class PostagemActivity extends BaseActivity {
     private TextView tituloComentario;
     private float pontuacao=5;
 
+    private int visibleThreshold = 0;
+    private int currentPage = 0;
+    private int previousTotal = 0;
+    private boolean loading = true;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.comentario_list);
         context = this;
         this.listView = (ListView) findViewById(R.id.listComentario);
+        this.listView.setOnScrollListener(customScrollListener);
+
         this.lblSemComentario = (TextView) findViewById(R.id.semComentario);
         this.lblSemComentario.setVisibility(View.GONE);
         this.tituloComentario = (TextView) findViewById(R.id.tituloComentario);
@@ -58,9 +67,30 @@ public class PostagemActivity extends BaseActivity {
         btnCriarPostagem.setOnClickListener(onCriarPostagemListener);
     }
 
+    private AbsListView.OnScrollListener customScrollListener = new AbsListView.OnScrollListener() {
+        @Override
+        public void onScroll(AbsListView view, int firstVisibleItem,int visibleItemCount, int totalItemCount) {
+            if (loading) {
+                if (totalItemCount > previousTotal) {
+                    loading = false;
+                    previousTotal = totalItemCount;
+                    currentPage++;
+                }
+            }
+            if (!loading && (totalItemCount - visibleItemCount) <= (firstVisibleItem + visibleThreshold)) {
+                carregarPostagens();
+                loading = true;
+            }
+        }
+        @Override
+        public void onScrollStateChanged(AbsListView view, int scrollState) {
+        }
+
+    };
+
     private void carregarPostagens(){
         this.lblSemComentario.setVisibility(View.GONE);
-        AsyncTask<Void, Void, ListViewPostagemAdapter> task = new AsyncTask<Void, Void, ListViewPostagemAdapter>() {
+        AsyncTask<Void, Void, List<PostagemDTO>> task = new AsyncTask<Void, Void, List<PostagemDTO>>() {
 
             @Override
             protected void onPreExecute() {
@@ -72,24 +102,35 @@ public class PostagemActivity extends BaseActivity {
             }
 
             @Override
-            protected ListViewPostagemAdapter doInBackground(Void... voids) {
+            protected List<PostagemDTO> doInBackground(Void... voids) {
                 SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
                 String auth_token_string = settings.getString("token", "");
                 String codigoUnidade = settings.getString("codigoUnidade", "");
-                List<PostagemDTO> result =new PostagemService().buscarPostagensPorUnidade(codigoUnidade, auth_token_string);
-                return new ListViewPostagemAdapter(context,R.layout.customer_postagem_row, result);
+               return new PostagemService().buscarPostagensPorUnidade(codigoUnidade, auth_token_string,currentPage);
+
             }
 
             @Override
-            protected void onPostExecute(ListViewPostagemAdapter adapter) {
+            protected void onPostExecute(List<PostagemDTO> result) {
                 if (progressDialog != null) {
                     progressDialog.dismiss();
                 }
-                tituloComentario.setText("Comentários(" + adapter.getCount() + ")");
-                if(adapter.getCount()==0){
-                    lblSemComentario.setVisibility(View.VISIBLE);
+                tituloComentario.setText("Comentários");
+
+                ListViewPostagemAdapter listAdapter = (ListViewPostagemAdapter) listView.getAdapter();
+
+                if(listAdapter==null){
+                    if(result==null){
+                        lblSemComentario.setVisibility(View.VISIBLE);
+                    }else{
+                        ListViewPostagemAdapter adapter = new ListViewPostagemAdapter(context,R.layout.customer_postagem_row, result);
+                        listView.setAdapter(adapter);
+                    }
                 }else{
-                    listView.setAdapter(adapter);
+                  //  if(result!=null){
+                        listAdapter.updateData(result);
+                        listView.deferNotifyDataSetChanged();
+                  //  }
                 }
             }
         };

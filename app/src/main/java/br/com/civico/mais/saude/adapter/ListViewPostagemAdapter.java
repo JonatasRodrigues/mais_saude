@@ -33,8 +33,6 @@ public class ListViewPostagemAdapter extends BaseAdapter {
         RatingBar rating;
     }
 
-
-
     @Override
         public View getView(int position, View convertView, ViewGroup parent) {
 
@@ -78,6 +76,10 @@ public class ListViewPostagemAdapter extends BaseAdapter {
 
             return view;
         }
+
+    public void updateData(List<PostagemDTO> postagemDTOList) {
+        this.postagemDTOList.addAll(postagemDTOList);
+    }
 
     @Override
     public int getCount() {
