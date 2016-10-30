@@ -80,7 +80,7 @@ public class UnidadeService {
         String result="";
         try {
             String url = ConstantesAplicacao.URL_BASE + "/rest/estabelecimentos/latitude/" + this.location.getLatitude()
-                    + "/longitude/" + this.location.getLongitude() + "/raio/" + RAIO + "?quantidade=15" + "&pagina=" + currentPage;
+                    + "/longitude/" + this.location.getLongitude() + "/raio/" + RAIO + "?pagina=" + currentPage;
 
             HttpClient httpclient = new DefaultHttpClient();
 

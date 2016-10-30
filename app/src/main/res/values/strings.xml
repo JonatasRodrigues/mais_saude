@@ -37,11 +37,19 @@
     <!-- Strings related to Sobre -->
     <string name="label_aplicativo">- Aplicativo:</string>
     <string name="label_versao">- Versão:</string>
-    <string name="label_descricao">Descrição:</string>
-    <string name="descricao_app"> O app Brasil Mais Saúde está participando do Desafio de Aplicativos Cívicos realizado
-        pelo Tribunal de Contas da União (TCU).\n O aplicativo é baseado em dados abertos e utiliza o sistema de crowdsourcing
-        que é abastecido pelos usuários. As informações coletadas com a participação da sociedade serão usadas para gerar
-        conteúdo e auxiliar os órgãos de controle externo e o próprio Estado a criar políticas públicas mais efetivas.</string>
+    <string name="label_descricao">- Descrição:</string>
+    <string name="descricao_app">  O aplicativo Brasil Mais Saúde possui o cunho cívico e social, ao qual, está participando do
+        DESAFIO DE APLICATIVOS CÍVICOS: CONTROLE SOCIAL DIGITAL-2016 realizado pelo Tribunal de Contas da União (TCU).
+        \n O aplicativo é baseado em dados abertos disponibilizados nas bases governamentais públicas  e utiliza o sistema
+        de crowdsourcing que é abastecido pelos usuários. As informações coletadas com a participação da sociedade serão usadas para gerar
+        conteúdo e auxiliar os órgãos de controle externo.</string>
+
+    <string name="label_desenvolvedores">- Desenvolvedores:</string>
+    <string name="label_desenvolvedor_1">Jônatas Rodrigues</string>
+    <string name="label_desenvolvedor_2">Jefferson Pereira</string>
+    <string name="label_contato">- Contato:</string>
+    <string name="label_email_contato">jsrodrigues@protonmail.com</string>
+
     <string name="title_activity_maps">Map</string>
 
 </resources>

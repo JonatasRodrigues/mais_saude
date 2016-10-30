@@ -54,7 +54,6 @@
     </TableLayout>
         </TableRow>
 
-
     <TableLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
@@ -82,7 +81,64 @@
                 android:textStyle="bold"/>
         </TableRow>
 
-    </TableLayout>
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="10dp"/>
+
+        <TableRow>
+            <TextView
+                android:layout_column="1"
+                android:text="@string/label_desenvolvedores"
+                android:layout_width="wrap_content"
+                android:gravity="left"
+                android:padding="3dip"
+                android:textStyle="bold"/>
+        </TableRow>
+
+        <TableRow>
+            <TextView
+                android:layout_column="1"
+                android:text="@string/label_desenvolvedor_1"
+                android:gravity="left"
+                android:padding="1dip"
+                android:textStyle="bold"/>
+        </TableRow>
+
+        <TableRow>
+            <TextView
+                android:layout_column="1"
+                android:text="@string/label_desenvolvedor_2"
+                android:gravity="left"
+                android:padding="1dip"
+                android:textStyle="bold" />
+        </TableRow>
+
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="10dp"/>
+
+        <TableRow>
+            <TextView
+                android:layout_column="1"
+                android:text="@string/label_contato"
+                android:layout_width="wrap_content"
+                android:gravity="left"
+                android:padding="3dip"
+                android:textStyle="bold"/>
+        </TableRow>
+
+        <TableRow>
+            <TextView
+                android:layout_column="1"
+                android:text="@string/label_email_contato"
+                android:gravity="left"
+                android:padding="2dip"
+                android:textStyle="bold"/>
+        </TableRow>
+
+
+      </TableLayout>
 
     </TableLayout>
 </RelativeLayout>
