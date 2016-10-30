@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -29,7 +30,7 @@ import br.com.civico.mais.saude.dto.medicamento.MedicamentoResponse;
 import br.com.civico.mais.saude.servico.MedicamentoService;
 import br.com.civico.mais.saude.util.LocationPermissionsUtil;
 
-public class  MedicamentoActivity extends Activity {
+public class  MedicamentoActivity extends BaseActivity {
     private ExpandableListView expListView;
     private EditText seachTextBox;
     private ProgressDialog progressDialog;
@@ -59,86 +60,80 @@ public class  MedicamentoActivity extends Activity {
             if(v.getId()== R.id.btnSeachMedicamento){
                 currentPage = 0;
                 previousTotal = 0;
+                if(searchValue != null && !searchValue.isEmpty() && String.valueOf(seachTextBox.getText()).isEmpty()){
+                    ExpandableListMedicamentoAdapter adapter = null;
+                    expListView.setAdapter(adapter);
+                }
                 searchValue = String.valueOf(seachTextBox.getText());
+                hideKeyboard(context,seachTextBox);
                 carregaMedicamentos();
             }
         }
     };
 
     private void carregaMedicamentos() {
-        task = new AsyncTask<Void, Void, MedicamentoResponse>() {
+        if(task == null || task.getStatus() == AsyncTask.Status.FINISHED){
+            task = new AsyncTask<Void, Void, MedicamentoResponse>() {
 
-            @Override
-            protected void onPreExecute() {
-                progressDialog = new ProgressDialog(MedicamentoActivity.this);
-                progressDialog.setMessage("Carregando...");
-                progressDialog.setCancelable(false);
-                progressDialog.setIndeterminate(true);
-                progressDialog.show();
-            }
-
-            @Override
-            protected MedicamentoResponse doInBackground(Void... voids) {
-                try {
-                    MedicamentoService medicamentoService = new MedicamentoService();
-                    return medicamentoService.consumirServicoTCU(currentPage, searchValue);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(MedicamentoResponse medicamentoResponse) {
-                if (progressDialog != null) {
-                    progressDialog.dismiss();
+                @Override
+                protected void onPreExecute() {
+                    progressDialog = new ProgressDialog(MedicamentoActivity.this);
+                    progressDialog.setMessage("Carregando...");
+                    progressDialog.setCancelable(false);
+                    progressDialog.setIndeterminate(true);
+                    progressDialog.show();
                 }
 
-                if (medicamentoResponse.getStatusCodigo() == ConstantesAplicacao.STATUS_OK) {
-                    ExpandableListMedicamentoAdapter adapterMedicamento = (ExpandableListMedicamentoAdapter) expListView.getExpandableListAdapter();
-                    if (adapterMedicamento == null) {
-                        ExpandableListMedicamentoAdapter adapter = new ExpandableListMedicamentoAdapter(context, medicamentoResponse.getMedicamentoExpandableDTO().getListDataHeader(),
-                                medicamentoResponse.getMedicamentoExpandableDTO().getListDataChild());
-                        configurarExpList();
-                        expListView.setAdapter(adapter);
-                    } else {
-                        if (searchValue != null && !searchValue.isEmpty() && currentPage == 0) {
+                @Override
+                protected MedicamentoResponse doInBackground(Void... voids) {
+                    try {
+                        MedicamentoService medicamentoService = new MedicamentoService();
+                        return medicamentoService.consumirServicoTCU(currentPage, searchValue);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                }
+
+                @Override
+                protected void onPostExecute(MedicamentoResponse medicamentoResponse) {
+                    if (progressDialog != null) {
+                        progressDialog.dismiss();
+                    }
+
+                    if (medicamentoResponse.getStatusCodigo() == ConstantesAplicacao.STATUS_OK) {
+                        ExpandableListMedicamentoAdapter adapterMedicamento = (ExpandableListMedicamentoAdapter) expListView.getExpandableListAdapter();
+                        if (adapterMedicamento == null) {
                             ExpandableListMedicamentoAdapter adapter = new ExpandableListMedicamentoAdapter(context, medicamentoResponse.getMedicamentoExpandableDTO().getListDataHeader(),
                                     medicamentoResponse.getMedicamentoExpandableDTO().getListDataChild());
                             configurarExpList();
                             expListView.setAdapter(adapter);
-                        }else {
-                            adapterMedicamento.updateData(medicamentoResponse.getMedicamentoExpandableDTO().getListDataHeader(),
-                                    medicamentoResponse.getMedicamentoExpandableDTO().getListDataChild());
-                            adapterMedicamento.notifyDataSetChanged();
+                        } else {
+                            if (isPrimeiraPesquisaPorTexto()) {
+                                ExpandableListMedicamentoAdapter adapter = new ExpandableListMedicamentoAdapter(context, medicamentoResponse.getMedicamentoExpandableDTO().getListDataHeader(),
+                                        medicamentoResponse.getMedicamentoExpandableDTO().getListDataChild());
+                                configurarExpList();
+                                expListView.setAdapter(adapter);
+                            }else {
+                                adapterMedicamento.updateData(medicamentoResponse.getMedicamentoExpandableDTO().getListDataHeader(),
+                                        medicamentoResponse.getMedicamentoExpandableDTO().getListDataChild());
+                                adapterMedicamento.notifyDataSetChanged();
+                            }
                         }
+                    } else {
+                        exibirMsgErro(medicamentoResponse.getMensagem());
+                        voltarMenu();
                     }
-                } else {
-                    exibirMsgErro(medicamentoResponse.getMensagem());
-                    voltarMenu();
                 }
-            }
-        };
-        task.execute((Void[]) null);
+
+            };
+            task.execute((Void[]) null);
+        }
     }
 
-    private void exibirMsgErro(String mensagem){
-        LayoutInflater inflater = getLayoutInflater();
-        View layout = inflater.inflate(R.layout.toast_erro,(ViewGroup) findViewById(R.id.layout_erro));
 
-        TextView text = (TextView) layout.findViewById(R.id.textErro);
-        text.setText(mensagem);
-
-        Toast toast = new Toast(getApplicationContext());
-        toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
-        toast.setDuration(Toast.LENGTH_LONG);
-        toast.setView(layout);
-        toast.show();
-    }
-
-    private void voltarMenu(){
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
+    private boolean isPrimeiraPesquisaPorTexto() {
+        return searchValue != null && !searchValue.isEmpty() && currentPage == 0;
     }
 
     private void configurarExpList(){
@@ -178,5 +173,9 @@ public class  MedicamentoActivity extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         return super.onOptionsItemSelected(item);
+    }
+    @Override
+    public void onBackPressed() {
+        voltarMenu();
     }
 }

@@ -12,7 +12,7 @@
     <string name="chck_cadastrado">Já sou cadastrado.</string>
 
     <!--Strings relacionados a tela de Medicamento -->
-    <string name="button_seach_medicamento">Pesquisa</string>
+    <string name="button_seach_medicamento">Pesquisar</string>
     <string name="label_seach_medicamento">Nome do medicamento</string>
     <string name="title_activity_medicamento">Medicamento</string>
 
