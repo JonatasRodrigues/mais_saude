@@ -9,7 +9,8 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
+ import java.net.URLEncoder;
+ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -75,12 +76,20 @@ public class UnidadeService {
         return null;
     }
 
-    public UnidadeResponse consumirServicoTCU(Integer currentPage) throws JSONException{
+    public UnidadeResponse consumirServicoTCU(Integer currentPage, String nomeUnidade) throws JSONException{
         UnidadeResponse unidadeResponse = new UnidadeResponse();
         String result="";
         try {
-            String url = ConstantesAplicacao.URL_BASE + "/rest/estabelecimentos/latitude/" + this.location.getLatitude()
-                    + "/longitude/" + this.location.getLongitude() + "/raio/" + RAIO + "?pagina=" + currentPage;
+            String url = ConstantesAplicacao.URL_BASE + "/rest/estabelecimentos";
+
+            if(nomeUnidade != null && !nomeUnidade.isEmpty()){
+                url =  url.concat("?pagina=").concat(String.valueOf(currentPage)).concat("&quantidade=15")
+                        .concat("&nomeFantasia=").concat(URLEncoder.encode(nomeUnidade, "UTF-8"));
+            }else{
+                url = url.concat("/latitude/").concat(String.valueOf(this.location.getLatitude())).concat("/longitude/")
+                        .concat(String.valueOf(this.location.getLongitude())).concat("/raio/").concat(String.valueOf(RAIO))
+                        .concat("?pagina=").concat(String.valueOf(currentPage)).concat("&quantidade=15");
+            }
 
             HttpClient httpclient = new DefaultHttpClient();
 

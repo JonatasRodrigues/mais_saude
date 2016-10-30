@@ -1,25 +1,17 @@
 package br.com.civico.mais.saude.controle;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import org.json.JSONException;
 
@@ -28,7 +20,6 @@ import br.com.civico.mais.saude.adapter.ExpandableListMedicamentoAdapter;
 import br.com.civico.mais.saude.constantes.ConstantesAplicacao;
 import br.com.civico.mais.saude.dto.medicamento.MedicamentoResponse;
 import br.com.civico.mais.saude.servico.MedicamentoService;
-import br.com.civico.mais.saude.util.LocationPermissionsUtil;
 
 public class  MedicamentoActivity extends BaseActivity {
     private ExpandableListView expListView;
@@ -55,6 +46,7 @@ public class  MedicamentoActivity extends BaseActivity {
         Button btnSeachMedicamento = (Button) findViewById(R.id.btnSeachMedicamento);
         btnSeachMedicamento.setOnClickListener(onClickListenerMedicamento);
     }
+
     private View.OnClickListener onClickListenerMedicamento = new View.OnClickListener() {
         public void onClick(final View v) {
             if(v.getId()== R.id.btnSeachMedicamento){

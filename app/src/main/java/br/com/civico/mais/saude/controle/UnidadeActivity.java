@@ -10,6 +10,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AbsListView;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ExpandableListView;
 
 import org.json.JSONException;
@@ -34,39 +36,80 @@ public class UnidadeActivity extends BaseActivity {
     private int previousTotal = 0;
     private boolean loading = true;
 
+    private EditText searchTextBox;
+    private String searchValue = new String("");
+    private AsyncTask<Void, Void, UnidadeResponse> task;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.unidade_consulta);
         context=this;
+        searchTextBox = (EditText) findViewById(R.id.SearchUnidade);
+        Button btnSearchUnidade = (Button) findViewById(R.id.btnSearchUnidade);
+        btnSearchUnidade.setOnClickListener(onClickListenerBuscarUnidade);
+
         expListView = (ExpandableListView) findViewById(R.id.unidadeListView);
         expListView.setOnScrollListener(customScrollListener);
-
-        expListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
-            @Override
-            public boolean onGroupClick(ExpandableListView parent, View v,int groupPosition, long id) {
-                ExpandableListUnidadeAdapter customExpandAdapter = (ExpandableListUnidadeAdapter)expListView.getExpandableListAdapter();
-
-                if(!parent.isGroupExpanded(groupPosition)){
-                    final String childUnidade = (String) customExpandAdapter.getChild(groupPosition, 2);
-                    final String childLatLong = (String) customExpandAdapter.getChild(groupPosition, 12);
-                    String latLong[] = childLatLong.split("/");
-
-                    final String[]codigoUnidade = childUnidade.split(":");
-                    final String[]latitude = latLong[0].split(":");
-                    final String[]longitude = latLong[1].split(":");
-
-                    customExpandAdapter.setNomeUnidade((String) customExpandAdapter.getGroup(groupPosition));
-                    customExpandAdapter.setCodigoUnidade(codigoUnidade[1].trim());
-                    customExpandAdapter.setLatitude(Double.valueOf(latitude[1].trim()));
-                    customExpandAdapter.setLongitute(Double.valueOf(longitude[1].trim()));
-                 }
-                return false;
-            }
-        });
+        expListView.setOnGroupClickListener(onGroupClickListener);
+        expListView.setOnGroupExpandListener(groupExpandListener); //mantém apenas um group aberto
 
         carregarUnidades();
     }
+
+    private View.OnClickListener onClickListenerBuscarUnidade = new View.OnClickListener() {
+        public void onClick(final View v) {
+            if(v.getId()== R.id.btnSearchUnidade){
+                currentPage = 0;
+                previousTotal = 0;
+                if(searchValue != null && !searchValue.isEmpty() && String.valueOf(searchTextBox.getText()).isEmpty()){
+                    ExpandableListUnidadeAdapter adapter = null;
+                    expListView.setAdapter(adapter);
+                }
+                searchValue = String.valueOf(searchTextBox.getText());
+                hideKeyboard(context,searchTextBox);
+                carregarUnidades();
+            }
+        }
+    };
+
+    private ExpandableListView.OnGroupExpandListener groupExpandListener =  new ExpandableListView.OnGroupExpandListener() {
+        @Override
+        public void onGroupExpand(int groupPosition) {
+            ExpandableListUnidadeAdapter customExpandAdapter = (ExpandableListUnidadeAdapter) expListView.getExpandableListAdapter();
+            if (customExpandAdapter == null) {
+                return;
+            }
+            for (int i = 0; i < customExpandAdapter.getGroupCount(); i++) {
+                if (i != groupPosition) {
+                    expListView.collapseGroup(i);
+                }
+            }
+        }
+    };
+
+    private ExpandableListView.OnGroupClickListener  onGroupClickListener = new ExpandableListView.OnGroupClickListener() {
+        @Override
+        public boolean onGroupClick(ExpandableListView parent, View v,int groupPosition, long id) {
+            ExpandableListUnidadeAdapter customExpandAdapter = (ExpandableListUnidadeAdapter)expListView.getExpandableListAdapter();
+
+            if(!parent.isGroupExpanded(groupPosition)){
+                final String childUnidade = (String) customExpandAdapter.getChild(groupPosition, 2);
+                final String childLatLong = (String) customExpandAdapter.getChild(groupPosition, 12);
+                String latLong[] = childLatLong.split("/");
+
+                final String[]codigoUnidade = childUnidade.split(":");
+                final String[]latitude = latLong[0].split(":");
+                final String[]longitude = latLong[1].split(":");
+
+                customExpandAdapter.setNomeUnidade((String) customExpandAdapter.getGroup(groupPosition));
+                customExpandAdapter.setCodigoUnidade(codigoUnidade[1].trim());
+                customExpandAdapter.setLatitude(Double.valueOf(latitude[1].trim()));
+                customExpandAdapter.setLongitute(Double.valueOf(longitude[1].trim()));
+            }
+            return false;
+        }
+    };
 
     private AbsListView.OnScrollListener customScrollListener = new AbsListView.OnScrollListener() {
         @Override
@@ -79,7 +122,7 @@ public class UnidadeActivity extends BaseActivity {
                 }
             }
             if (!loading && (totalItemCount - visibleItemCount) <= (firstVisibleItem + visibleThreshold)) {
-                carregarUnidades();
+                 carregarUnidades();
                 loading = true;
             }
          }
@@ -96,7 +139,9 @@ public class UnidadeActivity extends BaseActivity {
                 exibirMsgErro(ConstantesAplicacao.MENSAGEM_NOT_FOUND_LOCATION);
                 voltarMenu();
             }else {
-                AsyncTask<Void, Void, UnidadeResponse> task = new AsyncTask<Void, Void, UnidadeResponse>() {
+                if (task == null || task.getStatus() == AsyncTask.Status.FINISHED) {
+
+                    task = new AsyncTask<Void, Void, UnidadeResponse>() {
 
                     @Override
                     protected void onPreExecute() {
@@ -111,7 +156,7 @@ public class UnidadeActivity extends BaseActivity {
                     protected UnidadeResponse doInBackground(Void... voids) {
                         try {
                             UnidadeService unidadeService = new UnidadeService(location);
-                            return unidadeService.consumirServicoTCU(currentPage);
+                            return unidadeService.consumirServicoTCU(currentPage, searchValue);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -127,33 +172,21 @@ public class UnidadeActivity extends BaseActivity {
                         if (unidadeResponse.getStatusCodigo() == ConstantesAplicacao.STATUS_OK) {
                             ExpandableListUnidadeAdapter unidadeAdapter = (ExpandableListUnidadeAdapter) expListView.getExpandableListAdapter();
 
-                            if(unidadeAdapter==null){
+                            if (unidadeAdapter == null) {
                                 ExpandableListUnidadeAdapter adapter = new ExpandableListUnidadeAdapter(context, unidadeResponse.getExpandableUnidadeDTO().getListDataHeader(),
                                         unidadeResponse.getExpandableUnidadeDTO().getListDataChild(), unidadeResponse.getExpandableUnidadeDTO().getListMediaChild());
                                 expListView.setAdapter(adapter);
-                            }else{
-                                unidadeAdapter.updateData(unidadeResponse.getExpandableUnidadeDTO().getListDataHeader(),
-                                        unidadeResponse.getExpandableUnidadeDTO().getListDataChild(), unidadeResponse.getExpandableUnidadeDTO().getListMediaChild());
-                                unidadeAdapter.notifyDataSetChanged();
-                            }
-
-
-                            //mantém apenas um group aberto
-                            expListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
-                                @Override
-                                public void onGroupExpand(int groupPosition) {
-                                    ExpandableListUnidadeAdapter customExpandAdapter = (ExpandableListUnidadeAdapter) expListView.getExpandableListAdapter();
-                                    if (customExpandAdapter == null) {
-                                        return;
-                                    }
-                                    for (int i = 0; i < customExpandAdapter.getGroupCount(); i++) {
-                                        if (i != groupPosition) {
-                                            expListView.collapseGroup(i);
-                                        }
-                                    }
+                            } else {
+                                if (isPrimeiraPesquisaPorTexto()) {
+                                    ExpandableListUnidadeAdapter adapter = new ExpandableListUnidadeAdapter(context, unidadeResponse.getExpandableUnidadeDTO().getListDataHeader(),
+                                            unidadeResponse.getExpandableUnidadeDTO().getListDataChild(), unidadeResponse.getExpandableUnidadeDTO().getListMediaChild());
+                                    expListView.setAdapter(adapter);
+                                } else {
+                                    unidadeAdapter.updateData(unidadeResponse.getExpandableUnidadeDTO().getListDataHeader(),
+                                            unidadeResponse.getExpandableUnidadeDTO().getListDataChild(), unidadeResponse.getExpandableUnidadeDTO().getListMediaChild());
+                                    unidadeAdapter.notifyDataSetChanged();
                                 }
-                            });
-
+                            }
                             configurarExpList();
 
                         } else {
@@ -163,10 +196,15 @@ public class UnidadeActivity extends BaseActivity {
                     }
                 };
                 task.execute((Void[]) null);
+              }
             }
         }else{
             exibirMsgErro(ConstantesAplicacao.MENSAGEM_SEM_CONEXAO_INTERNET);
         }
+    }
+
+    private boolean isPrimeiraPesquisaPorTexto() {
+        return searchValue != null && !searchValue.isEmpty() && currentPage == 0;
     }
 
     private void configurarExpList(){

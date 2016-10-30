@@ -34,9 +34,11 @@ public class MedicamentoService{
         String result="";
         try {
             String url = ConstantesAplicacao.URL_BASE + "/rest/remedios?quantidade=15&pagina="+pagina;
-            if(produto != null && !produto.isEmpty()){
-                url = url + "&produto="+produto;
+
+             if(produto != null && !produto.isEmpty()){
+                url = url.concat("&produto=").concat(produto);
             }
+
             HttpClient httpclient = new DefaultHttpClient();
 
             HttpGet httpget = new HttpGet(url);
