@@ -70,7 +70,7 @@ public class  MedicamentoActivity extends BaseActivity {
                 @Override
                 protected void onPreExecute() {
                     progressDialog = new ProgressDialog(MedicamentoActivity.this);
-                    progressDialog.setMessage("Carregando...");
+                    progressDialog.setMessage("Buscando + medicamentos...");
                     progressDialog.setCancelable(false);
                     progressDialog.setIndeterminate(true);
                     progressDialog.show();

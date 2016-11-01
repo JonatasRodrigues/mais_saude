@@ -146,7 +146,7 @@ public class UnidadeActivity extends BaseActivity {
                     @Override
                     protected void onPreExecute() {
                         progressDialog = new ProgressDialog(UnidadeActivity.this);
-                        progressDialog.setMessage("Carregando...");
+                        progressDialog.setMessage("Buscando + unidades...");
                         progressDialog.setCancelable(false);
                         progressDialog.setIndeterminate(true);
                         progressDialog.show();

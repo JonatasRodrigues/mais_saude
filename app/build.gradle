@@ -30,17 +30,18 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
-
-    compile group: 'commons-io', name: 'commons-io', version: '2.1'
-    compile group: 'commons-logging', name: 'commons-logging', version: '1.1.1'
-    compile group: 'org.json', name: 'json', version: '20160212'
-
-
+    compile 'commons-io:commons-io:2.1'
+    compile 'commons-logging:commons-logging:1.1.1'
+    compile 'org.json:json:20160212'
     androidTestCompile 'junit:junit:4.12'
     compile 'com.loopj.android:android-async-http:1.4.9'
     compile 'com.google.android.gms:play-services-maps:9.4.0'
