@@ -136,6 +136,7 @@ public class LoginActivity extends BaseActivity {
         myMsg.setTextColor(Color.WHITE);
         myMsg.setBackgroundColor(Color.BLUE);
         popDialog.setView(root);
+        popDialog.setCancelable(false);
         popDialog.setCustomTitle(myMsg);
         popDialog.create();
 

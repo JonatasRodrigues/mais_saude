@@ -5,7 +5,7 @@
 
     <string name="title">Brasil Mais Saúde</string>
     <string name="title_unidades_hospitalares">Unidades</string>
-    <string name="label_search_unidade">Nome unidade</string>
+    <string name="label_search_unidade">nome unidade</string>
     <string name="label_comentario">Comentários</string>
     <string name="label_unidade">Unidade</string>
     <string name="btn_novo_comentario">Adicionar Comentário</string>
@@ -14,7 +14,7 @@
 
     <!--Strings relacionados a tela de Medicamento -->
     <string name="button_search_medicamento">Pesquisar</string>
-    <string name="label_search_medicamento">Nome medicamento</string>
+    <string name="label_search_medicamento">nome medicamento</string>
     <string name="title_activity_medicamento">Medicamentos</string>
 
 

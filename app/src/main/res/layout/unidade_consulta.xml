@@ -5,31 +5,46 @@
     android:layout_height="match_parent"
     tools:context=".controle.UnidadeActivity">
 
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:id="@+id/space" />
 
-    <EditText
-        android:id="@+id/SearchUnidade"
-        android:layout_height="wrap_content"
-        android:layout_width="30px"
-        android:hint="@string/label_search_unidade"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_toStartOf="@+id/btnSearchUnidade"
-        android:layout_alignBottom="@+id/btnSearchUnidade"
-        android:layout_toLeftOf="@+id/btnSearchUnidade" />
-
-    <Button
-        android:text="@string/button_search_medicamento"
-        android:id="@+id/btnSearchUnidade"
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"/>
+        android:layout_below="@+id/space">
 
-     <ExpandableListView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/unidadeListView"
-        android:layout_below="@+id/SearchUnidade" />
+        <EditText
+            android:id="@+id/SearchUnidade"
+            android:layout_height="wrap_content"
+            android:layout_width="100dp"
+            android:hint="@string/label_search_unidade"
+            android:layout_toLeftOf="@+id/btnSearchUnidade"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <Button
+            android:id="@+id/btnSearchUnidade"
+            android:layout_width="40dp"
+            android:layout_height="35dp"
+            android:background="@drawable/icon_busca"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="15dp"
+            android:layout_marginEnd="15dp" />
+
+        <ExpandableListView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/unidadeListView"
+            android:layout_below="@+id/SearchUnidade" />
+
+    </RelativeLayout>
+
+
+
+
 
 
 
