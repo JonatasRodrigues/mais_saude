@@ -1,51 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:gravity="center_vertical"
+    android:orientation="vertical"
+    android:fillViewport="true"
     tools:context=".controle.UnidadeActivity">
 
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="5dp"
-        android:id="@+id/space" />
-
     <RelativeLayout
+        android:id="@+id/llSearchBarLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/space">
+        android:orientation="horizontal"
+        android:paddingTop="4px"
+        android:background="@drawable/filter_style"
+        android:layout_alignParentTop="true">
+
+        <Button
+            android:id="@+id/btnVoltarUnd"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@drawable/icon_voltar"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp" />
 
         <EditText
             android:id="@+id/SearchUnidade"
             android:layout_height="wrap_content"
-            android:layout_width="100dp"
+            android:layout_width="wrap_content"
             android:hint="@string/label_search_unidade"
+            android:gravity="center_vertical"
+            android:padding="8dp"
             android:layout_toLeftOf="@+id/btnSearchUnidade"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
+            android:layout_toRightOf="@+id/btnVoltarUnd"
+            android:layout_toStartOf="@+id/btnSearchUnidade"
+            android:layout_toEndOf="@+id/btnVoltarUnd"
+            android:background="@drawable/edit_text_style"
+            android:layout_alignBottom="@+id/btnSearchUnidade"
+            android:layout_alignTop="@+id/btnSearchUnidade" />
 
         <Button
             android:id="@+id/btnSearchUnidade"
             android:layout_width="40dp"
             android:layout_height="35dp"
+            android:layout_marginTop="5dp"
             android:background="@drawable/icon_busca"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginRight="15dp"
-            android:layout_marginEnd="15dp" />
+            android:layout_marginRight="5dp"
+            android:layout_marginEnd="5dp" />
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="#FFFFFF"
+        android:layout_weight="1"
+        android:layout_below="@+id/tvHeaderTitle"
+        android:visibility="visible">
 
         <ExpandableListView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/unidadeListView"
-            android:layout_below="@+id/SearchUnidade" />
+            android:id="@+id/unidadeListView"/>
 
     </RelativeLayout>
 
+    <Space android:id="@+id/space"
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:layout_below="@+id/llSearchBarLayout" />
 
-
-
-
-
+    <TextView
+        android:id="@+id/tvHeaderTitle"
+        android:layout_width="fill_parent"
+        android:layout_height="2dp"
+        android:textSize="18sp"
+        android:textColor="#FFFFFF"
+        android:background="@color/grey"
+        android:paddingLeft="5dp"
+        android:gravity="left"
+        android:layout_below="@+id/space" />
 
 </RelativeLayout>

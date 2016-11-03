@@ -49,6 +49,9 @@ public class UnidadeActivity extends BaseActivity {
         Button btnSearchUnidade = (Button) findViewById(R.id.btnSearchUnidade);
         btnSearchUnidade.setOnClickListener(onClickListenerBuscarUnidade);
 
+        Button btnVoltar = (Button) findViewById(R.id.btnVoltarUnd);
+        btnVoltar.setOnClickListener(onClickListenerVoltarUnidade);
+
         expListView = (ExpandableListView) findViewById(R.id.unidadeListView);
         expListView.setOnScrollListener(customScrollListener);
         expListView.setOnGroupClickListener(onGroupClickListener);
@@ -56,6 +59,14 @@ public class UnidadeActivity extends BaseActivity {
 
         carregarUnidades();
     }
+
+    private View.OnClickListener onClickListenerVoltarUnidade = new View.OnClickListener() {
+        public void onClick(final View v) {
+            if(v.getId()== R.id.btnVoltarUnd){
+                carregarUnidades();
+            }
+        }
+    };
 
     private View.OnClickListener onClickListenerBuscarUnidade = new View.OnClickListener() {
         public void onClick(final View v) {
@@ -146,7 +157,7 @@ public class UnidadeActivity extends BaseActivity {
                     @Override
                     protected void onPreExecute() {
                         progressDialog = new ProgressDialog(UnidadeActivity.this);
-                        progressDialog.setMessage("Buscando + unidades...");
+                        progressDialog.setMessage("Buscando unidades...");
                         progressDialog.setCancelable(false);
                         progressDialog.setIndeterminate(true);
                         progressDialog.show();
@@ -223,7 +234,6 @@ public class UnidadeActivity extends BaseActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
         return super.onOptionsItemSelected(item);
     }
 
