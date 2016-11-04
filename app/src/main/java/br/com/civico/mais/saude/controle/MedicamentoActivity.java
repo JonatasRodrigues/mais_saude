@@ -23,7 +23,7 @@ import br.com.civico.mais.saude.servico.MedicamentoService;
 
 public class  MedicamentoActivity extends BaseActivity {
     private ExpandableListView expListView;
-    private EditText seachTextBox;
+    private EditText searchTextBox;
     private ProgressDialog progressDialog;
     private Context context;
 
@@ -39,29 +39,46 @@ public class  MedicamentoActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.medicamento_consulta);
         expListView = (ExpandableListView) findViewById(R.id.medicamentoListView);
-        seachTextBox = (EditText) findViewById(R.id.SeachEditText);
+        searchTextBox = (EditText) findViewById(R.id.txtSearchMedicamento);
         context = this;
+
+        Button btnSearchMedicamento = (Button) findViewById(R.id.btnSearchMedicamento);
+        Button btnVoltar = (Button) findViewById(R.id.btnVoltarMed);
         carregaMedicamentos();
+
+        btnSearchMedicamento.setOnClickListener(onClickListenerMedicamento);
+        btnVoltar.setOnClickListener(onClickListenerVoltarMedicamento);
         expListView.setOnScrollListener(customScrollListener);
-        Button btnSeachMedicamento = (Button) findViewById(R.id.btnSeachMedicamento);
-        btnSeachMedicamento.setOnClickListener(onClickListenerMedicamento);
     }
 
-    private View.OnClickListener onClickListenerMedicamento = new View.OnClickListener() {
+    private View.OnClickListener onClickListenerVoltarMedicamento = new View.OnClickListener() {
         public void onClick(final View v) {
-            if(v.getId()== R.id.btnSeachMedicamento){
-                currentPage = 0;
-                previousTotal = 0;
-                if(searchValue != null && !searchValue.isEmpty() && String.valueOf(seachTextBox.getText()).isEmpty()){
-                    ExpandableListMedicamentoAdapter adapter = null;
-                    expListView.setAdapter(adapter);
-                }
-                searchValue = String.valueOf(seachTextBox.getText());
-                hideKeyboard(context,seachTextBox);
-                carregaMedicamentos();
+            if(v.getId()== R.id.btnVoltarMed){
+                searchTextBox.setText("");
+                pesquisaMedicamento();
             }
         }
     };
+
+    private View.OnClickListener onClickListenerMedicamento = new View.OnClickListener() {
+        public void onClick(final View v) {
+            if(v.getId()== R.id.btnSearchMedicamento){
+                pesquisaMedicamento();
+            }
+        }
+    };
+
+    private void pesquisaMedicamento() {
+        currentPage = 0;
+        previousTotal = 0;
+        if(searchValue != null && !searchValue.isEmpty() && String.valueOf(searchTextBox.getText()).isEmpty()){
+            ExpandableListMedicamentoAdapter adapter = null;
+            expListView.setAdapter(adapter);
+        }
+        searchValue = String.valueOf(searchTextBox.getText());
+        hideKeyboard(context, searchTextBox);
+        carregaMedicamentos();
+    }
 
     private void carregaMedicamentos() {
         if(task == null || task.getStatus() == AsyncTask.Status.FINISHED){

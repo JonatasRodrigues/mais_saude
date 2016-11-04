@@ -63,7 +63,8 @@ public class UnidadeActivity extends BaseActivity {
     private View.OnClickListener onClickListenerVoltarUnidade = new View.OnClickListener() {
         public void onClick(final View v) {
             if(v.getId()== R.id.btnVoltarUnd){
-                carregarUnidades();
+                searchTextBox.setText("");
+                pesquisaUnidade();
             }
         }
     };
@@ -71,18 +72,22 @@ public class UnidadeActivity extends BaseActivity {
     private View.OnClickListener onClickListenerBuscarUnidade = new View.OnClickListener() {
         public void onClick(final View v) {
             if(v.getId()== R.id.btnSearchUnidade){
-                currentPage = 0;
-                previousTotal = 0;
-                if(searchValue != null && !searchValue.isEmpty() && String.valueOf(searchTextBox.getText()).isEmpty()){
-                    ExpandableListUnidadeAdapter adapter = null;
-                    expListView.setAdapter(adapter);
-                }
-                searchValue = String.valueOf(searchTextBox.getText());
-                hideKeyboard(context,searchTextBox);
-                carregarUnidades();
+                pesquisaUnidade();
             }
         }
     };
+
+    private void pesquisaUnidade() {
+        currentPage = 0;
+        previousTotal = 0;
+        if(searchValue != null && !searchValue.isEmpty() && String.valueOf(searchTextBox.getText()).isEmpty()){
+            ExpandableListUnidadeAdapter adapter = null;
+            expListView.setAdapter(adapter);
+        }
+        searchValue = String.valueOf(searchTextBox.getText());
+        hideKeyboard(context,searchTextBox);
+        carregarUnidades();
+    }
 
     private ExpandableListView.OnGroupExpandListener groupExpandListener =  new ExpandableListView.OnGroupExpandListener() {
         @Override

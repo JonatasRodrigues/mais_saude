@@ -10,6 +10,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,7 +37,7 @@ public class MedicamentoService{
             String url = ConstantesAplicacao.URL_BASE + "/rest/remedios?quantidade=15&pagina="+pagina;
 
              if(produto != null && !produto.isEmpty()){
-                url = url.concat("&produto=").concat(produto);
+                url = url.concat("&produto=").concat(URLEncoder.encode(produto, "UTF-8"));
             }
 
             HttpClient httpclient = new DefaultHttpClient();
