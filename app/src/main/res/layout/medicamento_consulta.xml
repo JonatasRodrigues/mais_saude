@@ -54,6 +54,7 @@
 
 
      </RelativeLayout>
+
      <RelativeLayout
          android:orientation="vertical"
          android:layout_width="fill_parent"
@@ -62,11 +63,31 @@
          android:layout_weight="1"
          android:layout_below="@+id/llSearchBarLayout"
          android:visibility="visible">
+
           <ExpandableListView
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
-              android:id="@+id/medicamentoListView"
-              android:layout_below="@+id/llSearchBarLayout" />
+              android:id="@+id/medicamentoListView" />
      </RelativeLayout>
+
+
+    <Space android:id="@+id/space"
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:layout_below="@+id/llSearchBarLayout" />
+
+    <TextView
+        android:id="@+id/tvHeaderTitle"
+        android:layout_width="fill_parent"
+        android:layout_height="2dp"
+        android:textSize="18sp"
+        android:textColor="#FFFFFF"
+        android:background="@color/grey"
+        android:paddingLeft="5dp"
+        android:gravity="left"
+        android:layout_below="@+id/space" />
+
+
+
 
 </RelativeLayout>
