@@ -168,7 +168,7 @@ public class  MedicamentoActivity extends BaseActivity {
                     currentPage++;
                 }
             }
-            if (!loading && (totalItemCount - visibleItemCount) <= (firstVisibleItem + visibleThreshold)) {
+            if (!isPrimeiraPesquisaPorTexto() && !loading && (totalItemCount - visibleItemCount) <= (firstVisibleItem + visibleThreshold)) {
                 carregaMedicamentos();
                 loading = true;
             }
