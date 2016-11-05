@@ -161,16 +161,18 @@ public class  MedicamentoActivity extends BaseActivity {
     private AbsListView.OnScrollListener customScrollListener = new AbsListView.OnScrollListener() {
         @Override
         public void onScroll(AbsListView view, int firstVisibleItem,int visibleItemCount, int totalItemCount) {
-            if (loading) {
-                if (totalItemCount > previousTotal) {
-                    loading = false;
-                    previousTotal = totalItemCount;
-                    currentPage++;
+            if( task.getStatus() ==  AsyncTask.Status.FINISHED) {
+                if (loading) {
+                    if (totalItemCount > previousTotal) {
+                        loading = false;
+                        previousTotal = totalItemCount;
+                        currentPage++;
+                    }
                 }
-            }
-            if (!isPrimeiraPesquisaPorTexto() && !loading && (totalItemCount - visibleItemCount) <= (firstVisibleItem + visibleThreshold)) {
-                carregaMedicamentos();
-                loading = true;
+                if (!loading && (totalItemCount - visibleItemCount) <= (firstVisibleItem + visibleThreshold)) {
+                    carregaMedicamentos();
+                    loading = true;
+                }
             }
         }
         @Override
