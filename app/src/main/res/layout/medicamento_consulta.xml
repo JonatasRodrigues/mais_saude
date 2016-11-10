@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:gravity="top"
+    android:gravity="center_vertical"
     android:orientation="vertical"
     android:fillViewport="true"
     tools:context=".controle.MedicamentoActivity">
@@ -62,7 +62,7 @@
          android:layout_height="fill_parent"
          android:background="#FFFFFF"
          android:layout_weight="1"
-         android:layout_below="@+id/llSearchBarLayout"
+         android:layout_below="@+id/tvHeaderTitle"
          android:visibility="visible">
 
           <ExpandableListView
