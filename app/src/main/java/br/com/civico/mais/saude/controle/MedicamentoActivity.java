@@ -32,6 +32,7 @@ public class  MedicamentoActivity extends BaseActivity {
     private int currentPage = 0;
     private int previousTotal = 0;
     private boolean loading = true;
+    private boolean isPesquisa = false;
     private String searchValue = new String("");
     private AsyncTask<Void, Void, MedicamentoResponse> task;
 
@@ -55,6 +56,7 @@ public class  MedicamentoActivity extends BaseActivity {
     private View.OnClickListener onClickListenerVoltarMedicamento = new View.OnClickListener() {
         public void onClick(final View v) {
             if(v.getId()== R.id.btnVoltarMed){
+                isPesquisa=false;
                 searchTextBox.setText("");
                 pesquisaMedicamento();
             }
@@ -64,6 +66,7 @@ public class  MedicamentoActivity extends BaseActivity {
     private View.OnClickListener onClickListenerMedicamento = new View.OnClickListener() {
         public void onClick(final View v) {
             if(v.getId()== R.id.btnSearchMedicamento){
+                isPesquisa=true;
                 pesquisaMedicamento();
             }
         }
@@ -170,11 +173,12 @@ public class  MedicamentoActivity extends BaseActivity {
                 if (loading) {
                     if (totalItemCount > previousTotal) {
                         loading = false;
+                        isPesquisa=false;
                         previousTotal = totalItemCount;
                         currentPage++;
                     }
                 }
-                if (!loading && (totalItemCount - visibleItemCount) <= (firstVisibleItem + visibleThreshold)) {
+                if (!isPesquisa && !loading && (totalItemCount - visibleItemCount) <= (firstVisibleItem + visibleThreshold)) {
                     carregaMedicamentos();
                     loading = true;
                 }

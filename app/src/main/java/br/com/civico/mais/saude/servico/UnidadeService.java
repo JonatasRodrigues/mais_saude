@@ -136,9 +136,24 @@ public class UnidadeService {
                 listaDados.add("Ambulatório: " + oneObject.getString("temAtendimentoAmbulatorial")+ "       " + "Obstetria: " + oneObject.getString("temObstetra"));
                 listaDados.add("Neo-Natal:     " + oneObject.getString("temNeoNatal") + "       " + "Diálise: " + oneObject.getString("temDialise"));
                 listaDados.add("  ");
-                listaDados.add("Logradouro: " + oneObject.getString("logradouro") + ", " + oneObject.getString("numero"));
-                listaDados.add("Bairro: " + oneObject.getString("bairro"));
-                listaDados.add("Cidade: " + oneObject.getString("cidade") + " - " + oneObject.getString("uf"));
+
+                if (oneObject.has("logradouro") && oneObject.has("numero")) {
+                    listaDados.add("Logradouro: " + oneObject.getString("logradouro") + ", " + oneObject.getString("numero"));
+                }else{
+                    listaDados.add("Logradouro: - ");
+                }
+
+                if (oneObject.has("bairro")) {
+                    listaDados.add("Bairro: " + oneObject.getString("bairro"));
+                }else{
+                    listaDados.add("Bairro: - ");
+                }
+
+                if (oneObject.has("cidade") && oneObject.has("uf")) {
+                    listaDados.add("Cidade: " + oneObject.getString("cidade") + " - " + oneObject.getString("uf"));
+                }else{
+                    listaDados.add("Cidade: - ");
+                }
 
                 if (oneObject.has("telefone")) {
                     listaDados.add("Telefone: " + oneObject.getString("telefone"));

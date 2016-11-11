@@ -35,6 +35,7 @@ public class UnidadeActivity extends BaseActivity {
     private int currentPage = 0;
     private int previousTotal = 0;
     private boolean loading = true;
+    private boolean isPesquisa = false;
 
     private EditText searchTextBox;
     private String searchValue = new String("");
@@ -63,6 +64,7 @@ public class UnidadeActivity extends BaseActivity {
     private View.OnClickListener onClickListenerVoltarUnidade = new View.OnClickListener() {
         public void onClick(final View v) {
             if(v.getId()== R.id.btnVoltarUnd){
+                isPesquisa=false;
                 searchTextBox.setText("");
                 pesquisaUnidade();
             }
@@ -72,6 +74,7 @@ public class UnidadeActivity extends BaseActivity {
     private View.OnClickListener onClickListenerBuscarUnidade = new View.OnClickListener() {
         public void onClick(final View v) {
             if(v.getId()== R.id.btnSearchUnidade){
+                isPesquisa=true;
                 pesquisaUnidade();
             }
         }
@@ -133,12 +136,13 @@ public class UnidadeActivity extends BaseActivity {
             if (loading) {
                 if (totalItemCount > previousTotal) {
                     loading = false;
+                    isPesquisa=false;
                     previousTotal = totalItemCount;
                     currentPage++;
                 }
             }
-            if (!loading && (totalItemCount - visibleItemCount) <= (firstVisibleItem + visibleThreshold)) {
-                 carregarUnidades();
+            if (!isPesquisa &&!loading && (totalItemCount - visibleItemCount) <= (firstVisibleItem + visibleThreshold)) {
+                carregarUnidades();
                 loading = true;
             }
          }
