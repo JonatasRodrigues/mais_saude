@@ -267,7 +267,7 @@ public class LoginActivity extends BaseActivity {
                             progressDialog.dismiss();
                         }
 
-                        if(ConstantesAplicacao.STATUS_OK==result.getStatusCodigo()){
+                        if(result != null && ConstantesAplicacao.STATUS_OK==result.getStatusCodigo()){
                             Calendar calendar = Calendar.getInstance();
                             calendar.add(Calendar.DATE, +7);//Token é válido por 07 dias
                             editor.putString("dataExpiracaoToken",sdf.format(calendar.getTime()));

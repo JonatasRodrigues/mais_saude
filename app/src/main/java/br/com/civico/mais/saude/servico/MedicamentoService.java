@@ -34,9 +34,10 @@ public class MedicamentoService{
         MedicamentoResponse medicamentoResponse = new MedicamentoResponse();
         String result="";
         try {
-            String url = ConstantesAplicacao.URL_BASE + "/rest/remedios?quantidade=15&pagina="+pagina;
-
-             if(produto != null && !produto.isEmpty()){
+            String url = ConstantesAplicacao.URL_BASE + "/rest/remedios?quantidade="+ConstantesAplicacao.QTD_RETORNO_SERVICO+"&pagina="+pagina;
+            url = url.concat("&campos=produto,ultimaAlteracao,codBarraEan,apresentacao," +
+                    "registro,classeTerapeutica,principioAtivo,cnpj,laboratorio,codBarraEan");
+            if(produto != null && !produto.isEmpty()){
                 url = url.concat("&produto=").concat(URLEncoder.encode(produto, "UTF-8"));
             }
 

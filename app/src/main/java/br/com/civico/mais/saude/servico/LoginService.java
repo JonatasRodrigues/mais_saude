@@ -99,7 +99,15 @@ public class LoginService {
             StringEntity se = new StringEntity(jsonobj.toString());
             post.setHeader("Content-type", "application/json");
             post.setEntity(se);
-            HttpResponse httpresponse = httpclient.execute(post);
+            httpclient.execute(post);
+
+            /*Para pegar o token e necessário logar, o serviço não vem ao criar*/
+            httpclient = new DefaultHttpClient();
+            url= ConstantesAplicacao.URL_BASE_METAMODELO + "/rest/pessoas/autenticar";
+            HttpGet httpget = new HttpGet(url);
+            httpget.setHeader("email", this.email);
+            httpget.setHeader("senha", this.senha);
+            HttpResponse httpresponse = httpclient.execute(httpget);
 
             loginResponse.setStatusCodigo(httpresponse.getStatusLine().getStatusCode());
 
@@ -111,9 +119,13 @@ public class LoginService {
                     result= StreamConverter.convertStreamToString(instream);
                     instream.close();
                 }
-                loginResponse.setToken(httpresponse.getFirstHeader("apptoken").getValue().toString());
-                loginResponse.setCodigoUsuario(getCodigoUsuario(result));
-                loginResponse.setMensagem(ConstantesAplicacao.MENSAGEM_SUCESSO);
+                try {
+                    loginResponse.setToken(httpresponse.getFirstHeader("apptoken").getValue().toString());
+                    loginResponse.setCodigoUsuario(getCodigoUsuario(result));
+                    loginResponse.setMensagem(ConstantesAplicacao.MENSAGEM_SUCESSO);
+                }catch (Exception e){
+                    loginResponse.setMensagem(ConstantesAplicacao.MENSAGEM_SERVICO_CADASTRO_ERROR);
+                }
             }
 
             if(loginResponse.getStatusCodigo() == ConstantesAplicacao.STATUS_PARAMETRO_INVALIDO)
