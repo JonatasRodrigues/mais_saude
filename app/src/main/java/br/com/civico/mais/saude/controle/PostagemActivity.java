@@ -31,7 +31,7 @@ import br.com.civico.mais.saude.dto.PostagemDTO;
 import br.com.civico.mais.saude.util.ConexaoUtil;
 import br.com.civico.mais.saude.servico.PostagemService;
 
-public class PostagemActivity extends BaseActivity {
+public class  PostagemActivity extends BaseActivity {
 
     private ProgressDialog progressDialog;
     private Context context;
@@ -127,9 +127,9 @@ public class PostagemActivity extends BaseActivity {
                         listView.setAdapter(adapter);
                     }
                 }else{
-                   if(result!=null){
-                        listAdapter.updateData(result);
-                        listView.deferNotifyDataSetChanged();
+                   if(result!=null ){
+                       listAdapter.updateData(result);
+                       listAdapter.notifyDataSetChanged();
                    }
                 }
             }
@@ -144,7 +144,7 @@ public class PostagemActivity extends BaseActivity {
             Long codigoUsuario = Long.valueOf(settings.getString("codigoUsuario", ""));
             Long codigoUnidade = Long.valueOf(settings.getString("codigoUnidade", ""));
             String nomeUnidade = settings.getString("nomeUnidade", "");
-            showPopUpComentario(auth_token_string,codigoUsuario,codigoUnidade,nomeUnidade);
+            showPopUpComentario(auth_token_string, codigoUsuario,codigoUnidade,nomeUnidade);
         }
     };
 
@@ -159,7 +159,7 @@ public class PostagemActivity extends BaseActivity {
         final AlertDialog.Builder popDialog = new AlertDialog.Builder(this);
 
         popDialog.setView(root);
-
+        popDialog.setCancelable(false);
         rat.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
                 pontuacao = rating;
@@ -189,7 +189,7 @@ public class PostagemActivity extends BaseActivity {
                 if (TextUtils.isEmpty(comentario)) {
                     comentarioText.setError(getString(R.string.error_comentario_obrigatorio));
                 } else {
-                    AsyncTask<Void, Void, String> task = new AsyncTask<Void, Void, String>() {
+                    AsyncTask<Void, Void, List<PostagemDTO>> task = new AsyncTask<Void, Void, List<PostagemDTO>>() {
 
                         @Override
                         protected void onPreExecute() {
@@ -201,23 +201,25 @@ public class PostagemActivity extends BaseActivity {
                         }
 
                         @Override
-                        protected String doInBackground(Void... voids) {
+                        protected List<PostagemDTO> doInBackground(Void... voids) {
                             PostagemService postagemService = new PostagemService();
                             postagemService.cadastrarPostagem(token, codigoUsuario, comentario, pontuacao, codigoUnidade);
-                            return null;
+                            return new PostagemService().buscarPostagensPorUnidade(codigoUnidade.toString(), token,currentPage);
                         }
 
                         @Override
-                        protected void onPostExecute(String result) {
+                        protected void onPostExecute(List<PostagemDTO> result) {
+                            Intent intent = new Intent(context, PostagemActivity.class);
+                            startActivity(intent);
                             if (progressDialog != null) {
                                 progressDialog.dismiss();
                             }
 
-                            if (result == null) {
+                          /*  if (result == null || "null".equals(result)) {
                                 carregarPostagens();
-                            }else{
+                            } else {
                                 exibirMsgErro(result);
-                            }
+                            }*/
                         }
                     };
                     task.execute((Void[]) null);

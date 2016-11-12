@@ -8,6 +8,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -84,14 +85,20 @@ public class  PostagemService {
             HttpClient httpclient = new DefaultHttpClient();
             HttpPost post = new HttpPost(url);
 
-            JSONObject jsonObj = new JSONObject();
             JSONObject jsonAutor = new JSONObject();
             jsonAutor.accumulate("codPessoa", codigoUsuario);
-            jsonObj.accumulate("autor", jsonAutor);
 
             JSONObject jsonTipo = new JSONObject();
             jsonTipo.accumulate("codTipoPostagem", ConstantesAplicacao.COD_TIPO_POSTAGEM);
 
+            JSONObject jsonConteudo = new JSONObject();
+            String json = "{\"texto\" : " + comentario + ", \"valor\": "+pontuacao+"}";
+            jsonConteudo.accumulate("JSON", json);
+            jsonConteudo.accumulate("texto", comentario);
+            jsonConteudo.accumulate("valor", pontuacao);
+
+            JSONObject jsonObj = new JSONObject();
+            jsonObj.accumulate("autor", jsonAutor);
             jsonObj.accumulate("tipo", jsonTipo);
             jsonObj.accumulate("codObjetoDestino", codigoUnidade);
             jsonObj.accumulate("codTipoObjetoDestino", ConstantesAplicacao.COD_TIPO_OBJETO);
@@ -121,7 +128,7 @@ public class  PostagemService {
 
     private String cadastrarConteudoPostagem(String token,String comentario,double pontuacao,String locationPostagem){
         try {
-            String json = "{\"texto\" : "+comentario+", \"valor\": "+pontuacao+"}";
+            String json = "{\"texto\" : " + comentario + ", \"valor\": "+pontuacao+"}";
             String url = locationPostagem + "/conteudos";
             HttpClient httpclient = new DefaultHttpClient();
             HttpPost post = new HttpPost(url);
