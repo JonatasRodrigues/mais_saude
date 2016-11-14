@@ -150,9 +150,10 @@ public class  PostagemActivity extends BaseActivity {
 
     public void showPopUpComentario(final String token, final long codigoUsuario,final Long codigoUnidade, final String nomeUnidade){
         final View root = ((LayoutInflater)PostagemActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.comentario, null);
-        final RatingBar rat = (RatingBar)root.findViewById(R.id.ratingBar);
+        RatingBar rat = (RatingBar)root.findViewById(R.id.ratingBar);
         rat.setNumStars(5);
         rat.setRating(5);
+        pontuacao = 5;
         TextView labelUnidade = (TextView) root.findViewById(R.id.labelUnidade);
         labelUnidade.setText(nomeUnidade);
 
@@ -204,13 +205,13 @@ public class  PostagemActivity extends BaseActivity {
                         protected List<PostagemDTO> doInBackground(Void... voids) {
                             PostagemService postagemService = new PostagemService();
                             postagemService.cadastrarPostagem(token, codigoUsuario, comentario, pontuacao, codigoUnidade);
-                            return new PostagemService().buscarPostagensPorUnidade(codigoUnidade.toString(), token,currentPage);
+                            return new PostagemService().buscarPostagensPorUnidade(codigoUnidade.toString(), token,0);
                         }
 
                         @Override
                         protected void onPostExecute(List<PostagemDTO> result) {
-                            Intent intent = new Intent(context, PostagemActivity.class);
-                            startActivity(intent);
+                            ListViewPostagemAdapter adapter = new ListViewPostagemAdapter(context,R.layout.customer_postagem_row, result);
+                            listView.setAdapter(adapter);
                             if (progressDialog != null) {
                                 progressDialog.dismiss();
                             }

@@ -41,6 +41,8 @@ public class UnidadeActivity extends BaseActivity {
     private String searchValue = new String("");
     private AsyncTask<Void, Void, UnidadeResponse> task;
 
+    private Button btnVoltar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,7 +52,7 @@ public class UnidadeActivity extends BaseActivity {
         Button btnSearchUnidade = (Button) findViewById(R.id.btnSearchUnidade);
         btnSearchUnidade.setOnClickListener(onClickListenerBuscarUnidade);
 
-        Button btnVoltar = (Button) findViewById(R.id.btnVoltarUnd);
+        btnVoltar = (Button) findViewById(R.id.btnVoltarUnd);
         btnVoltar.setOnClickListener(onClickListenerVoltarUnidade);
 
         expListView = (ExpandableListView) findViewById(R.id.unidadeListView);
@@ -64,6 +66,7 @@ public class UnidadeActivity extends BaseActivity {
     private View.OnClickListener onClickListenerVoltarUnidade = new View.OnClickListener() {
         public void onClick(final View v) {
             if(v.getId()== R.id.btnVoltarUnd){
+                btnVoltar.setVisibility(View.INVISIBLE);
                 isPesquisa=false;
                 searchTextBox.setText("");
                 pesquisaUnidade();
@@ -74,6 +77,7 @@ public class UnidadeActivity extends BaseActivity {
     private View.OnClickListener onClickListenerBuscarUnidade = new View.OnClickListener() {
         public void onClick(final View v) {
             if(v.getId()== R.id.btnSearchUnidade){
+                btnVoltar.setVisibility(View.VISIBLE);
                 isPesquisa=true;
                 pesquisaUnidade();
             }

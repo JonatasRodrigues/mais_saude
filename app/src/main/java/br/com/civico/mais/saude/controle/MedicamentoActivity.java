@@ -35,6 +35,7 @@ public class  MedicamentoActivity extends BaseActivity {
     private boolean isPesquisa = false;
     private String searchValue = new String("");
     private AsyncTask<Void, Void, MedicamentoResponse> task;
+    private  Button btnVoltar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,17 +46,37 @@ public class  MedicamentoActivity extends BaseActivity {
         context = this;
 
         Button btnSearchMedicamento = (Button) findViewById(R.id.btnSearchMedicamento);
-        Button btnVoltar = (Button) findViewById(R.id.btnVoltarMed);
-        carregaMedicamentos();
-
         btnSearchMedicamento.setOnClickListener(onClickListenerMedicamento);
+
+        btnVoltar = (Button) findViewById(R.id.btnVoltarMed);
         btnVoltar.setOnClickListener(onClickListenerVoltarMedicamento);
+
         expListView.setOnScrollListener(customScrollListener);
+        expListView.setOnGroupExpandListener(groupExpandListener); //mantém apenas um group aberto
+
+        carregaMedicamentos();
     }
+
+    private ExpandableListView.OnGroupExpandListener groupExpandListener =  new ExpandableListView.OnGroupExpandListener() {
+        @Override
+        public void onGroupExpand(int groupPosition) {
+            ExpandableListMedicamentoAdapter customExpandAdapter = (ExpandableListMedicamentoAdapter) expListView.getExpandableListAdapter();
+            if (customExpandAdapter == null) {
+                return;
+            }
+            for (int i = 0; i < customExpandAdapter.getGroupCount(); i++) {
+                if (i != groupPosition) {
+                    expListView.collapseGroup(i);
+                }
+            }
+        }
+    };
+
 
     private View.OnClickListener onClickListenerVoltarMedicamento = new View.OnClickListener() {
         public void onClick(final View v) {
             if(v.getId()== R.id.btnVoltarMed){
+                btnVoltar.setVisibility(View.INVISIBLE);
                 isPesquisa=false;
                 searchTextBox.setText("");
                 pesquisaMedicamento();
@@ -66,6 +87,7 @@ public class  MedicamentoActivity extends BaseActivity {
     private View.OnClickListener onClickListenerMedicamento = new View.OnClickListener() {
         public void onClick(final View v) {
             if(v.getId()== R.id.btnSearchMedicamento){
+                btnVoltar.setVisibility(View.VISIBLE);
                 isPesquisa=true;
                 pesquisaMedicamento();
             }

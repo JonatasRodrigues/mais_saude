@@ -55,11 +55,12 @@
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textAutoComplete|textMultiLine"
+                android:inputType="textCapSentences|textMultiLine"
                 android:hint="@string/prompt_comentario"
                 android:ems="10"
                 android:id="@+id/comentario"
-                android:layout_gravity="center_horizontal" />
+                android:layout_gravity="center_horizontal"
+                android:paddingLeft="10dp"/>
 
         </android.support.design.widget.TextInputLayout>
 
