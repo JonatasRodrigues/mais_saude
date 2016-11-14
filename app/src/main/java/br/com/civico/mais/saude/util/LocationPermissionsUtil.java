@@ -22,7 +22,7 @@ public class LocationPermissionsUtil implements DialogInterface.OnClickListener 
 
     public void requestLocationPermission() {
         if (!ActivityCompat.shouldShowRequestPermissionRationale(this.activity, Manifest.permission.ACCESS_FINE_LOCATION)) {
-            showMessageOKCancel("Este aplicativo foi projetado para exibir as Unidades Hospitalares próximas a sua localização.",
+            showMessageOKCancel("Este aplicativo foi projetado para exibir informações das Unidades Hospitalares próximas a sua localização.",
                     this.activity, this, this);
             return;
         }
