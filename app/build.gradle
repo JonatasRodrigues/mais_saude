@@ -1,29 +1,36 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        config {
+            storeFile file('C:/Projetos/mais_saude/jks/mais_saude.jks')
+            keyAlias 'Brasil Mais Saude'
+            keyPassword 'jr061109'
+            storePassword 'jr061109'
+        }
+    }
     compileSdkVersion 23
     buildToolsVersion "23.0.1"
-
     packagingOptions {
         exclude 'META-INF/NOTICE.txt'
         exclude 'META-INF/LICENSE.txt'
     }
-
     dexOptions {
         javaMaxHeapSize "4g"
     }
-
     defaultConfig {
         applicationId "br.com.civico.mais.saude"
         minSdkVersion 15
         targetSdkVersion 23
-        versionCode 1
-        versionName "1.0"
+        versionCode 3
+        versionName "1.0.2"
         multiDexEnabled true
+        signingConfig signingConfigs.config
     }
     buildTypes {
         debug {
             debuggable true
+            signingConfig signingConfigs.config
         }
         release {
             minifyEnabled false
@@ -33,6 +40,8 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
         targetCompatibility JavaVersion.VERSION_1_7
+    }
+    productFlavors {
     }
 }
 
