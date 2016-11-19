@@ -9,6 +9,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URLEncoder;
 
 import br.com.civico.mais.saude.constantes.ConstantesAplicacao;
 import br.com.civico.mais.saude.converter.StreamConverter;
@@ -90,10 +91,11 @@ public class LoginService {
             HttpClient httpclient = new DefaultHttpClient();
             HttpPost post = new HttpPost(url);
 
+            String nome = URLEncoder.encode(this.nome, "UTF-8");
             JSONObject jsonobj = new JSONObject();
             jsonobj.accumulate("email", this.email);
-            jsonobj.accumulate("nomeCompleto", this.nome);
-            jsonobj.accumulate("nomeUsuario", this.nome);
+            jsonobj.accumulate("nomeCompleto", nome);
+            jsonobj.accumulate("nomeUsuario", nome);
             jsonobj.accumulate("senha", this.senha);
 
             StringEntity se = new StringEntity(jsonobj.toString());

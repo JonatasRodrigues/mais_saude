@@ -8,6 +8,8 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -64,14 +66,16 @@ public class  PostagemService {
                 PostagemDTO dto = new PostagemDTO();
 
                 JSONObject oneObject = jsonArray.getJSONObject(i);
-                dto.setNomeAutor(oneObject.getString("nomeAutor"));
+                dto.setNomeAutor(URLDecoder.decode(oneObject.getString("nomeAutor"), "UTF-8"));
                 dto.setDataPostagem(oneObject.getString("dataHoraPostagem"));
                 JSONArray conteudoArray = oneObject.getJSONArray("conteudos");
-                dto.setComentario(conteudoArray.getJSONObject(0).getString("texto"));
+                dto.setComentario(URLDecoder.decode(conteudoArray.getJSONObject(0).getString("texto"), "UTF-8"));
                 dto.setPontuacao(Float.valueOf(conteudoArray.getJSONObject(0).getString("valor")));
 
                 lista.add(dto);
             } catch (JSONException e) {
+                e.printStackTrace();
+            } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
         }
@@ -90,12 +94,6 @@ public class  PostagemService {
 
             JSONObject jsonTipo = new JSONObject();
             jsonTipo.accumulate("codTipoPostagem", ConstantesAplicacao.COD_TIPO_POSTAGEM);
-
-            JSONObject jsonConteudo = new JSONObject();
-            String json = "{\"texto\" : " + comentario + ", \"valor\": "+pontuacao+"}";
-            jsonConteudo.accumulate("JSON", json);
-            jsonConteudo.accumulate("texto", comentario);
-            jsonConteudo.accumulate("valor", pontuacao);
 
             JSONObject jsonObj = new JSONObject();
             jsonObj.accumulate("autor", jsonAutor);
@@ -128,14 +126,15 @@ public class  PostagemService {
 
     private String cadastrarConteudoPostagem(String token,String comentario,double pontuacao,String locationPostagem){
         try {
-            String json = "{\"texto\" : " + comentario + ", \"valor\": "+pontuacao+"}";
+            String mensagem = URLEncoder.encode(comentario, "UTF-8");
+            String json = "{\"texto\" : " + mensagem + ", \"valor\": "+pontuacao+"}";
             String url = locationPostagem + "/conteudos";
             HttpClient httpclient = new DefaultHttpClient();
             HttpPost post = new HttpPost(url);
 
             JSONObject jsonObj = new JSONObject();
             jsonObj.accumulate("JSON", json);
-            jsonObj.accumulate("texto", comentario);
+            jsonObj.accumulate("texto", mensagem);
             jsonObj.accumulate("valor", pontuacao);
 
             StringEntity se = new StringEntity(jsonObj.toString());
