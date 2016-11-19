@@ -1,5 +1,7 @@
 package br.com.civico.mais.saude.servico;
 
+import android.location.Location;
+
 import com.loopj.android.http.HttpGet;
 
 import org.json.JSONArray;
@@ -29,6 +31,14 @@ import cz.msebera.android.httpclient.impl.client.DefaultHttpClient;
  * Created by Jônatas Rodrigues on 25/09/2016.
  */
 public class  PostagemService {
+
+    private Location gps;
+
+    public PostagemService(){}
+
+    public PostagemService(Location gps){
+        this.gps=gps;
+    }
 
     public List<PostagemDTO> buscarPostagensPorUnidade(String codigoUnidade,String token,Integer currentPage) {
         String result=null;
@@ -126,8 +136,11 @@ public class  PostagemService {
 
     private String cadastrarConteudoPostagem(String token,String comentario,double pontuacao,String locationPostagem){
         try {
+            double longitude = gps!=null ? gps.getLongitude() : 0.0;
+            double latitude = gps!=null ? gps.getLatitude() : 0.0;
+
             String mensagem = URLEncoder.encode(comentario, "UTF-8");
-            String json = "{\"texto\" : " + mensagem + ", \"valor\": "+pontuacao+"}";
+            String json = "{\"texto\" : " + mensagem + ", \"valor\": "+pontuacao+", \"longitude\":" + longitude +", \"latitude\":" + latitude +"}";
             String url = locationPostagem + "/conteudos";
             HttpClient httpclient = new DefaultHttpClient();
             HttpPost post = new HttpPost(url);

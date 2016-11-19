@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -28,6 +29,7 @@ import br.com.civico.mais.saude.adapter.ExpandableListUnidadeAdapter;
 import br.com.civico.mais.saude.adapter.ListViewPostagemAdapter;
 import br.com.civico.mais.saude.constantes.ConstantesAplicacao;
 import br.com.civico.mais.saude.dto.PostagemDTO;
+import br.com.civico.mais.saude.servico.GPSService;
 import br.com.civico.mais.saude.util.ConexaoUtil;
 import br.com.civico.mais.saude.servico.PostagemService;
 
@@ -44,6 +46,8 @@ public class  PostagemActivity extends BaseActivity {
     private int currentPage = 0;
     private int previousTotal = 0;
     private boolean loading = true;
+
+    private  Location location;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -187,6 +191,7 @@ public class  PostagemActivity extends BaseActivity {
             public void onClick(View v) {
                 final EditText comentarioText = (EditText) root.findViewById(R.id.comentario);
                 final String comentario = comentarioText.getText().toString();
+                location = new GPSService(context).getLocation();
                 if (TextUtils.isEmpty(comentario)) {
                     comentarioText.setError(getString(R.string.error_comentario_obrigatorio));
                 } else {
@@ -203,7 +208,7 @@ public class  PostagemActivity extends BaseActivity {
 
                         @Override
                         protected List<PostagemDTO> doInBackground(Void... voids) {
-                            PostagemService postagemService = new PostagemService();
+                            PostagemService postagemService = new PostagemService(location);
                             postagemService.cadastrarPostagem(token, codigoUsuario, comentario, pontuacao, codigoUnidade);
                             return new PostagemService().buscarPostagensPorUnidade(codigoUnidade.toString(), token,0);
                         }
