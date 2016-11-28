@@ -1,7 +1,9 @@
 package br.com.civico.mais.saude.controle;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -12,6 +14,10 @@ import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
+import android.widget.Toast;
+
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 import org.json.JSONException;
 
@@ -45,8 +51,8 @@ public class  MedicamentoActivity extends BaseActivity {
         searchTextBox = (EditText) findViewById(R.id.txtSearchMedicamento);
         context = this;
 
-        Button btnSearchMedicamento = (Button) findViewById(R.id.btnSearchMedicamento);
-        btnSearchMedicamento.setOnClickListener(onClickListenerMedicamento);
+        //Button btnSearchMedicamento = (Button) findViewById(R.id.btnSearchMedicamento);
+       // btnSearchMedicamento.setOnClickListener(onClickListenerMedicamento);
 
         btnVoltar = (Button) findViewById(R.id.btnVoltarMed);
         btnVoltar.setOnClickListener(onClickListenerVoltarMedicamento);
@@ -83,6 +89,30 @@ public class  MedicamentoActivity extends BaseActivity {
             }
         }
     };
+
+    public void scanBarcode(View view) {
+        IntentIntegrator integrator = new IntentIntegrator(this);
+        integrator.setDesiredBarcodeFormats(IntentIntegrator.ONE_D_CODE_TYPES);
+        integrator.setPrompt("Scan a barcode");
+        integrator.setCameraId(0);  // Use a specific camera of the device
+        integrator.setBeepEnabled(false);
+        integrator.setBarcodeImageEnabled(true);
+        integrator.initiateScan();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if(result != null) {
+            if(result.getContents() == null) {
+                Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(this, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
 
     private View.OnClickListener onClickListenerMedicamento = new View.OnClickListener() {
         public void onClick(final View v) {
