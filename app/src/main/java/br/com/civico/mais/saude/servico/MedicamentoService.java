@@ -38,7 +38,12 @@ public class MedicamentoService{
             url = url.concat("&campos=produto,ultimaAlteracao,codBarraEan,apresentacao," +
                     "registro,classeTerapeutica,principioAtivo,cnpj,laboratorio,codBarraEan");
             if(produto != null && !produto.isEmpty()){
-                url = url.concat("&produto=").concat(URLEncoder.encode(produto, "UTF-8"));
+                //Se for numérico
+                if(!isNumeric(produto)){
+                    url = url.concat("&produto=").concat(URLEncoder.encode(produto, "UTF-8"));
+                }else{
+                    url = url.concat("&codBarraEan=").concat(URLEncoder.encode(produto, "UTF-8"));
+                }
             }
 
             HttpClient httpclient = new DefaultHttpClient();
@@ -87,6 +92,15 @@ public class MedicamentoService{
             e.printStackTrace();
         }
         return medicamentoResponse;
+    }
+
+    private static boolean isNumeric(String str) {
+        try {
+            double d = Double.parseDouble(str);
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
+        return true;
     }
 
     private MedicamentoExpandableDTO converterJsonParaObject(JSONArray jsonArray){

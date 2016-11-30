@@ -93,9 +93,9 @@ public class  MedicamentoActivity extends BaseActivity {
     public void scanBarcode(View view) {
         IntentIntegrator integrator = new IntentIntegrator(this);
         integrator.setDesiredBarcodeFormats(IntentIntegrator.ONE_D_CODE_TYPES);
-        integrator.setPrompt("Scan a barcode");
+        integrator.setPrompt("Posicione a câmera centralizando o código de barras do medicamento");
         integrator.setCameraId(0);  // Use a specific camera of the device
-        integrator.setBeepEnabled(false);
+        integrator.setBeepEnabled(true);
         integrator.setBarcodeImageEnabled(true);
         integrator.initiateScan();
     }
@@ -105,7 +105,8 @@ public class  MedicamentoActivity extends BaseActivity {
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if(result != null) {
             if(result.getContents() == null) {
-                Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
+                pesquisaMedicamento(new String("7896658001666"));
+                //Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
             } else {
                 Toast.makeText(this, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
             }
@@ -123,17 +124,24 @@ public class  MedicamentoActivity extends BaseActivity {
             }
         }
     };
-
-    private void pesquisaMedicamento() {
+    private void pesquisaMedicamento(String pesqValor) {
         currentPage = 0;
         previousTotal = 0;
         if(searchValue != null && !searchValue.isEmpty() && String.valueOf(searchTextBox.getText()).isEmpty()){
             ExpandableListMedicamentoAdapter adapter = null;
             expListView.setAdapter(adapter);
         }
-        searchValue = String.valueOf(searchTextBox.getText());
+        if(pesqValor == null){
+            searchValue = String.valueOf(searchTextBox.getText());
+        }else{
+            searchValue = pesqValor;
+        }
         hideKeyboard(context, searchTextBox);
         carregaMedicamentos();
+    }
+
+    private void pesquisaMedicamento() {
+        pesquisaMedicamento(null);
     }
 
     private void carregaMedicamentos() {
