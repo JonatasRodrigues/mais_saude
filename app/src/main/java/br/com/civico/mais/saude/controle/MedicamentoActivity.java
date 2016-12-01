@@ -105,10 +105,11 @@ public class  MedicamentoActivity extends BaseActivity {
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if(result != null) {
             if(result.getContents() == null) {
-                pesquisaMedicamento(new String("7896658001666"));
-                //Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
+                //pesquisaMedicamento("7896658001666");
+                Toast.makeText(this, "Cancelado", Toast.LENGTH_LONG).show();
             } else {
-                Toast.makeText(this, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
+                pesquisaMedicamento(result.getContents());
+                //Toast.makeText(this, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data);
@@ -132,7 +133,7 @@ public class  MedicamentoActivity extends BaseActivity {
             expListView.setAdapter(adapter);
         }
         if(pesqValor == null){
-            searchValue = String.valueOf(searchTextBox.getText());
+        searchValue = String.valueOf(searchTextBox.getText());
         }else{
             searchValue = pesqValor;
         }

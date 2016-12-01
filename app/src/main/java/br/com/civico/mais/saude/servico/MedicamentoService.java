@@ -1,6 +1,7 @@
 package br.com.civico.mais.saude.servico;
 
 import android.os.NetworkOnMainThreadException;
+import android.text.TextUtils;
 
 import com.loopj.android.http.HttpGet;
 
@@ -39,7 +40,8 @@ public class MedicamentoService{
                     "registro,classeTerapeutica,principioAtivo,cnpj,laboratorio,codBarraEan");
             if(produto != null && !produto.isEmpty()){
                 //Se for numérico
-                if(!isNumeric(produto)){
+                boolean digitsOnly = TextUtils.isDigitsOnly(produto);
+                if(!digitsOnly){
                     url = url.concat("&produto=").concat(URLEncoder.encode(produto, "UTF-8"));
                 }else{
                     url = url.concat("&codBarraEan=").concat(URLEncoder.encode(produto, "UTF-8"));
@@ -92,15 +94,6 @@ public class MedicamentoService{
             e.printStackTrace();
         }
         return medicamentoResponse;
-    }
-
-    private static boolean isNumeric(String str) {
-        try {
-            double d = Double.parseDouble(str);
-        } catch (NumberFormatException nfe) {
-            return false;
-        }
-        return true;
     }
 
     private MedicamentoExpandableDTO converterJsonParaObject(JSONArray jsonArray){
