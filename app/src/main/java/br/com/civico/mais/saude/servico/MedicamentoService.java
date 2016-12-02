@@ -37,7 +37,7 @@ public class MedicamentoService{
         try {
             String url = ConstantesAplicacao.URL_BASE + "/rest/remedios?quantidade="+ConstantesAplicacao.QTD_RETORNO_SERVICO+"&pagina="+pagina;
             url = url.concat("&campos=produto,ultimaAlteracao,codBarraEan,apresentacao," +
-                    "registro,classeTerapeutica,principioAtivo,cnpj,laboratorio,codBarraEan");
+                    "registro,classeTerapeutica,principioAtivo,cnpj,laboratorio,codBarraEan,pmc0");
             if(produto != null && !produto.isEmpty()){
                 //Se for numérico
                 boolean digitsOnly = TextUtils.isDigitsOnly(produto);
@@ -115,6 +115,7 @@ public class MedicamentoService{
                 listaDados.add("Registro: " + oneObject.getString("registro"));
                 listaDados.add("Apresentação: " + oneObject.getString("apresentacao"));
                 listaDados.add("Código de Barra: " + oneObject.getString("codBarraEan"));
+                listaDados.add("Preço Máximo ao Consumidor: R$" + oneObject.getString("pmc0").replace(".",","));
                 listaDados.add("Última Alteração: " + oneObject.getString("ultimaAlteracao"));
                 listDataChild.put(idHash, listaDados);
             } catch (JSONException e) {
