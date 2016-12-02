@@ -1,8 +1,10 @@
 package br.com.civico.mais.saude.controle;
 
-import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
@@ -51,8 +53,8 @@ public class  MedicamentoActivity extends BaseActivity {
         searchTextBox = (EditText) findViewById(R.id.txtSearchMedicamento);
         context = this;
 
-        //Button btnSearchMedicamento = (Button) findViewById(R.id.btnSearchMedicamento);
-       // btnSearchMedicamento.setOnClickListener(onClickListenerMedicamento);
+        Button btnSearchMedicamento = (Button) findViewById(R.id.btnSearchMedicamento);
+        btnSearchMedicamento.setOnClickListener(onClickListenerMedicamento);
 
         btnVoltar = (Button) findViewById(R.id.btnVoltarMed);
         btnVoltar.setOnClickListener(onClickListenerVoltarMedicamento);
@@ -60,7 +62,50 @@ public class  MedicamentoActivity extends BaseActivity {
         expListView.setOnScrollListener(customScrollListener);
         expListView.setOnGroupExpandListener(groupExpandListener); //mantém apenas um group aberto
 
-        carregaMedicamentos();
+        popUpPesquisa().show();
+    }
+
+    private Dialog popUpPesquisa() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        final int[] tipoPesquisa = {-1};
+
+        builder.setTitle(R.string.button_search_medicamentoPor)
+                .setSingleChoiceItems(R.array.search_array_medicamentoPor, -1,new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface arg0, int opcaoEscolhida) {
+                        switch (opcaoEscolhida) {
+                            case 0:
+                                tipoPesquisa[0] = 0;
+                                //<item>Código de Barras</item>
+                                break;
+                            case 1:
+                                tipoPesquisa[0] = 1;
+                                //<item>Listar todos</item>
+                                break;
+                        }
+                    }
+                })
+                .setPositiveButton(R.string.button_search_medicamentoPor_confirmar, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        if(tipoPesquisa[0] == 0){
+                            scanBarcode();
+                        }else if(tipoPesquisa[0] == 1){
+                            carregaMedicamentos();
+                        }else{
+                            exibirMsgErro("Escolha um tipo de pesquisa");
+                            popUpPesquisa().show();
+                        }
+                    }
+                })
+                .setNegativeButton(R.string.button_search_medicamentoPor_cancelar, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        voltarMenu();
+                    }
+                });
+
+        return builder.create();
     }
 
     private ExpandableListView.OnGroupExpandListener groupExpandListener =  new ExpandableListView.OnGroupExpandListener() {
@@ -90,7 +135,7 @@ public class  MedicamentoActivity extends BaseActivity {
         }
     };
 
-    public void scanBarcode(View view) {
+    public void scanBarcode() {
         IntentIntegrator integrator = new IntentIntegrator(this);
         integrator.setDesiredBarcodeFormats(IntentIntegrator.ONE_D_CODE_TYPES);
         integrator.setPrompt("Posicione a câmera centralizando o código de barras do medicamento");

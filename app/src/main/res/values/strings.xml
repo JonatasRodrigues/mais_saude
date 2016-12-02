@@ -13,6 +13,13 @@
     <string name="chck_cadastrado">Já sou cadastrado.</string>
 
     <!--Strings relacionados a tela de Medicamento -->
+    <string name="button_search_medicamentoPor">Pesquisar por:</string>
+    <string name="button_search_medicamentoPor_confirmar">Ok</string>
+    <string name="button_search_medicamentoPor_cancelar">Cancelar</string>
+    <string-array name="search_array_medicamentoPor">
+        <item>Código de Barras</item>
+        <item>Listar todos</item>
+    </string-array>
     <string name="button_search_medicamento">Pesquisar</string>
     <string name="label_search_medicamento">nome medicamento</string>
     <string name="title_activity_medicamento">Medicamentos</string>
