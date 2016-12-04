@@ -20,6 +20,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import java.io.IOException;
+import java.nio.charset.IllegalCharsetNameException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -142,12 +143,14 @@ public class ExpandableListUnidadeAdapter extends BaseExpandableListAdapter{
             InternalStorage.deleteCache(_context, ConstantesAplicacao.KEY_CACHE_UNIDADE);
             InternalStorage.deleteCache(_context, ConstantesAplicacao.KEY_CACHE_HEADER_UNIDADE);
             InternalStorage.deleteCache(_context, ConstantesAplicacao.KEY_CACHE_lIST_UNIDADE);
-            InternalStorage.deleteCache(_context , ConstantesAplicacao.KEY_CACHE_MEDIA_UNIDADE);
+            InternalStorage.deleteCache(_context, ConstantesAplicacao.KEY_CACHE_MEDIA_UNIDADE);
 
-            InternalStorage.writeObject(_context, ConstantesAplicacao.KEY_CACHE_UNIDADE,ConstantesAplicacao.KEY_CACHE_UNIDADE);
-            InternalStorage.writeObject(_context, ConstantesAplicacao.KEY_CACHE_HEADER_UNIDADE,_listDataHeader);
-            InternalStorage.writeObject(_context, ConstantesAplicacao.KEY_CACHE_lIST_UNIDADE,_listDataChild);
-            InternalStorage.writeObject(_context, ConstantesAplicacao.KEY_CACHE_MEDIA_UNIDADE,listMediaChild);
+            if(InternalStorage.getFreeSpace() >= ConstantesAplicacao.ESPACO_MINIMO_CACHE){
+                InternalStorage.writeObject(_context, ConstantesAplicacao.KEY_CACHE_UNIDADE,ConstantesAplicacao.KEY_CACHE_UNIDADE);
+                InternalStorage.writeObject(_context, ConstantesAplicacao.KEY_CACHE_HEADER_UNIDADE,_listDataHeader);
+                InternalStorage.writeObject(_context, ConstantesAplicacao.KEY_CACHE_lIST_UNIDADE,_listDataChild);
+                InternalStorage.writeObject(_context, ConstantesAplicacao.KEY_CACHE_MEDIA_UNIDADE,listMediaChild);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }

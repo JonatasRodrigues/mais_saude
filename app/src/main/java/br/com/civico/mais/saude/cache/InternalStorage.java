@@ -1,6 +1,8 @@
 package br.com.civico.mais.saude.cache;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.StatFs;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -46,6 +48,14 @@ public class InternalStorage {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @SuppressLint("NewApi")
+    public static long getFreeSpace(){
+        StatFs stats = new StatFs("/data");
+        long availableBlocks = stats.getAvailableBlocksLong();
+         long blockSizeInBytes = stats.getBlockSizeLong();
+        return availableBlocks * blockSizeInBytes;
     }
 
     public static boolean hasCache(Context context, String key) {

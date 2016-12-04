@@ -37,4 +37,6 @@ public class ConstantesAplicacao {
     public static final String KEY_CACHE_HEADER_UNIDADE="KEY_HEADER_UNIDADE";
     public static final String KEY_CACHE_lIST_UNIDADE="KEY_LIST_UNIDADE";
     public static final String KEY_CACHE_MEDIA_UNIDADE="KEY_MEDIA_UNIDADE";
+
+    public static final long ESPACO_MINIMO_CACHE= (1024*1024) * 3; //3MB
 }
