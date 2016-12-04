@@ -32,4 +32,9 @@ public class ConstantesAplicacao {
 
     public static final String SPLIT_CARACTER="_";
     public static final long QTD_RETORNO_SERVICO =15;
+
+    public static final String KEY_CACHE_UNIDADE="KEY_UNIDADE";
+    public static final String KEY_CACHE_HEADER_UNIDADE="KEY_HEADER_UNIDADE";
+    public static final String KEY_CACHE_lIST_UNIDADE="KEY_LIST_UNIDADE";
+    public static final String KEY_CACHE_MEDIA_UNIDADE="KEY_MEDIA_UNIDADE";
 }

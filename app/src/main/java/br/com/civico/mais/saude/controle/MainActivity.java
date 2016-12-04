@@ -18,6 +18,8 @@ import android.view.MenuItem;
 import android.widget.Button;
 
 import br.com.civico.mais.saude.R;
+import br.com.civico.mais.saude.cache.InternalStorage;
+import br.com.civico.mais.saude.constantes.ConstantesAplicacao;
 import br.com.civico.mais.saude.util.LocationPermissionsUtil;
 
 public class MainActivity extends BaseActivity {
@@ -68,6 +70,11 @@ public class MainActivity extends BaseActivity {
         public void onClick(final View v) {
             if(v.getId()== R.id.btnUnidade){
                 if(hasPermissions()){
+                    InternalStorage.deleteCache(context, ConstantesAplicacao.KEY_CACHE_UNIDADE);
+                    InternalStorage.deleteCache(context, ConstantesAplicacao.KEY_CACHE_HEADER_UNIDADE);
+                    InternalStorage.deleteCache(context, ConstantesAplicacao.KEY_CACHE_lIST_UNIDADE);
+                    InternalStorage.deleteCache(context, ConstantesAplicacao.KEY_CACHE_MEDIA_UNIDADE);
+
                     Intent intent = new Intent(MainActivity.this, UnidadeActivity.class);
                     startActivity(intent);
                 }else{
