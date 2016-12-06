@@ -28,8 +28,9 @@ public class ConstantesAplicacao {
     public static final String MENSAGEM_SESSAO_EXPIRADA="Sessão expirada";
     public static final String MENSAGEM_NOT_FOUND_LOCATION="Por favor, verifique se o serviço de localização do aparelho está ativo em \'Configurar -> Localização\'.";
     public static final String MENSAGEM_SEM_CONEXAO_INTERNET="Verifique sua conexão com a internet e tente novamente.";
-    public static final String MENSAGEM_SERVICO_CADASTRO_ERROR = "Não foi possível concluir o cadastro, tente novamente mais tarde!";
 
     public static final String SPLIT_CARACTER="_";
     public static final long QTD_RETORNO_SERVICO =15;
+    public static final String SEARCH_MEDICAMENTOPOR_CODBARRA = "0";
+    public static final String SEARCH_MEDICAMENTOPOR_LISTARTODOS = "1";
 }

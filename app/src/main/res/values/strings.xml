@@ -17,7 +17,7 @@
     <string name="button_search_medicamentoPor_confirmar">Ok</string>
     <string name="button_search_medicamentoPor_cancelar">Cancelar</string>
     <string-array name="search_array_medicamentoPor">
-        <item>Código de Barras</item>
+        <item>Buscar por Código de Barra</item>
         <item>Listar Todos</item>
     </string-array>
     <string name="button_search_medicamento">Pesquisar</string>
