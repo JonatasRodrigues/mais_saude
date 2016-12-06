@@ -5,6 +5,8 @@ import android.support.design.widget.FloatingActionButton;
 import android.view.View;
 import android.view.ViewGroup;
 import br.com.civico.mais.saude.R;
+import br.com.civico.mais.saude.cache.InternalStorage;
+import br.com.civico.mais.saude.constantes.ConstantesAplicacao;
 import br.com.civico.mais.saude.controle.LoginActivity;
 import br.com.civico.mais.saude.controle.MapsActivity;
 import br.com.civico.mais.saude.dto.AvaliacaoResponse;
@@ -17,6 +19,8 @@ import android.widget.Button;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import java.io.IOException;
+import java.nio.charset.IllegalCharsetNameException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -32,6 +36,7 @@ public class ExpandableListUnidadeAdapter extends BaseExpandableListAdapter{
     private Double latitude;
     private Double longitute;
     private String nomeUnidade;
+    private String valorPesquisa="";
 
     public ExpandableListUnidadeAdapter(Context context, List<String> listDataHeader,HashMap<String, List<String>> listChildData,
           HashMap<String, AvaliacaoResponse> listMediaChild) {
@@ -94,9 +99,11 @@ public class ExpandableListUnidadeAdapter extends BaseExpandableListAdapter{
                 holder.btnComentario.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        writeCache();
                         Intent intent = new Intent(_context, LoginActivity.class);
                         intent.putExtra("codigoUnidade", getCodigoUnidade());
                         intent.putExtra("nomeUnidade", getNomeUnidade());
+                        intent.putExtra("valorPesquisa", getValorPesquisa());
                         _context.startActivity(intent);
                     }
                 });
@@ -131,6 +138,24 @@ public class ExpandableListUnidadeAdapter extends BaseExpandableListAdapter{
         return convertView;
     }
 
+    private void writeCache(){
+        try {
+            InternalStorage.deleteCache(_context, ConstantesAplicacao.KEY_CACHE_UNIDADE);
+            InternalStorage.deleteCache(_context, ConstantesAplicacao.KEY_CACHE_HEADER_UNIDADE);
+            InternalStorage.deleteCache(_context, ConstantesAplicacao.KEY_CACHE_lIST_UNIDADE);
+            InternalStorage.deleteCache(_context, ConstantesAplicacao.KEY_CACHE_MEDIA_UNIDADE);
+
+            if(InternalStorage.getFreeSpace() >= ConstantesAplicacao.ESPACO_MINIMO_CACHE){
+                InternalStorage.writeObject(_context, ConstantesAplicacao.KEY_CACHE_UNIDADE,ConstantesAplicacao.KEY_CACHE_UNIDADE);
+                InternalStorage.writeObject(_context, ConstantesAplicacao.KEY_CACHE_HEADER_UNIDADE,_listDataHeader);
+                InternalStorage.writeObject(_context, ConstantesAplicacao.KEY_CACHE_lIST_UNIDADE,_listDataChild);
+                InternalStorage.writeObject(_context, ConstantesAplicacao.KEY_CACHE_MEDIA_UNIDADE,listMediaChild);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void setCodigoUnidade(String codigoUnidade){
         this.codigoUnidade=codigoUnidade;
     }
@@ -161,6 +186,14 @@ public class ExpandableListUnidadeAdapter extends BaseExpandableListAdapter{
 
     public void setNomeUnidade(String nomeUnidade) {
         this.nomeUnidade = nomeUnidade;
+    }
+
+    public String getValorPesquisa() {
+        return valorPesquisa;
+    }
+
+    public void setValorPesquisa(String valorPesquisa) {
+        this.valorPesquisa = valorPesquisa;
     }
 
     @Override

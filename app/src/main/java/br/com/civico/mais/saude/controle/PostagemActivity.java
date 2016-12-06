@@ -253,6 +253,9 @@ public class  PostagemActivity extends BaseActivity {
 
     private void voltar(){
         Intent intent = new Intent(this, UnidadeActivity.class);
+        if(getIntent().hasExtra("valorPesquisa")){
+            intent.putExtra("valorPesquisa", getIntent().getStringExtra("valorPesquisa"));
+        }
         startActivity(intent);
     }
 }

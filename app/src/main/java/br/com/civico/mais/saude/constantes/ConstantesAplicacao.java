@@ -33,4 +33,11 @@ public class ConstantesAplicacao {
     public static final long QTD_RETORNO_SERVICO =15;
     public static final String SEARCH_MEDICAMENTOPOR_CODBARRA = "0";
     public static final String SEARCH_MEDICAMENTOPOR_LISTARTODOS = "1";
+
+    public static final String KEY_CACHE_UNIDADE="KEY_UNIDADE";
+    public static final String KEY_CACHE_HEADER_UNIDADE="KEY_HEADER_UNIDADE";
+    public static final String KEY_CACHE_lIST_UNIDADE="KEY_LIST_UNIDADE";
+    public static final String KEY_CACHE_MEDIA_UNIDADE="KEY_MEDIA_UNIDADE";
+
+    public static final long ESPACO_MINIMO_CACHE= (1024*1024) * 3; //3MB
 }

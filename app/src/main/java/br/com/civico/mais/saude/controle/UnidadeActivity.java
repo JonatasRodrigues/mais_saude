@@ -2,10 +2,12 @@ package br.com.civico.mais.saude.controle;
 
 import  android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,15 +18,23 @@ import android.widget.ExpandableListView;
 
 import org.json.JSONException;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+
 import br.com.civico.mais.saude.R;
 import br.com.civico.mais.saude.adapter.ExpandableListUnidadeAdapter;
+import br.com.civico.mais.saude.cache.InternalStorage;
 import br.com.civico.mais.saude.constantes.ConstantesAplicacao;
+import br.com.civico.mais.saude.dto.AvaliacaoResponse;
 import br.com.civico.mais.saude.dto.unidade.UnidadeResponse;
 import br.com.civico.mais.saude.util.ConexaoUtil;
 import br.com.civico.mais.saude.servico.GPSService;
 import br.com.civico.mais.saude.servico.UnidadeService;
 
 public class UnidadeActivity extends BaseActivity {
+
+    private String TAG = "UnidadeActivity";
 
     private ExpandableListView expListView;
     private ProgressDialog progressDialog;
@@ -60,6 +70,12 @@ public class UnidadeActivity extends BaseActivity {
         expListView.setOnGroupClickListener(onGroupClickListener);
         expListView.setOnGroupExpandListener(groupExpandListener); //mantém apenas um group aberto
 
+        if(getIntent().hasExtra("valorPesquisa") && !"".equals(getIntent().getStringExtra("valorPesquisa"))){
+            previousTotal = 0;
+            searchTextBox.setText(getIntent().getStringExtra("valorPesquisa"));
+            btnVoltar.setVisibility(View.VISIBLE);
+        }
+
         carregarUnidades();
     }
 
@@ -69,6 +85,8 @@ public class UnidadeActivity extends BaseActivity {
                 btnVoltar.setVisibility(View.INVISIBLE);
                 isPesquisa=false;
                 searchTextBox.setText("");
+                ExpandableListUnidadeAdapter adapter = null;
+                expListView.setAdapter(adapter);
                 pesquisaUnidade();
             }
         }
@@ -93,7 +111,15 @@ public class UnidadeActivity extends BaseActivity {
         }
         searchValue = String.valueOf(searchTextBox.getText());
         hideKeyboard(context,searchTextBox);
+        limparCache();
         carregarUnidades();
+    }
+
+    private void limparCache(){
+        InternalStorage.deleteCache(context, ConstantesAplicacao.KEY_CACHE_UNIDADE);
+        InternalStorage.deleteCache(context, ConstantesAplicacao.KEY_CACHE_HEADER_UNIDADE);
+        InternalStorage.deleteCache(context, ConstantesAplicacao.KEY_CACHE_lIST_UNIDADE);
+        InternalStorage.deleteCache(context, ConstantesAplicacao.KEY_CACHE_MEDIA_UNIDADE);
     }
 
     private ExpandableListView.OnGroupExpandListener groupExpandListener =  new ExpandableListView.OnGroupExpandListener() {
@@ -137,7 +163,7 @@ public class UnidadeActivity extends BaseActivity {
     private AbsListView.OnScrollListener customScrollListener = new AbsListView.OnScrollListener() {
         @Override
         public void onScroll(AbsListView view, int firstVisibleItem,int visibleItemCount, int totalItemCount) {
-            if (loading) {
+             if (loading) {
                 if (totalItemCount > previousTotal) {
                     loading = false;
                     isPesquisa=false;
@@ -149,7 +175,7 @@ public class UnidadeActivity extends BaseActivity {
                 carregarUnidades();
                 loading = true;
             }
-         }
+          }
         @Override
         public void onScrollStateChanged(AbsListView view, int scrollState) {
         }
@@ -157,6 +183,36 @@ public class UnidadeActivity extends BaseActivity {
     };
 
     private void carregarUnidades(){
+        if(InternalStorage.hasCache(context,ConstantesAplicacao.KEY_CACHE_UNIDADE)){
+            carregarCache();
+            limparCache();
+        }else{
+            carregarPeloServico();
+        }
+    }
+
+    private void carregarCache(){
+       try {
+            List<String> listDataHeader= (List<String>) InternalStorage.readObject(context, ConstantesAplicacao.KEY_CACHE_HEADER_UNIDADE);
+            HashMap<String, List<String>> listDataChild = (HashMap<String, List<String>>) InternalStorage.readObject(context,ConstantesAplicacao.KEY_CACHE_lIST_UNIDADE);
+            HashMap<String, AvaliacaoResponse> listMediaChild = (HashMap<String, AvaliacaoResponse>) InternalStorage.readObject(context, ConstantesAplicacao.KEY_CACHE_MEDIA_UNIDADE);
+
+           if(listDataChild.size() < ConstantesAplicacao.QTD_RETORNO_SERVICO){
+               expListView.setOnScrollListener(null);
+           }
+
+            ExpandableListUnidadeAdapter adapter = new ExpandableListUnidadeAdapter(context,listDataHeader,listDataChild,listMediaChild );
+            expListView.setAdapter(adapter);
+            configurarExpList();
+
+        } catch (IOException e) {
+            Log.e(TAG, e.getMessage());
+        } catch (ClassNotFoundException e) {
+            Log.e(TAG, e.getMessage());
+        }
+    }
+
+    private void carregarPeloServico(){
         if(ConexaoUtil.hasConnection(context)){
             location = new GPSService(context).getLocation();
             if(location==null){
@@ -167,60 +223,61 @@ public class UnidadeActivity extends BaseActivity {
 
                     task = new AsyncTask<Void, Void, UnidadeResponse>() {
 
-                    @Override
-                    protected void onPreExecute() {
-                        progressDialog = new ProgressDialog(UnidadeActivity.this);
-                        progressDialog.setMessage("Buscando unidades...");
-                        progressDialog.setCancelable(false);
-                        progressDialog.setIndeterminate(true);
-                        progressDialog.show();
-                    }
-
-                    @Override
-                    protected UnidadeResponse doInBackground(Void... voids) {
-                        try {
-                            UnidadeService unidadeService = new UnidadeService(location);
-                            return unidadeService.consumirServicoTCU(currentPage, searchValue);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        return null;
-                    }
-
-                    @Override
-                    protected void onPostExecute(UnidadeResponse unidadeResponse) {
-                        if (progressDialog != null) {
-                            progressDialog.dismiss();
+                        @Override
+                        protected void onPreExecute() {
+                            progressDialog = new ProgressDialog(UnidadeActivity.this);
+                            progressDialog.setMessage("Buscando unidades...");
+                            progressDialog.setCancelable(false);
+                            progressDialog.setIndeterminate(true);
+                            progressDialog.show();
                         }
 
-                        if (unidadeResponse.getStatusCodigo() == ConstantesAplicacao.STATUS_OK) {
-                            ExpandableListUnidadeAdapter unidadeAdapter = (ExpandableListUnidadeAdapter) expListView.getExpandableListAdapter();
+                        @Override
+                        protected UnidadeResponse doInBackground(Void... voids) {
+                            try {
+                                UnidadeService unidadeService = new UnidadeService(location);
+                                return unidadeService.consumirServicoTCU(currentPage, searchValue);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                            return null;
+                        }
 
-                            if (unidadeAdapter == null) {
-                                ExpandableListUnidadeAdapter adapter = new ExpandableListUnidadeAdapter(context, unidadeResponse.getExpandableUnidadeDTO().getListDataHeader(),
-                                        unidadeResponse.getExpandableUnidadeDTO().getListDataChild(), unidadeResponse.getExpandableUnidadeDTO().getListMediaChild());
-                                expListView.setAdapter(adapter);
-                            } else {
-                                if (isPrimeiraPesquisaPorTexto()) {
+                        @Override
+                        protected void onPostExecute(UnidadeResponse unidadeResponse) {
+                            if (progressDialog != null) {
+                                progressDialog.dismiss();
+                            }
+
+                            if (unidadeResponse.getStatusCodigo() == ConstantesAplicacao.STATUS_OK) {
+                                ExpandableListUnidadeAdapter unidadeAdapter = (ExpandableListUnidadeAdapter) expListView.getExpandableListAdapter();
+
+                                if (unidadeAdapter == null) {
                                     ExpandableListUnidadeAdapter adapter = new ExpandableListUnidadeAdapter(context, unidadeResponse.getExpandableUnidadeDTO().getListDataHeader(),
                                             unidadeResponse.getExpandableUnidadeDTO().getListDataChild(), unidadeResponse.getExpandableUnidadeDTO().getListMediaChild());
                                     expListView.setAdapter(adapter);
                                 } else {
-                                    unidadeAdapter.updateData(unidadeResponse.getExpandableUnidadeDTO().getListDataHeader(),
-                                            unidadeResponse.getExpandableUnidadeDTO().getListDataChild(), unidadeResponse.getExpandableUnidadeDTO().getListMediaChild());
-                                    unidadeAdapter.notifyDataSetChanged();
+                                    if (isPrimeiraPesquisaPorTexto()) {
+                                        ExpandableListUnidadeAdapter adapter = new ExpandableListUnidadeAdapter(context, unidadeResponse.getExpandableUnidadeDTO().getListDataHeader(),
+                                                unidadeResponse.getExpandableUnidadeDTO().getListDataChild(), unidadeResponse.getExpandableUnidadeDTO().getListMediaChild());
+                                        adapter.setValorPesquisa(searchValue);
+                                        expListView.setAdapter(adapter);
+                                    } else {
+                                        unidadeAdapter.updateData(unidadeResponse.getExpandableUnidadeDTO().getListDataHeader(),
+                                                unidadeResponse.getExpandableUnidadeDTO().getListDataChild(), unidadeResponse.getExpandableUnidadeDTO().getListMediaChild());
+                                        unidadeAdapter.notifyDataSetChanged();
+                                    }
                                 }
-                            }
-                            configurarExpList();
+                                configurarExpList();
 
-                        } else {
-                            exibirMsgErro(unidadeResponse.getMensagem());
-                            voltarMenu();
+                            } else {
+                                exibirMsgErro(unidadeResponse.getMensagem());
+                                voltarMenu();
+                            }
                         }
-                    }
-                };
-                task.execute((Void[]) null);
-              }
+                    };
+                    task.execute((Void[]) null);
+                }
             }
         }else{
             exibirMsgErro(ConstantesAplicacao.MENSAGEM_SEM_CONEXAO_INTERNET);

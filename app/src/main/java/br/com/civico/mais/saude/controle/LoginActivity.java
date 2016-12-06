@@ -83,6 +83,9 @@ public class LoginActivity extends BaseActivity {
                 if(hoje.compareTo(dataExpiracaoToken)<=0){
                     editor.commit();
                     Intent intent = new Intent(context, PostagemActivity.class);
+                    if(getIntent().hasExtra("valorPesquisa")){
+                        intent.putExtra("valorPesquisa", getIntent().getStringExtra("valorPesquisa"));
+                    }
                     context.startActivity(intent);
                 }else{
                     editor.clear();     // CLEAR ALL FIELDS
@@ -221,6 +224,9 @@ public class LoginActivity extends BaseActivity {
                         editor.commit();
 
                         Intent intent = new Intent(context, PostagemActivity.class);
+                        if(getIntent().hasExtra("valorPesquisa")){
+                           intent.putExtra("valorPesquisa", getIntent().getStringExtra("valorPesquisa"));
+                        }
                         context.startActivity(intent);
 
                     }else {
@@ -276,6 +282,9 @@ public class LoginActivity extends BaseActivity {
                             editor.commit();
 
                             Intent intent = new Intent(context, PostagemActivity.class);
+                            if(getIntent().hasExtra("valorPesquisa")){
+                                intent.putExtra("valorPesquisa", getIntent().getStringExtra("valorPesquisa"));
+                            }
                             context.startActivity(intent);
                         }else {
                             exibirMsgErro(result.getMensagem());
@@ -358,6 +367,9 @@ public class LoginActivity extends BaseActivity {
 
     private void voltar() {
         Intent intent = new Intent(this, UnidadeActivity.class);
+        if(getIntent().hasExtra("valorPesquisa")){
+            intent.putExtra("valorPesquisa", getIntent().getStringExtra("valorPesquisa"));
+        }
         startActivity(intent);
     }
 
