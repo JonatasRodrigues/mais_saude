@@ -1,9 +1,11 @@
 package br.com.civico.mais.saude.dto;
 
+import java.io.Serializable;
+
 /**
  * Created by Jônatas Rodrigues on 23/10/2016.
  */
-public class AvaliacaoResponse {
+public class AvaliacaoResponse implements Serializable{
 
     private float mediaAvaliacao;
     private String qtdAvaliacao;

@@ -220,12 +220,6 @@ public class  PostagemActivity extends BaseActivity {
                             if (progressDialog != null) {
                                 progressDialog.dismiss();
                             }
-
-                          /*  if (result == null || "null".equals(result)) {
-                                carregarPostagens();
-                            } else {
-                                exibirMsgErro(result);
-                            }*/
                         }
                     };
                     task.execute((Void[]) null);

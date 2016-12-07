@@ -9,10 +9,29 @@ import java.util.Date;
  * Created by Jônatas Rodrigues on 25/09/2016.
  */
 public class PostagemDTO {
+
+    private String codPostagem;
+    private String codAutor;
     private String comentario;
     private String dataPostagem;
     private float pontuacao;
     private String nomeAutor;
+
+    public String getCodPostagem() {
+        return codPostagem;
+    }
+
+    public void setCodPostagem(String codPostagem) {
+        this.codPostagem = codPostagem;
+    }
+
+    public String getCodAutor() {
+        return codAutor;
+    }
+
+    public void setCodAutor(String codAutor) {
+        this.codAutor = codAutor;
+    }
 
     public String getComentario() {
         return comentario;

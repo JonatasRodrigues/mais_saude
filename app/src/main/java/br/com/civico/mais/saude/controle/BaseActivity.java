@@ -27,7 +27,21 @@ public class BaseActivity extends Activity {
 
     protected static void hideKeyboard(Context context, View editText){
         InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(editText.getWindowToken(),0);
+        imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
+    }
+
+    protected void exibirMsgSucesso(String mensagem){
+        LayoutInflater inflater = getLayoutInflater();
+        View layout = inflater.inflate(R.layout.toast_erro,(ViewGroup) findViewById(R.id.layout_sucesso));
+
+        TextView text = (TextView) layout.findViewById(R.id.textSucesso);
+        text.setText(mensagem);
+
+        Toast toast = new Toast(getApplicationContext());
+        toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
+        toast.setDuration(Toast.LENGTH_LONG);
+        toast.setView(layout);
+        toast.show();
     }
 
     protected void exibirMsgErro(String mensagem){
