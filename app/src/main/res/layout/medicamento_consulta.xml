@@ -90,6 +90,19 @@
         android:layout_below="@+id/space" />
 
 
-
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Nenhum medicamento disponível!"
+        android:id="@+id/semResultado"
+        android:layout_below="@+id/tvHeaderTitle"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:textSize="14dp"
+        android:gravity="center_horizontal"
+        android:visibility="gone" />
 
 </RelativeLayout>

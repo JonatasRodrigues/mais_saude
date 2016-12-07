@@ -15,6 +15,7 @@ import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -43,11 +44,16 @@ public class  MedicamentoActivity extends BaseActivity {
     private String searchValue = new String("");
     private AsyncTask<Void, Void, MedicamentoResponse> task;
     private  Button btnVoltar;
+    private TextView lblSemResultado;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.medicamento_consulta);
+
+        this.lblSemResultado =  (TextView) findViewById(R.id.semResultado);
+        this.lblSemResultado.setVisibility(View.GONE);
+
         expListView = (ExpandableListView) findViewById(R.id.medicamentoListView);
         searchTextBox = (EditText) findViewById(R.id.txtSearchMedicamento);
         context = this;
@@ -154,6 +160,7 @@ public class  MedicamentoActivity extends BaseActivity {
     }
 
     private void carregaMedicamentos() {
+        this.lblSemResultado.setVisibility(View.GONE);
         if(ConexaoUtil.hasConnection(context)){
             if(task == null || task != null && task.getStatus() == AsyncTask.Status.FINISHED){
                 task = new AsyncTask<Void, Void, MedicamentoResponse>() {
@@ -206,6 +213,13 @@ public class  MedicamentoActivity extends BaseActivity {
                         } else {
                             exibirMsgErro(medicamentoResponse.getMensagem());
                             voltarMenu();
+                        }
+                        try {
+                            if (medicamentoResponse.getMedicamentoExpandableDTO().getListDataChild().size() == 0) {
+                                MedicamentoActivity.this.lblSemResultado.setVisibility(View.VISIBLE);
+                            }
+                        }catch (Exception e){
+                            MedicamentoActivity.this.lblSemResultado.setVisibility(View.VISIBLE);
                         }
                     }
 
