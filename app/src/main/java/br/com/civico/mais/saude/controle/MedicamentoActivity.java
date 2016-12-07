@@ -1,14 +1,13 @@
 package br.com.civico.mais.saude.controle;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -62,50 +61,15 @@ public class  MedicamentoActivity extends BaseActivity {
         expListView.setOnScrollListener(customScrollListener);
         expListView.setOnGroupExpandListener(groupExpandListener); //mantém apenas um group aberto
 
-        popUpPesquisa().show();
-    }
-
-    private Dialog popUpPesquisa() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        final int[] tipoPesquisa = {-1};
-
-        builder.setTitle(R.string.button_search_medicamentoPor)
-                .setSingleChoiceItems(R.array.search_array_medicamentoPor, -1,new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface arg0, int opcaoEscolhida) {
-                        switch (opcaoEscolhida) {
-                            case 0:
-                                tipoPesquisa[0] = 0;
-                                //<item>Código de Barras</item>
-                                break;
-                            case 1:
-                                tipoPesquisa[0] = 1;
-                                //<item>Listar todos</item>
-                                break;
-                        }
-                    }
-                })
-                .setPositiveButton(R.string.button_search_medicamentoPor_confirmar, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                        if(tipoPesquisa[0] == 0){
-                            scanBarcode();
-                        }else if(tipoPesquisa[0] == 1){
-                            carregaMedicamentos();
-                        }else{
-                            exibirMsgErro("Escolha um tipo de pesquisa");
-                            popUpPesquisa().show();
-                        }
-                    }
-                })
-                .setNegativeButton(R.string.button_search_medicamentoPor_cancelar, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                        voltarMenu();
-                    }
-                });
-
-        return builder.create();
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+        String tipoPesquisaMedicamento = settings.getString("tipoPesquisaMedicamento", "");
+        if(tipoPesquisaMedicamento.equalsIgnoreCase(ConstantesAplicacao.SEARCH_MEDICAMENTOPOR_CODBARRA)){
+            scanBarcode();
+        }else if(tipoPesquisaMedicamento.equalsIgnoreCase(ConstantesAplicacao.SEARCH_MEDICAMENTOPOR_LISTARTODOS)){
+            pesquisaMedicamento();
+        }else{
+            voltarMenu();
+        }
     }
 
     private ExpandableListView.OnGroupExpandListener groupExpandListener =  new ExpandableListView.OnGroupExpandListener() {
@@ -150,11 +114,10 @@ public class  MedicamentoActivity extends BaseActivity {
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if(result != null) {
             if(result.getContents() == null) {
-                //pesquisaMedicamento("7896658001666");
+                voltarMenu();
                 Toast.makeText(this, "Cancelado", Toast.LENGTH_LONG).show();
             } else {
                 pesquisaMedicamento(result.getContents());
-                //Toast.makeText(this, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data);

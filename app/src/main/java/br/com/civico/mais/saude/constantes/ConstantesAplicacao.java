@@ -32,6 +32,8 @@ public class ConstantesAplicacao {
 
     public static final String SPLIT_CARACTER="_";
     public static final long QTD_RETORNO_SERVICO =15;
+    public static final String SEARCH_MEDICAMENTOPOR_CODBARRA = "0";
+    public static final String SEARCH_MEDICAMENTOPOR_LISTARTODOS = "1";
 
     public static final String KEY_CACHE_UNIDADE="KEY_UNIDADE";
     public static final String KEY_CACHE_HEADER_UNIDADE="KEY_HEADER_UNIDADE";

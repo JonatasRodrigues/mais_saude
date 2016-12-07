@@ -2,13 +2,12 @@ package br.com.civico.mais.saude.controle;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
@@ -25,14 +24,17 @@ import br.com.civico.mais.saude.util.LocationPermissionsUtil;
 public class MainActivity extends BaseActivity {
 
     public static final int LOCATION_PERMISSION_REQUEST_CODE = 100;
-    private ProgressDialog progressDialog;
     private Context context;
+    private SharedPreferences settings ;
+    private SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         this.context=this;
+        this.settings = PreferenceManager.getDefaultSharedPreferences(this);
+        this.editor = settings.edit();
 
         Button  btnUnidade = (Button) findViewById(R.id.btnUnidade);
         btnUnidade.setOnClickListener(onClickListenerUnidade);
@@ -47,12 +49,35 @@ public class MainActivity extends BaseActivity {
         btnSair.setOnClickListener(onClickListenerSair);
 
     }
+    private Dialog popUpPesquisa() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setSingleChoiceItems(R.array.search_array_medicamentoPor, -1,new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface arg0, int opcaoEscolhida) {
+                Intent intent = new Intent(MainActivity.this, MedicamentoActivity.class);
+                switch (opcaoEscolhida) {
+                    case 0:
+                        editor.putString("tipoPesquisaMedicamento", ConstantesAplicacao.SEARCH_MEDICAMENTOPOR_CODBARRA);
+                        editor.commit();
+                        startActivity(intent);
+                        arg0.dismiss();
+                        break;
+                    case 1:
+                        editor.putString("tipoPesquisaMedicamento", ConstantesAplicacao.SEARCH_MEDICAMENTOPOR_LISTARTODOS);
+                        editor.commit();
+                        startActivity(intent);
+                        arg0.dismiss();
+                        break;
+                }
+            }
+        });
 
+        return builder.create();
+    }
     private View.OnClickListener onClickListenerMedicamento = new View.OnClickListener() {
         public void onClick(View view) {
             if(view.getId() == R.id.btnMedicamento){
-                Intent intent = new Intent(MainActivity.this, MedicamentoActivity.class);
-                startActivity(intent);
+                popUpPesquisa().show();
             }
         }
     };
