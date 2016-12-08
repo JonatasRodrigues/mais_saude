@@ -2,10 +2,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:padding="4dp"
-    android:background="@color/white"
-    android:weightSum="1">
+    android:background="@color/white">
 
 
     <RelativeLayout
@@ -97,6 +96,16 @@
                 android:layout_centerVertical="true"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
+                android:textColor="@color/grey_light"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:id="@+id/codigoConteudoPostagem"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/codigoPostagem"
+                android:layout_toEndOf="@+id/codigoPostagem"
                 android:textColor="@color/grey_light"/>
 
         </RelativeLayout>

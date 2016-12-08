@@ -25,6 +25,7 @@ import cz.msebera.android.httpclient.client.ClientProtocolException;
 import cz.msebera.android.httpclient.client.HttpClient;
 import cz.msebera.android.httpclient.client.methods.HttpDelete;
 import cz.msebera.android.httpclient.client.methods.HttpPost;
+import cz.msebera.android.httpclient.client.methods.HttpPut;
 import cz.msebera.android.httpclient.entity.StringEntity;
 import cz.msebera.android.httpclient.impl.client.DefaultHttpClient;
 
@@ -78,12 +79,12 @@ public class  PostagemService {
 
                 JSONObject oneObject = jsonArray.getJSONObject(i);
                 dto.setCodPostagem(oneObject.getString("codPostagem"));
-                dto.setCodAutor(oneObject.getString("codAutor"));
                 dto.setNomeAutor(URLDecoder.decode(oneObject.getString("nomeAutor"), "UTF-8"));
                 dto.setDataPostagem(oneObject.getString("dataHoraPostagem"));
                 JSONArray conteudoArray = oneObject.getJSONArray("conteudos");
-                dto.setComentario("Lorem Ipsum é simplesmente uma simulação de texto da indústria tipográfica e de impressos, e vem sendo utilizado desde o século XVI, quando um impressor desconhecido pegou uma bandeja de tipos e os embaralhou para fazer um livro de modelos de tipos.");
+                dto.setComentario(conteudoArray.getJSONObject(0).getString("texto"));
                 dto.setPontuacao(Float.valueOf(conteudoArray.getJSONObject(0).getString("valor")));
+                dto.setCodConteudo(conteudoArray.getJSONObject(0).getString("codConteudoPost"));
 
                 lista.add(dto);
             } catch (JSONException e) {
@@ -191,6 +192,41 @@ public class  PostagemService {
             e.printStackTrace();
         }
         return ConstantesAplicacao.MENSAGEM_COMENTARIO_EXCLUSAO_SUCESSO;
+    }
+
+    public String editarConteudoPostagem(String token, long codigoPostagem, long codigoConteudo, String comentario, double pontuacao){
+        try {
+            double longitude = gps!=null ? gps.getLongitude() : 0.0;
+            double latitude = gps!=null ? gps.getLatitude() : 0.0;
+
+            String mensagem = URLEncoder.encode(comentario, "UTF-8");
+            String json = "{\"texto\" : " + mensagem + ", \"valor\": "+pontuacao+", \"longitude\":" + longitude +", \"latitude\":" + latitude +"}";
+            String url = ConstantesAplicacao.URL_BASE_METAMODELO + "/rest/postagens/" +codigoPostagem+"/conteudos/"+codigoConteudo ;
+            HttpClient httpclient = new DefaultHttpClient();
+            HttpPut put = new HttpPut(url);
+
+            JSONObject jsonObj = new JSONObject();
+            jsonObj.accumulate("JSON", json);
+            jsonObj.accumulate("texto", mensagem);
+            jsonObj.accumulate("valor", pontuacao);
+
+            StringEntity se = new StringEntity(jsonObj.toString());
+            put.setHeader("Content-type", "application/json");
+            put.setHeader("appToken", token);
+            put.setEntity(se);
+            HttpResponse httpresponse = httpclient.execute(put);
+
+            if (httpresponse.getStatusLine().getStatusCode() != ConstantesAplicacao.STATUS_CADASTRO_SUCESSO) {
+                return "Não foi possível realizar essa operação. Tente novamente mais tarde.";
+            }
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public JSONArray getJson(String json) throws JSONException {

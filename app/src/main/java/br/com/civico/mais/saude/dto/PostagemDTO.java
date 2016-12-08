@@ -11,7 +11,7 @@ import java.util.Date;
 public class PostagemDTO {
 
     private String codPostagem;
-    private String codAutor;
+    private String codConteudo;
     private String comentario;
     private String dataPostagem;
     private float pontuacao;
@@ -25,12 +25,12 @@ public class PostagemDTO {
         this.codPostagem = codPostagem;
     }
 
-    public String getCodAutor() {
-        return codAutor;
+    public String getCodConteudo() {
+        return codConteudo;
     }
 
-    public void setCodAutor(String codAutor) {
-        this.codAutor = codAutor;
+    public void setCodConteudo(String codConteudo) {
+        this.codConteudo = codConteudo;
     }
 
     public String getComentario() {

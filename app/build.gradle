@@ -1,6 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        config {
+            storeFile file('C:/Projetos/mais_saude/jks/mais_saude.jks')
+            keyAlias 'Brasil Mais Saude'
+            keyPassword 'jr061109'
+            storePassword 'jr061109'
+        }
+    }
     compileSdkVersion 23
     buildToolsVersion "23.0.2"
     packagingOptions {
@@ -17,10 +25,12 @@ android {
         versionCode 4
         versionName "1.0.3"
         multiDexEnabled true
+        signingConfig signingConfigs.config
     }
     buildTypes {
         debug {
             debuggable true
+            signingConfig signingConfigs.config
         }
         release {
             minifyEnabled false
