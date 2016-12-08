@@ -23,6 +23,11 @@
     <string name="button_search_medicamento">Pesquisar</string>
     <string name="label_search_medicamento">nome medicamento</string>
     <string name="title_activity_medicamento">Medicamentos</string>
+    <string name="title_popup_preco_Abusivo">Informativo</string>
+    <string name="body_popup_preco_Abusivo">Caso o consumidor perceba que, no momento da compra,
+        o preço do medicamento está acima do ‘Preço Máximo ao Consumidor’,
+        poderá encaminhar denúncia ao Anvis@tende, pelo telefone 0800-642-9782
+        ou e-mail da Secretaria Executiva da Cmed:denuncia.cmed@anvisa.gov.br. </string>
 
 
     <!-- Strings related to login -->

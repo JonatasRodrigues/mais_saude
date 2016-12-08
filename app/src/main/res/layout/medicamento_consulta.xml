@@ -63,7 +63,7 @@
          android:layout_height="fill_parent"
          android:background="#FFFFFF"
          android:layout_weight="1"
-         android:layout_below="@+id/tvHeaderTitle"
+         android:layout_below="@+id/precoAbusivo"
          android:visibility="visible">
 
           <ExpandableListView
@@ -94,7 +94,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Nenhum medicamento disponível!"
+        android:text="Nenhum medicamento não foi encontrado!"
         android:id="@+id/semResultado"
         android:layout_below="@+id/tvHeaderTitle"
         android:layout_alignParentLeft="true"
@@ -104,5 +104,20 @@
         android:textSize="14dp"
         android:gravity="center_horizontal"
         android:visibility="gone" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Para preços abusivos, Clique Aqui!"
+        android:id="@+id/precoAbusivo"
+        android:layout_below="@+id/tvHeaderTitle"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:textSize="14dp"
+        android:gravity="center_horizontal"
+        android:visibility="visible" />
 
 </RelativeLayout>

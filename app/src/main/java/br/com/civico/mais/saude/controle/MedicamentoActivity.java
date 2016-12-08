@@ -1,5 +1,6 @@
 package br.com.civico.mais.saude.controle;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -45,6 +46,7 @@ public class  MedicamentoActivity extends BaseActivity {
     private AsyncTask<Void, Void, MedicamentoResponse> task;
     private  Button btnVoltar;
     private TextView lblSemResultado;
+    private TextView precoAbusivo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +55,10 @@ public class  MedicamentoActivity extends BaseActivity {
 
         this.lblSemResultado =  (TextView) findViewById(R.id.semResultado);
         this.lblSemResultado.setVisibility(View.GONE);
+
+        this.precoAbusivo = (TextView) findViewById(R.id.precoAbusivo);
+        this.precoAbusivo.setVisibility(View.VISIBLE);
+        this.precoAbusivo.setOnClickListener(onClickListenerPrecoAbusivo);
 
         expListView = (ExpandableListView) findViewById(R.id.medicamentoListView);
         searchTextBox = (EditText) findViewById(R.id.txtSearchMedicamento);
@@ -139,6 +145,18 @@ public class  MedicamentoActivity extends BaseActivity {
             }
         }
     };
+
+    private View.OnClickListener onClickListenerPrecoAbusivo = new View.OnClickListener() {
+        public void onClick(final View v) {
+            if(v.getId()== R.id.precoAbusivo){
+                AlertDialog.Builder builder = new AlertDialog.Builder(MedicamentoActivity.this);
+                builder.setTitle(R.string.title_popup_preco_Abusivo);
+                builder.setMessage(R.string.body_popup_preco_Abusivo);
+                builder.create().show();
+
+            }
+        }
+    };
     private void pesquisaMedicamento(String pesqValor) {
         currentPage = 0;
         previousTotal = 0;
@@ -161,6 +179,7 @@ public class  MedicamentoActivity extends BaseActivity {
 
     private void carregaMedicamentos() {
         this.lblSemResultado.setVisibility(View.GONE);
+        this.precoAbusivo.setVisibility(View.VISIBLE);
         if(ConexaoUtil.hasConnection(context)){
             if(task == null || task != null && task.getStatus() == AsyncTask.Status.FINISHED){
                 task = new AsyncTask<Void, Void, MedicamentoResponse>() {
@@ -217,9 +236,11 @@ public class  MedicamentoActivity extends BaseActivity {
                         try {
                             if (medicamentoResponse.getMedicamentoExpandableDTO().getListDataChild().size() == 0) {
                                 MedicamentoActivity.this.lblSemResultado.setVisibility(View.VISIBLE);
+                                MedicamentoActivity.this.precoAbusivo.setVisibility(View.GONE);
                             }
                         }catch (Exception e){
                             MedicamentoActivity.this.lblSemResultado.setVisibility(View.VISIBLE);
+                            MedicamentoActivity.this.precoAbusivo.setVisibility(View.GONE);
                         }
                     }
 
