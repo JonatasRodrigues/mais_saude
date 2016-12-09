@@ -5,10 +5,12 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -150,7 +152,14 @@ public class  MedicamentoActivity extends BaseActivity {
         public void onClick(final View v) {
             if(v.getId()== R.id.precoAbusivo){
                 AlertDialog.Builder builder = new AlertDialog.Builder(MedicamentoActivity.this);
-                builder.setTitle(R.string.title_popup_preco_Abusivo);
+                TextView title = new TextView(MedicamentoActivity.this);
+                title.setText(R.string.title_popup_preco_Abusivo);
+                title.setBackgroundColor(Color.DKGRAY);
+                title.setPadding(10, 10, 10, 10);
+                title.setGravity(Gravity.CENTER);
+                title.setTextColor(Color.WHITE);
+                title.setTextSize(20);
+                builder.setCustomTitle(title);
                 builder.setMessage(R.string.body_popup_preco_Abusivo);
                 builder.create().show();
 

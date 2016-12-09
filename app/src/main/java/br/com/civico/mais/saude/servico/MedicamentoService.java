@@ -110,17 +110,20 @@ public class MedicamentoService{
                 listaHeader.add(idHash);
                 listaDados.add("CNPJ: " + oneObject.getString("cnpj"));
                 listaDados.add("Laboratório: " + oneObject.getString("laboratorio"));
+                listaDados.add("");
                 listaDados.add("Registro: " + oneObject.getString("registro"));
                 listaDados.add("Classe Terapêutica: " + oneObject.getString("classeTerapeutica"));
                 listaDados.add("Princípio Ativo: " + oneObject.getString("principioAtivo"));
                 listaDados.add("Apresentação: " + oneObject.getString("apresentacao"));
+                listaDados.add("Código de Barra: " + oneObject.getString("codBarraEan"));
+                listaDados.add("");
                 String pmc0 = oneObject.getString("pmc0");
                 if(!pmc0.equalsIgnoreCase("0.0")){
                     listaDados.add("Preço Máximo ao Consumidor: R$" + pmc0.replace(".",","));
                 }else{
                     listaDados.add("Preço Máximo ao Consumidor: Não informado");
                 }
-                listaDados.add("Código de Barra: " + oneObject.getString("codBarraEan"));
+                listaDados.add("");
                 listaDados.add("Última Alteração: " + oneObject.getString("ultimaAlteracao"));
                 listDataChild.put(idHash, listaDados);
             } catch (JSONException e) {
