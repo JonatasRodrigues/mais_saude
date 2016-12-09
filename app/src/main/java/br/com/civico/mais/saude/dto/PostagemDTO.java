@@ -10,12 +10,21 @@ import java.util.Date;
  */
 public class PostagemDTO {
 
+    private String codAutor;
     private String codPostagem;
     private String codConteudo;
     private String comentario;
     private String dataPostagem;
     private float pontuacao;
     private String nomeAutor;
+
+    public String getCodAutor() {
+        return codAutor;
+    }
+
+    public void setCodAutor(String codAutor) {
+        this.codAutor = codAutor;
+    }
 
     public String getCodPostagem() {
         return codPostagem;

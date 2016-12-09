@@ -78,6 +78,7 @@ public class  PostagemService {
                 PostagemDTO dto = new PostagemDTO();
 
                 JSONObject oneObject = jsonArray.getJSONObject(i);
+                dto.setCodAutor(oneObject.getString("codAutor"));
                 dto.setCodPostagem(oneObject.getString("codPostagem"));
                 dto.setNomeAutor(URLDecoder.decode(oneObject.getString("nomeAutor"), "UTF-8"));
                 dto.setDataPostagem(oneObject.getString("dataHoraPostagem"));
