@@ -55,6 +55,7 @@ public class ListViewPostagemAdapter extends BaseAdapter {
         TextView nomeAutor,dataPostagem,comentario,codigoPostagem,codConteudoPostagem;
         RatingBar rating;
         Button btnEditar,btnExcluir;
+        RelativeLayout relativeLayout;
     }
 
         @Override
@@ -74,6 +75,13 @@ public class ListViewPostagemAdapter extends BaseAdapter {
             PostagemDTO postagemDTO = postagemDTOList.get(position);
 
             if (postagemDTO != null) {
+
+                SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+                final Long codigoUsuario = Long.valueOf(settings.getString("codigoUsuario", ""));
+                final String auth_token_string = settings.getString("token", "");
+                final Long codigoUnidade = Long.valueOf(settings.getString("codigoUnidade", ""));
+                final String nomeUnidade = settings.getString("nomeUnidade", "");
+
                 holder.codConteudoPostagem = (TextView)view.findViewById(R.id.codigoConteudoPostagem);
                 holder.codigoPostagem = (TextView) view.findViewById(R.id.codigoPostagem);
                 holder.nomeAutor = (TextView) view.findViewById(R.id.lblNomeAutor);
@@ -82,41 +90,43 @@ public class ListViewPostagemAdapter extends BaseAdapter {
                 holder.rating = (RatingBar) view.findViewById(R.id.ratingBarIndicador);
                 holder.btnEditar = (Button) view.findViewById(R.id.btnEditar);
                 holder.btnExcluir = (Button) view.findViewById(R.id.btnExcluir);
+                holder.relativeLayout = (RelativeLayout) view.findViewById(R.id.relativeLayoutBtnComentario);
 
-                holder.btnExcluir.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View v) {
-                        RelativeLayout rl = (RelativeLayout)v.getParent();
-                        TextView codigoPostagem = (TextView)rl.findViewById(R.id.codigoPostagem);
-                        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
-                        String auth_token_string = settings.getString("token", "");
-                        excluirPostagem(v, auth_token_string, Long.parseLong(codigoPostagem.getText().toString()));
-                    }
-                });
+               if(codigoUsuario.intValue() == Integer.parseInt(postagemDTO.getCodAutor())){
 
-                holder.btnEditar.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View v) {
-                        RelativeLayout rl = (RelativeLayout) v.getParent();
-                        RelativeLayout rl2 = (RelativeLayout) rl.getParent();
-                        TextView codigoPostagem = (TextView) rl.findViewById(R.id.codigoPostagem);
-                        TextView codigoConteudo = (TextView) rl.findViewById(R.id.codigoConteudoPostagem);
-                        RatingBar pontuacaoAtual = (RatingBar) rl2.findViewById(R.id.ratingBarIndicador);
-                        TextView comentarioAtual = (TextView) rl2.findViewById(R.id.lblPostagem);
+                   if (postagemDTO.getCodConteudo() != null)
+                       holder.codConteudoPostagem.setText(postagemDTO.getCodConteudo());
 
-                        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
-                        String auth_token_string = settings.getString("token", "");
-                        Long codigoUnidade = Long.valueOf(settings.getString("codigoUnidade", ""));
-                        String nomeUnidade = settings.getString("nomeUnidade", "");
+                   if (postagemDTO.getCodPostagem() != null)
+                       holder.codigoPostagem.setText(postagemDTO.getCodPostagem());
 
-                        editarPostagem(v, auth_token_string, codigoUnidade, nomeUnidade, Long.parseLong(codigoConteudo.getText().toString()),
-                                Long.parseLong(codigoPostagem.getText().toString()),pontuacaoAtual.getRating(), comentarioAtual.getText().toString());
-                    }
-                });
+                   holder.btnExcluir.setOnClickListener(new View.OnClickListener() {
+                       public void onClick(View v) {
+                           RelativeLayout rl = (RelativeLayout)v.getParent();
+                           TextView codigoPostagem = (TextView)rl.findViewById(R.id.codigoPostagem);
+                           excluirPostagem(v, auth_token_string, Long.parseLong(codigoPostagem.getText().toString()));
+                       }
+                   });
 
-                if (postagemDTO.getCodConteudo() != null)
-                    holder.codConteudoPostagem.setText(postagemDTO.getCodConteudo());
-
-                if (postagemDTO.getCodPostagem() != null)
-                    holder.codigoPostagem.setText(postagemDTO.getCodPostagem());
+                   holder.btnEditar.setOnClickListener(new View.OnClickListener() {
+                       public void onClick(View v) {
+                           RelativeLayout rl = (RelativeLayout) v.getParent();
+                           RelativeLayout rl2 = (RelativeLayout) rl.getParent();
+                           TextView codigoPostagem = (TextView) rl.findViewById(R.id.codigoPostagem);
+                           TextView codigoConteudo = (TextView) rl.findViewById(R.id.codigoConteudoPostagem);
+                           RatingBar pontuacaoAtual = (RatingBar) rl2.findViewById(R.id.ratingBarIndicador);
+                           TextView comentarioAtual = (TextView) rl2.findViewById(R.id.lblPostagem);
+                           editarPostagem(v, auth_token_string, codigoUnidade, nomeUnidade, Long.parseLong(codigoConteudo.getText().toString()),
+                                   Long.parseLong(codigoPostagem.getText().toString()),pontuacaoAtual.getRating(), comentarioAtual.getText().toString());
+                       }
+                   });
+               }else{
+                   holder.codConteudoPostagem.setVisibility(View.GONE);
+                   holder.codigoPostagem.setVisibility(View.GONE);
+                   holder.btnEditar.setVisibility(View.GONE);
+                   holder.btnExcluir.setVisibility(View.GONE);
+                   holder.relativeLayout.setVisibility(View.GONE);
+               }
 
                 if (postagemDTO.getNomeAutor() != null)
                     holder.nomeAutor.setText(postagemDTO.getNomeAutor());
