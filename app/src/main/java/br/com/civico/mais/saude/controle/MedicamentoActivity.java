@@ -4,12 +4,10 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -49,6 +47,7 @@ public class  MedicamentoActivity extends BaseActivity {
     private  Button btnVoltar;
     private TextView lblSemResultado;
     private TextView precoAbusivo;
+    private int ultimoExpandido = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,10 +72,20 @@ public class  MedicamentoActivity extends BaseActivity {
         btnVoltar.setOnClickListener(onClickListenerVoltarMedicamento);
 
         expListView.setOnScrollListener(customScrollListener);
-        expListView.setOnGroupExpandListener(groupExpandListener); //mantém apenas um group aberto
+        expListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+            @Override
+            public boolean onGroupClick(ExpandableListView expandableListView, View view, int groupPosition, long l) {
+                if(ultimoExpandido != -1){
+                    expListView.collapseGroup(ultimoExpandido);
+                }
+                expListView.expandGroup(groupPosition);
+                ultimoExpandido = groupPosition;
+                return true;
+            }
+        });
 
-        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
-        String tipoPesquisaMedicamento = settings.getString("tipoPesquisaMedicamento", "");
+
+        String tipoPesquisaMedicamento = getIntent().getStringExtra("tipoPesquisaMedicamento");
         if(tipoPesquisaMedicamento.equalsIgnoreCase(ConstantesAplicacao.SEARCH_MEDICAMENTOPOR_CODBARRA)){
             scanBarcode();
         }else if(tipoPesquisaMedicamento.equalsIgnoreCase(ConstantesAplicacao.SEARCH_MEDICAMENTOPOR_LISTARTODOS)){

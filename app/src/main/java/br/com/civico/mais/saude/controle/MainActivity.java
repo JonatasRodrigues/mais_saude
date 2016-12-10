@@ -25,46 +25,40 @@ public class MainActivity extends BaseActivity {
 
     public static final int LOCATION_PERMISSION_REQUEST_CODE = 100;
     private Context context;
-    private SharedPreferences settings ;
-    private SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        this.context=this;
-        this.settings = PreferenceManager.getDefaultSharedPreferences(this);
-        this.editor = settings.edit();
+        this.context = this;
 
-        Button  btnUnidade = (Button) findViewById(R.id.btnUnidade);
+        Button btnUnidade = (Button) findViewById(R.id.btnUnidade);
         btnUnidade.setOnClickListener(onClickListenerUnidade);
 
-        Button  btnMedicamento = (Button) findViewById(R.id.btnMedicamento);
+        Button btnMedicamento = (Button) findViewById(R.id.btnMedicamento);
         btnMedicamento.setOnClickListener(onClickListenerMedicamento);
 
-        Button  btnSobre = (Button) findViewById(R.id.btnSobre);
+        Button btnSobre = (Button) findViewById(R.id.btnSobre);
         btnSobre.setOnClickListener(onClickListenerSobre);
 
-        Button  btnSair = (Button) findViewById(R.id.btnSair);
+        Button btnSair = (Button) findViewById(R.id.btnSair);
         btnSair.setOnClickListener(onClickListenerSair);
 
     }
     private Dialog popUpPesquisa() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setSingleChoiceItems(R.array.search_array_medicamentoPor, -1,new DialogInterface.OnClickListener() {
+        builder.setSingleChoiceItems(R.array.search_array_medicamentoPor, -1, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface arg0, int opcaoEscolhida) {
                 Intent intent = new Intent(MainActivity.this, MedicamentoActivity.class);
                 switch (opcaoEscolhida) {
                     case 0:
-                        editor.putString("tipoPesquisaMedicamento", ConstantesAplicacao.SEARCH_MEDICAMENTOPOR_CODBARRA);
-                        editor.commit();
+                        intent.putExtra("tipoPesquisaMedicamento", ConstantesAplicacao.SEARCH_MEDICAMENTOPOR_CODBARRA);
                         startActivity(intent);
                         arg0.dismiss();
                         break;
                     case 1:
-                        editor.putString("tipoPesquisaMedicamento", ConstantesAplicacao.SEARCH_MEDICAMENTOPOR_LISTARTODOS);
-                        editor.commit();
+                        intent.putExtra("tipoPesquisaMedicamento", ConstantesAplicacao.SEARCH_MEDICAMENTOPOR_LISTARTODOS);
                         startActivity(intent);
                         arg0.dismiss();
                         break;
@@ -76,7 +70,7 @@ public class MainActivity extends BaseActivity {
     }
     private View.OnClickListener onClickListenerMedicamento = new View.OnClickListener() {
         public void onClick(View view) {
-            if(view.getId() == R.id.btnMedicamento){
+            if (view.getId() == R.id.btnMedicamento) {
                 popUpPesquisa().show();
             }
         }
@@ -84,7 +78,7 @@ public class MainActivity extends BaseActivity {
 
     private View.OnClickListener onClickListenerSobre = new View.OnClickListener() {
         public void onClick(final View v) {
-            if(v.getId()== R.id.btnSobre){
+            if (v.getId() == R.id.btnSobre) {
                 Intent intent = new Intent(MainActivity.this, SobreActivity.class);
                 startActivity(intent);
             }
@@ -93,8 +87,8 @@ public class MainActivity extends BaseActivity {
 
     private View.OnClickListener onClickListenerUnidade = new View.OnClickListener() {
         public void onClick(final View v) {
-            if(v.getId()== R.id.btnUnidade){
-                if(hasPermissions()){
+            if (v.getId() == R.id.btnUnidade) {
+                if (hasPermissions()) {
                     InternalStorage.deleteCache(context, ConstantesAplicacao.KEY_CACHE_UNIDADE);
                     InternalStorage.deleteCache(context, ConstantesAplicacao.KEY_CACHE_HEADER_UNIDADE);
                     InternalStorage.deleteCache(context, ConstantesAplicacao.KEY_CACHE_lIST_UNIDADE);
@@ -102,7 +96,7 @@ public class MainActivity extends BaseActivity {
 
                     Intent intent = new Intent(MainActivity.this, UnidadeActivity.class);
                     startActivity(intent);
-                }else{
+                } else {
                     LocationPermissionsUtil permissions = new LocationPermissionsUtil(MainActivity.this);
                     permissions.requestLocationPermission();
                 }
@@ -112,11 +106,11 @@ public class MainActivity extends BaseActivity {
 
     private View.OnClickListener onClickListenerSair = new View.OnClickListener() {
         public void onClick(final View v) {
-            if(v.getId()== R.id.btnSair){
+            if (v.getId() == R.id.btnSair) {
                 DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        switch (which){
+                        switch (which) {
                             case DialogInterface.BUTTON_POSITIVE:
                                 SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
                                 SharedPreferences.Editor editor = settings.edit();
@@ -144,7 +138,7 @@ public class MainActivity extends BaseActivity {
         }
     };
 
-    private boolean hasPermissions(){
+    private boolean hasPermissions() {
         boolean permissionFineLocation = ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
         boolean permissionCoarseLocation = ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
 
