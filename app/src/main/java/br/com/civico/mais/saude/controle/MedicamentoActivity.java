@@ -78,8 +78,13 @@ public class  MedicamentoActivity extends BaseActivity {
                 if(ultimoExpandido != -1){
                     expListView.collapseGroup(ultimoExpandido);
                 }
-                expListView.expandGroup(groupPosition);
-                ultimoExpandido = groupPosition;
+
+                if(ultimoExpandido!=groupPosition){
+                    expListView.expandGroup(groupPosition);
+                    ultimoExpandido = groupPosition;
+                }else{
+                    ultimoExpandido=-1;
+                }
                 return true;
             }
         });
@@ -94,22 +99,6 @@ public class  MedicamentoActivity extends BaseActivity {
             voltarMenu();
         }
     }
-
-    private ExpandableListView.OnGroupExpandListener groupExpandListener =  new ExpandableListView.OnGroupExpandListener() {
-        @Override
-        public void onGroupExpand(int groupPosition) {
-            ExpandableListMedicamentoAdapter customExpandAdapter = (ExpandableListMedicamentoAdapter) expListView.getExpandableListAdapter();
-            if (customExpandAdapter == null) {
-                return;
-            }
-            for (int i = 0; i < customExpandAdapter.getGroupCount(); i++) {
-                if (i != groupPosition) {
-                    expListView.collapseGroup(i);
-                }
-            }
-        }
-    };
-
 
     private View.OnClickListener onClickListenerVoltarMedicamento = new View.OnClickListener() {
         public void onClick(final View v) {

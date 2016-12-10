@@ -53,6 +53,8 @@ public class UnidadeActivity extends BaseActivity {
 
     private Button btnVoltar;
 
+    private int ultimoExpandido = -1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,7 +70,6 @@ public class UnidadeActivity extends BaseActivity {
         expListView = (ExpandableListView) findViewById(R.id.unidadeListView);
         expListView.setOnScrollListener(customScrollListener);
         expListView.setOnGroupClickListener(onGroupClickListener);
-        expListView.setOnGroupExpandListener(groupExpandListener); //mantém apenas um group aberto
 
         if(getIntent().hasExtra("valorPesquisa") && !"".equals(getIntent().getStringExtra("valorPesquisa"))){
             previousTotal = 0;
@@ -122,21 +123,6 @@ public class UnidadeActivity extends BaseActivity {
         InternalStorage.deleteCache(context, ConstantesAplicacao.KEY_CACHE_MEDIA_UNIDADE);
     }
 
-    private ExpandableListView.OnGroupExpandListener groupExpandListener =  new ExpandableListView.OnGroupExpandListener() {
-        @Override
-        public void onGroupExpand(int groupPosition) {
-            ExpandableListUnidadeAdapter customExpandAdapter = (ExpandableListUnidadeAdapter) expListView.getExpandableListAdapter();
-            if (customExpandAdapter == null) {
-                return;
-            }
-            for (int i = 0; i < customExpandAdapter.getGroupCount(); i++) {
-                if (i != groupPosition) {
-                    expListView.collapseGroup(i);
-                }
-            }
-        }
-    };
-
     private ExpandableListView.OnGroupClickListener  onGroupClickListener = new ExpandableListView.OnGroupClickListener() {
         @Override
         public boolean onGroupClick(ExpandableListView parent, View v,int groupPosition, long id) {
@@ -156,7 +142,19 @@ public class UnidadeActivity extends BaseActivity {
                 customExpandAdapter.setLatitude(Double.valueOf(latitude[1].trim()));
                 customExpandAdapter.setLongitute(Double.valueOf(longitude[1].trim()));
             }
-            return false;
+
+            if(ultimoExpandido != -1){
+                expListView.collapseGroup(ultimoExpandido);
+            }
+
+            if(ultimoExpandido!=groupPosition){
+                expListView.expandGroup(groupPosition);
+                ultimoExpandido = groupPosition;
+            }else{
+                ultimoExpandido=-1;
+            }
+
+            return true;
         }
     };
 
