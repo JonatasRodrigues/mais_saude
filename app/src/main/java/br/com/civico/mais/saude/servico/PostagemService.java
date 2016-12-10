@@ -83,7 +83,7 @@ public class  PostagemService {
                 dto.setNomeAutor(URLDecoder.decode(oneObject.getString("nomeAutor"), "UTF-8"));
                 dto.setDataPostagem(oneObject.getString("dataHoraPostagem"));
                 JSONArray conteudoArray = oneObject.getJSONArray("conteudos");
-                dto.setComentario(conteudoArray.getJSONObject(0).getString("texto"));
+                dto.setComentario(URLDecoder.decode(conteudoArray.getJSONObject(0).getString("texto"), "UTF-8"));
                 dto.setPontuacao(Float.valueOf(conteudoArray.getJSONObject(0).getString("valor")));
                 dto.setCodConteudo(conteudoArray.getJSONObject(0).getString("codConteudoPost"));
 
