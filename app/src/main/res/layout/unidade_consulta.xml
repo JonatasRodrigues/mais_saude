@@ -57,21 +57,21 @@
 
     </RelativeLayout>
 
-    <RelativeLayout
+    <LinearLayout
         android:orientation="vertical"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:background="#FFFFFF"
         android:layout_weight="1"
         android:layout_below="@+id/tvHeaderTitle"
-        android:visibility="visible">
+        android:layout_alignWithParentIfMissing="false">
 
         <ExpandableListView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/unidadeListView"/>
 
-    </RelativeLayout>
+    </LinearLayout>
 
     <Space android:id="@+id/space"
         android:layout_width="match_parent"

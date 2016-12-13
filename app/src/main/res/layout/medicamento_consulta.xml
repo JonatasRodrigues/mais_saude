@@ -8,69 +8,69 @@
     android:fillViewport="true"
     tools:context=".controle.MedicamentoActivity">
 
-     <RelativeLayout
-         android:id="@+id/llSearchBarLayout"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:orientation="horizontal"
-         android:paddingTop="4px"
-         android:background="@drawable/filter_style"
-         android:layout_alignParentTop="true">
+    <RelativeLayout
+        android:id="@+id/llSearchBarLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="4px"
+        android:background="@drawable/filter_style"
+        android:layout_alignParentTop="true">
 
-          <Button
-              android:id="@+id/btnVoltarMed"
-              android:layout_width="30dp"
-              android:layout_height="30dp"
-              android:background="@drawable/icon_voltar"
-              android:layout_marginTop="10dp"
-              android:layout_marginLeft="10dp"
-              android:layout_marginStart="10dp"
-              android:visibility="invisible" />
+        <Button
+            android:id="@+id/btnVoltarMed"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@drawable/icon_voltar"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:visibility="invisible" />
 
-          <EditText
-              android:id="@+id/txtSearchMedicamento"
-              android:layout_height="wrap_content"
-              android:layout_width="wrap_content"
-              android:hint="@string/label_search_medicamento"
-              android:gravity="center_vertical"
-              android:padding="8dp"
-              android:singleLine="true"
-              android:layout_toLeftOf="@+id/btnSearchMedicamento"
-              android:layout_toRightOf="@+id/btnVoltarMed"
-              android:layout_toStartOf="@+id/btnSearchMedicamento"
-              android:layout_toEndOf="@+id/btnVoltarMed"
-              android:background="@drawable/edit_text_style"
-              android:layout_alignBottom="@+id/btnSearchMedicamento"
-              android:layout_alignTop="@+id/btnSearchMedicamento"  />
+        <EditText
+            android:id="@+id/txtSearchMedicamento"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:hint="@string/label_search_medicamento"
+            android:gravity="center_vertical"
+            android:padding="8dp"
+            android:singleLine="true"
+            android:layout_toLeftOf="@+id/btnSearchMedicamento"
+            android:layout_toRightOf="@+id/btnVoltarMed"
+            android:layout_toStartOf="@+id/btnSearchMedicamento"
+            android:layout_toEndOf="@+id/btnVoltarMed"
+            android:background="@drawable/edit_text_style"
+            android:layout_alignBottom="@+id/btnSearchMedicamento"
+            android:layout_alignTop="@+id/btnSearchMedicamento"  />
 
-          <Button
-              android:id="@+id/btnSearchMedicamento"
-              android:layout_width="40dp"
-              android:layout_height="35dp"
-              android:layout_marginTop="5dp"
-              android:background="@drawable/icon_busca"
-              android:layout_alignParentRight="true"
-              android:layout_alignParentEnd="true"
-              android:layout_marginRight="5dp"
-              android:layout_marginEnd="5dp" />
+        <Button
+            android:id="@+id/btnSearchMedicamento"
+            android:layout_width="40dp"
+            android:layout_height="35dp"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/icon_busca"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="5dp"
+            android:layout_marginEnd="5dp"/>
 
 
-     </RelativeLayout>
+    </RelativeLayout>
 
-     <RelativeLayout
-         android:orientation="vertical"
-         android:layout_width="fill_parent"
-         android:layout_height="fill_parent"
-         android:background="#FFFFFF"
-         android:layout_weight="1"
-         android:layout_below="@+id/tvHeaderTitle"
-         android:visibility="visible">
+    <RelativeLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="#FFFFFF"
+        android:layout_weight="1"
+        android:layout_below="@+id/precoAbusivo"
+        android:visibility="visible">
 
-          <ExpandableListView
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:id="@+id/medicamentoListView" />
-     </RelativeLayout>
+        <ExpandableListView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/medicamentoListView" />
+    </RelativeLayout>
 
 
     <Space android:id="@+id/space"
@@ -90,6 +90,34 @@
         android:layout_below="@+id/space" />
 
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Nenhum medicamento não foi encontrado!"
+        android:id="@+id/semResultado"
+        android:layout_below="@+id/tvHeaderTitle"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:textSize="14dp"
+        android:gravity="center_horizontal"
+        android:visibility="gone" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Para preços abusivos, Clique Aqui!"
+        android:id="@+id/precoAbusivo"
+        android:layout_below="@+id/tvHeaderTitle"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:textSize="14dp"
+        android:gravity="center_horizontal"
+        android:visibility="visible" />
 
 </RelativeLayout>

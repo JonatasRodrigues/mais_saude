@@ -23,7 +23,9 @@ import cz.msebera.android.httpclient.HttpEntity;
 import cz.msebera.android.httpclient.HttpResponse;
 import cz.msebera.android.httpclient.client.ClientProtocolException;
 import cz.msebera.android.httpclient.client.HttpClient;
+import cz.msebera.android.httpclient.client.methods.HttpDelete;
 import cz.msebera.android.httpclient.client.methods.HttpPost;
+import cz.msebera.android.httpclient.client.methods.HttpPut;
 import cz.msebera.android.httpclient.entity.StringEntity;
 import cz.msebera.android.httpclient.impl.client.DefaultHttpClient;
 
@@ -56,7 +58,7 @@ public class  PostagemService {
                 HttpEntity entity = httpresponse.getEntity();
                 if (entity != null) {
                     InputStream instream = entity.getContent();
-                     result = StreamConverter.convertStreamToString(instream);
+                    result = StreamConverter.convertStreamToString(instream);
                     instream.close();
                 }
                 return converterJsonParaObject(getJson(result));
@@ -70,17 +72,20 @@ public class  PostagemService {
     }
 
     private List<PostagemDTO> converterJsonParaObject(JSONArray jsonArray){
-       List<PostagemDTO> lista = new ArrayList<>();
+        List<PostagemDTO> lista = new ArrayList<>();
         for (int i=0; i < jsonArray.length(); i++) {
             try {
                 PostagemDTO dto = new PostagemDTO();
 
                 JSONObject oneObject = jsonArray.getJSONObject(i);
+                dto.setCodAutor(oneObject.getString("codAutor"));
+                dto.setCodPostagem(oneObject.getString("codPostagem"));
                 dto.setNomeAutor(URLDecoder.decode(oneObject.getString("nomeAutor"), "UTF-8"));
                 dto.setDataPostagem(oneObject.getString("dataHoraPostagem"));
                 JSONArray conteudoArray = oneObject.getJSONArray("conteudos");
                 dto.setComentario(URLDecoder.decode(conteudoArray.getJSONObject(0).getString("texto"), "UTF-8"));
                 dto.setPontuacao(Float.valueOf(conteudoArray.getJSONObject(0).getString("valor")));
+                dto.setCodConteudo(conteudoArray.getJSONObject(0).getString("codConteudoPost"));
 
                 lista.add(dto);
             } catch (JSONException e) {
@@ -155,6 +160,62 @@ public class  PostagemService {
             post.setHeader("appToken", token);
             post.setEntity(se);
             HttpResponse httpresponse = httpclient.execute(post);
+
+            if (httpresponse.getStatusLine().getStatusCode() != ConstantesAplicacao.STATUS_CADASTRO_SUCESSO) {
+                return "Não foi possível realizar essa operação. Tente novamente mais tarde.";
+            }
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public String excluirPostagem(String token,long codigoPostagem){
+        try {
+            String url = ConstantesAplicacao.URL_BASE_METAMODELO + "/rest/postagens/" + codigoPostagem;
+            HttpClient httpclient = new DefaultHttpClient();
+            HttpDelete delete = new HttpDelete(url);
+
+            delete.setHeader("Content-type", "application/json");
+            delete.setHeader("appToken", token);
+            HttpResponse httpresponse = httpclient.execute(delete);
+
+            if (httpresponse.getStatusLine().getStatusCode() != ConstantesAplicacao.STATUS_CADASTRO_SUCESSO) {
+                return "Não foi possível realizar essa operação. Tente novamente mais tarde.";
+            }
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return ConstantesAplicacao.MENSAGEM_COMENTARIO_EXCLUSAO_SUCESSO;
+    }
+
+    public String editarConteudoPostagem(String token, long codigoPostagem, long codigoConteudo, String comentario, double pontuacao){
+        try {
+            double longitude = gps!=null ? gps.getLongitude() : 0.0;
+            double latitude = gps!=null ? gps.getLatitude() : 0.0;
+
+            String mensagem = URLEncoder.encode(comentario, "UTF-8");
+            String json = "{\"texto\" : " + mensagem + ", \"valor\": "+pontuacao+", \"longitude\":" + longitude +", \"latitude\":" + latitude +"}";
+            String url = ConstantesAplicacao.URL_BASE_METAMODELO + "/rest/postagens/" +codigoPostagem+"/conteudos/"+codigoConteudo ;
+            HttpClient httpclient = new DefaultHttpClient();
+            HttpPut put = new HttpPut(url);
+
+            JSONObject jsonObj = new JSONObject();
+            jsonObj.accumulate("JSON", json);
+            jsonObj.accumulate("texto", mensagem);
+            jsonObj.accumulate("valor", pontuacao);
+
+            StringEntity se = new StringEntity(jsonObj.toString());
+            put.setHeader("Content-type", "application/json");
+            put.setHeader("appToken", token);
+            put.setEntity(se);
+            HttpResponse httpresponse = httpclient.execute(put);
 
             if (httpresponse.getStatusLine().getStatusCode() != ConstantesAplicacao.STATUS_CADASTRO_SUCESSO) {
                 return "Não foi possível realizar essa operação. Tente novamente mais tarde.";

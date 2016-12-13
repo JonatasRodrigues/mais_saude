@@ -1,6 +1,7 @@
 package br.com.civico.mais.saude.servico;
 
 import android.os.NetworkOnMainThreadException;
+import android.text.TextUtils;
 
 import com.loopj.android.http.HttpGet;
 
@@ -36,9 +37,15 @@ public class MedicamentoService{
         try {
             String url = ConstantesAplicacao.URL_BASE + "/rest/remedios?quantidade="+ConstantesAplicacao.QTD_RETORNO_SERVICO+"&pagina="+pagina;
             url = url.concat("&campos=produto,ultimaAlteracao,codBarraEan,apresentacao," +
-                    "registro,classeTerapeutica,principioAtivo,cnpj,laboratorio,codBarraEan");
+                    "registro,classeTerapeutica,principioAtivo,cnpj,laboratorio,codBarraEan,pmc0");
             if(produto != null && !produto.isEmpty()){
-                url = url.concat("&produto=").concat(URLEncoder.encode(produto, "UTF-8"));
+                //Se for numérico
+                boolean digitsOnly = TextUtils.isDigitsOnly(produto);
+                if(!digitsOnly){
+                    url = url.concat("&produto=").concat(URLEncoder.encode(produto, "UTF-8"));
+                }else{
+                    url = url.concat("&codBarraEan=").concat(URLEncoder.encode(produto, "UTF-8"));
+                }
             }
 
             HttpClient httpclient = new DefaultHttpClient();
@@ -101,14 +108,22 @@ public class MedicamentoService{
                 String codigoBarra = oneObject.getString("codBarraEan");
                 String idHash = produto + ConstantesAplicacao.SPLIT_CARACTER + codigoBarra;
                 listaHeader.add(idHash);
-                listaDados.add("Laboratório: " + oneObject.getString("laboratorio"));
                 listaDados.add("CNPJ: " + oneObject.getString("cnpj"));
-                listaDados.add("Princípio Ativo: " + oneObject.getString("principioAtivo"));
-                listaDados.add("Classe Terapêutica: " + oneObject.getString("classeTerapeutica"));
+                listaDados.add("Laboratório: " + oneObject.getString("laboratorio"));
+                listaDados.add("");
                 listaDados.add("Registro: " + oneObject.getString("registro"));
+                listaDados.add("Classe Terapêutica: " + oneObject.getString("classeTerapeutica"));
+                listaDados.add("Princípio Ativo: " + oneObject.getString("principioAtivo"));
                 listaDados.add("Apresentação: " + oneObject.getString("apresentacao"));
                 listaDados.add("Código de Barra: " + oneObject.getString("codBarraEan"));
                 listaDados.add("Última Alteração: " + oneObject.getString("ultimaAlteracao"));
+                listaDados.add("");
+                String pmc0 = oneObject.getString("pmc0");
+                if(!pmc0.equalsIgnoreCase("0.0")){
+                    listaDados.add("*Preço Máximo ao Consumidor: R$" + pmc0.replace(".",","));
+                }else{
+                    listaDados.add("*Preço Máximo ao Consumidor: Não informado");
+                }
                 listDataChild.put(idHash, listaDados);
             } catch (JSONException e) {
                 e.printStackTrace();

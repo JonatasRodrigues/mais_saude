@@ -2,15 +2,14 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:padding="4dp"
-    android:background="@color/white"
-    android:weightSum="1">
+    android:background="@color/white">
 
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <TextView
             android:id="@+id/lblNomeAutor"
@@ -18,7 +17,6 @@
             android:layout_height="20dp"
             android:background="@color/white"
             android:textSize="16dp"
-            android:text="Nome"
             android:textStyle="bold"
             android:gravity="center_vertical"
             android:layout_alignParentLeft="true"
@@ -29,7 +27,7 @@
         <TextView
             android:id="@+id/lblDataPostagem"
             android:layout_width="151dp"
-            android:layout_height="37dp"
+            android:layout_height="20dp"
             android:background="@color/white"
             android:paddingLeft="?android:attr/expandableListPreferredItemPaddingLeft"
             android:textSize="16dp"
@@ -49,6 +47,11 @@
             android:progressTint="@color/goldenYellow"
             android:isIndicator="true"/>
 
+        <Space android:id="@+id/space1"
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:layout_below="@+id/ratingBarIndicador"/>
+
         <TextView
             android:id="@+id/lblPostagem"
             android:layout_width="wrap_content"
@@ -56,7 +59,7 @@
             android:background="@color/white"
             android:textSize="14dp"
             android:gravity="center_vertical"
-            android:layout_below="@+id/ratingBarIndicador"
+            android:layout_below="@+id/space1"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_alignParentRight="true"
@@ -64,6 +67,58 @@
             android:elegantTextHeight="true"
             android:inputType="textMultiLine"/>
 
+        <Space android:id="@+id/space"
+            android:layout_width="match_parent"
+            android:layout_height="15dp"
+            android:layout_below="@+id/lblPostagem"/>
+
+        <RelativeLayout
+            android:id="@+id/relativeLayoutBtnComentario"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_below="@+id/space"
+            android:background="@color/grey_light">
+
+            <Button
+                android:id="@+id/btnExcluir"
+                android:layout_width="35dp"
+                android:layout_height="30dp"
+                android:background="@drawable/icon_lixeira"
+                android:layout_alignTop="@+id/btnEditar"
+                android:layout_toLeftOf="@+id/btnEditar"
+                android:layout_toStartOf="@+id/btnEditar" />
+
+            <Button
+                android:id="@+id/btnEditar"
+                android:layout_width="35dp"
+                android:layout_height="30dp"
+                android:background="@drawable/icon_editar"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginRight="20dp"
+                android:layout_marginEnd="20dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:id="@+id/codigoPostagem"
+                android:layout_centerVertical="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:textColor="@color/grey_light"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:id="@+id/codigoConteudoPostagem"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/codigoPostagem"
+                android:layout_toEndOf="@+id/codigoPostagem"
+                android:textColor="@color/grey_light"/>
+
+        </RelativeLayout>
 
     </RelativeLayout>
 

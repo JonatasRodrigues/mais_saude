@@ -94,7 +94,7 @@ public class  PostagemActivity extends BaseActivity {
 
     private void carregarPostagens(){
         this.lblSemComentario.setVisibility(View.GONE);
-         AsyncTask<Void, Void, List<PostagemDTO>> task = new AsyncTask<Void, Void, List<PostagemDTO>>() {
+        AsyncTask<Void, Void, List<PostagemDTO>> task = new AsyncTask<Void, Void, List<PostagemDTO>>() {
 
             @Override
             protected void onPreExecute() {
@@ -110,7 +110,7 @@ public class  PostagemActivity extends BaseActivity {
                 SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
                 String auth_token_string = settings.getString("token", "");
                 String codigoUnidade = settings.getString("codigoUnidade", "");
-               return new PostagemService().buscarPostagensPorUnidade(codigoUnidade, auth_token_string,currentPage);
+                return new PostagemService().buscarPostagensPorUnidade(codigoUnidade, auth_token_string,currentPage);
 
             }
 
@@ -131,10 +131,10 @@ public class  PostagemActivity extends BaseActivity {
                         listView.setAdapter(adapter);
                     }
                 }else{
-                   if(result!=null ){
-                       listAdapter.updateData(result);
-                       listAdapter.notifyDataSetChanged();
-                   }
+                    if(result!=null ){
+                        listAdapter.updateData(result);
+                        listAdapter.notifyDataSetChanged();
+                    }
                 }
             }
         };
@@ -183,7 +183,7 @@ public class  PostagemActivity extends BaseActivity {
                     }
                 });
 
-       final AlertDialog dialog = popDialog.create();
+        final AlertDialog dialog = popDialog.create();
         dialog.show();
 
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
@@ -253,6 +253,9 @@ public class  PostagemActivity extends BaseActivity {
 
     private void voltar(){
         Intent intent = new Intent(this, UnidadeActivity.class);
+        if(getIntent().hasExtra("valorPesquisa")){
+            intent.putExtra("valorPesquisa", getIntent().getStringExtra("valorPesquisa"));
+        }
         startActivity(intent);
     }
 }

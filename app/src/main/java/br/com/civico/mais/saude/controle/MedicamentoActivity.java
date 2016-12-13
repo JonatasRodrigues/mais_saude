@@ -1,10 +1,14 @@
 package br.com.civico.mais.saude.controle;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,6 +16,11 @@ import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 import org.json.JSONException;
 
@@ -36,11 +45,22 @@ public class  MedicamentoActivity extends BaseActivity {
     private String searchValue = new String("");
     private AsyncTask<Void, Void, MedicamentoResponse> task;
     private  Button btnVoltar;
+    private TextView lblSemResultado;
+    private TextView precoAbusivo;
+    private int ultimoExpandido = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.medicamento_consulta);
+
+        this.lblSemResultado =  (TextView) findViewById(R.id.semResultado);
+        this.lblSemResultado.setVisibility(View.GONE);
+
+        this.precoAbusivo = (TextView) findViewById(R.id.precoAbusivo);
+        this.precoAbusivo.setVisibility(View.VISIBLE);
+        this.precoAbusivo.setOnClickListener(onClickListenerPrecoAbusivo);
+
         expListView = (ExpandableListView) findViewById(R.id.medicamentoListView);
         searchTextBox = (EditText) findViewById(R.id.txtSearchMedicamento);
         context = this;
@@ -52,26 +72,33 @@ public class  MedicamentoActivity extends BaseActivity {
         btnVoltar.setOnClickListener(onClickListenerVoltarMedicamento);
 
         expListView.setOnScrollListener(customScrollListener);
-        expListView.setOnGroupExpandListener(groupExpandListener); //mantém apenas um group aberto
-
-        carregaMedicamentos();
-    }
-
-    private ExpandableListView.OnGroupExpandListener groupExpandListener =  new ExpandableListView.OnGroupExpandListener() {
-        @Override
-        public void onGroupExpand(int groupPosition) {
-            ExpandableListMedicamentoAdapter customExpandAdapter = (ExpandableListMedicamentoAdapter) expListView.getExpandableListAdapter();
-            if (customExpandAdapter == null) {
-                return;
-            }
-            for (int i = 0; i < customExpandAdapter.getGroupCount(); i++) {
-                if (i != groupPosition) {
-                    expListView.collapseGroup(i);
+        expListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+            @Override
+            public boolean onGroupClick(ExpandableListView expandableListView, View view, int groupPosition, long l) {
+                if(ultimoExpandido != -1){
+                    expListView.collapseGroup(ultimoExpandido);
                 }
-            }
-        }
-    };
 
+                if(ultimoExpandido!=groupPosition){
+                    expListView.expandGroup(groupPosition);
+                    ultimoExpandido = groupPosition;
+                }else{
+                    ultimoExpandido=-1;
+                }
+                return true;
+            }
+        });
+
+
+        String tipoPesquisaMedicamento = getIntent().getStringExtra("tipoPesquisaMedicamento");
+        if(tipoPesquisaMedicamento.equalsIgnoreCase(ConstantesAplicacao.SEARCH_MEDICAMENTOPOR_CODBARRA)){
+            scanBarcode();
+        }else if(tipoPesquisaMedicamento.equalsIgnoreCase(ConstantesAplicacao.SEARCH_MEDICAMENTOPOR_LISTARTODOS)){
+            pesquisaMedicamento();
+        }else{
+            voltarMenu();
+        }
+    }
 
     private View.OnClickListener onClickListenerVoltarMedicamento = new View.OnClickListener() {
         public void onClick(final View v) {
@@ -84,6 +111,31 @@ public class  MedicamentoActivity extends BaseActivity {
         }
     };
 
+    public void scanBarcode() {
+        IntentIntegrator integrator = new IntentIntegrator(this);
+        integrator.setDesiredBarcodeFormats(IntentIntegrator.ONE_D_CODE_TYPES);
+        integrator.setPrompt("Posicione a câmera centralizando o código de barras do medicamento");
+        integrator.setCameraId(0);  // Use a specific camera of the device
+        integrator.setBeepEnabled(true);
+        integrator.setBarcodeImageEnabled(true);
+        integrator.initiateScan();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if(result != null) {
+            if(result.getContents() == null) {
+                voltarMenu();
+                Toast.makeText(this, "Cancelado", Toast.LENGTH_LONG).show();
+            } else {
+                pesquisaMedicamento(result.getContents());
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
     private View.OnClickListener onClickListenerMedicamento = new View.OnClickListener() {
         public void onClick(final View v) {
             if(v.getId()== R.id.btnSearchMedicamento){
@@ -94,19 +146,47 @@ public class  MedicamentoActivity extends BaseActivity {
         }
     };
 
-    private void pesquisaMedicamento() {
+    private View.OnClickListener onClickListenerPrecoAbusivo = new View.OnClickListener() {
+        public void onClick(final View v) {
+            if(v.getId()== R.id.precoAbusivo){
+                AlertDialog.Builder builder = new AlertDialog.Builder(MedicamentoActivity.this);
+                TextView title = new TextView(MedicamentoActivity.this);
+                title.setText(R.string.title_popup_preco_Abusivo);
+                title.setBackgroundColor(Color.DKGRAY);
+                title.setPadding(10, 10, 10, 10);
+                title.setGravity(Gravity.CENTER);
+                title.setTextColor(Color.WHITE);
+                title.setTextSize(20);
+                builder.setCustomTitle(title);
+                builder.setMessage(R.string.body_popup_preco_Abusivo);
+                builder.create().show();
+
+            }
+        }
+    };
+    private void pesquisaMedicamento(String pesqValor) {
         currentPage = 0;
         previousTotal = 0;
         if(searchValue != null && !searchValue.isEmpty() && String.valueOf(searchTextBox.getText()).isEmpty()){
             ExpandableListMedicamentoAdapter adapter = null;
             expListView.setAdapter(adapter);
         }
-        searchValue = String.valueOf(searchTextBox.getText());
+        if(pesqValor == null){
+            searchValue = String.valueOf(searchTextBox.getText());
+        }else{
+            searchValue = pesqValor;
+        }
         hideKeyboard(context, searchTextBox);
         carregaMedicamentos();
     }
 
+    private void pesquisaMedicamento() {
+        pesquisaMedicamento(null);
+    }
+
     private void carregaMedicamentos() {
+        this.lblSemResultado.setVisibility(View.GONE);
+        this.precoAbusivo.setVisibility(View.VISIBLE);
         if(ConexaoUtil.hasConnection(context)){
             if(task == null || task != null && task.getStatus() == AsyncTask.Status.FINISHED){
                 task = new AsyncTask<Void, Void, MedicamentoResponse>() {
@@ -159,6 +239,15 @@ public class  MedicamentoActivity extends BaseActivity {
                         } else {
                             exibirMsgErro(medicamentoResponse.getMensagem());
                             voltarMenu();
+                        }
+                        try {
+                            if (medicamentoResponse.getMedicamentoExpandableDTO().getListDataChild().size() == 0) {
+                                MedicamentoActivity.this.lblSemResultado.setVisibility(View.VISIBLE);
+                                MedicamentoActivity.this.precoAbusivo.setVisibility(View.GONE);
+                            }
+                        }catch (Exception e){
+                            MedicamentoActivity.this.lblSemResultado.setVisibility(View.VISIBLE);
+                            MedicamentoActivity.this.precoAbusivo.setVisibility(View.GONE);
                         }
                     }
 
