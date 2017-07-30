@@ -8,6 +8,7 @@
     <string name="label_search_unidade">nome unidade</string>
     <string name="label_comentario">Comentários</string>
     <string name="label_unidade">Unidade</string>
+    <string name="label_media_avaliacao">Média das Avaliações</string>
     <string name="btn_novo_comentario">Adicionar Comentário</string>
     <string name="title_activity_login">Login</string>
     <string name="chck_cadastrado">Já sou cadastrado.</string>

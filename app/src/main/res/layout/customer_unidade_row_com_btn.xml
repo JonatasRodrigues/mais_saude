@@ -20,19 +20,13 @@
         android:visibility="visible"
         android:layout_marginRight="8dp">
 
-        <RatingBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/ratingBarMedia"
-            style="?android:attr/ratingBarStyleSmall"
-            android:progressTint="@color/goldenYellow"
-            android:progressBackgroundTintMode="@color/white"
-            android:isIndicator="true"
-            android:layout_centerVertical="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_marginLeft="16dp"
-            android:layout_marginStart="16dp" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="fill_parent"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="120dp"
+            android:background="#FFFFFF" />
 
         <View
             android:layout_width="1dp"
@@ -49,13 +43,13 @@
             android:background="#FFFFFF" />
 
         <Button
-            android:id="@+id/btnMapa"
+            android:id="@+id/btnMedia"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:focusable="false"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="45dp"
-            android:background="@drawable/icon_mapa"/>
+            android:layout_marginRight="85dp"
+            android:background="@drawable/icon_trofeu" />
 
         <Button
             android:id="@+id/btnComentario"
@@ -63,19 +57,17 @@
             android:layout_height="30dp"
             android:focusable="false"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="5dp"
+            android:layout_marginRight="45dp"
             android:background="@drawable/icon_comentario"/>
 
-        <TextView
-            android:id="@+id/qtdComentarios"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignTop="@id/btnComentario"
-            android:layout_alignRight="@id/btnComentario"
-            android:textColor="#FFF"
-            android:textSize="8dp"
-            android:textStyle="bold"
-            android:background="@drawable/badge_circle" />
+        <Button
+            android:id="@+id/btnMapa"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:focusable="false"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/icon_mapa"/>
 
     </RelativeLayout>
 

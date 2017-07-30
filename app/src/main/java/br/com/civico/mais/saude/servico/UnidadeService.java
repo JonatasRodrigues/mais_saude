@@ -1,6 +1,6 @@
 package br.com.civico.mais.saude.servico;
 
- import android.location.Location;
+import android.location.Location;
 
 import com.loopj.android.http.HttpGet;
 import org.json.JSONArray;
@@ -9,16 +9,16 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
- import java.net.URLEncoder;
- import java.util.ArrayList;
+import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import br.com.civico.mais.saude.constantes.ConstantesAplicacao;
 import br.com.civico.mais.saude.converter.StreamConverter;
- import br.com.civico.mais.saude.dto.AvaliacaoResponse;
- import br.com.civico.mais.saude.dto.unidade.ExpandableUnidadeDTO;
- import br.com.civico.mais.saude.dto.unidade.UnidadeResponse;
+import br.com.civico.mais.saude.dto.AvaliacaoResponse;
+import br.com.civico.mais.saude.dto.unidade.ExpandableUnidadeDTO;
+import br.com.civico.mais.saude.dto.unidade.UnidadeResponse;
 import cz.msebera.android.httpclient.HttpEntity;
 import cz.msebera.android.httpclient.HttpResponse;
 import cz.msebera.android.httpclient.client.HttpClient;
@@ -27,16 +27,18 @@ import cz.msebera.android.httpclient.impl.client.DefaultHttpClient;
 /**
  * Created by Jônatas Rodrigues on 27/08/2016.
  */
-public class UnidadeService {
+public class UnidadeService{
 
     private Location location;
     private static final Integer RAIO = 10;
+
+    public UnidadeService(){}
 
     public UnidadeService(Location location){
         this.location=location;
     }
 
-    private AvaliacaoResponse getMediaAvaliacaoPorUnidade(String codigoUnidade) {
+    public AvaliacaoResponse getMediaAvaliacaoPorUnidade(String codigoUnidade) {
         String result=null;
         try {
             String url = ConstantesAplicacao.URL_BASE_METAMODELO + "/rest/postagens/tipopostagem/" +
@@ -165,7 +167,7 @@ public class UnidadeService {
                 listaDados.add("Atendimento: " + oneObject.getString("turnoAtendimento"));
 
                 listDataChild.put(listaHeader.get(i), listaDados);
-                listMediaChild.put(codigoUnidade, getMediaAvaliacaoPorUnidade(codigoUnidade));
+             //   listMediaChild.put(codigoUnidade, getMediaAvaliacaoPorUnidade(codigoUnidade));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
