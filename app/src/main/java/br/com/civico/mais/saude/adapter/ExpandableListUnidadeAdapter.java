@@ -1,12 +1,16 @@
 package br.com.civico.mais.saude.adapter;
 
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Point;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
+import android.os.Build;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -283,8 +287,17 @@ public class ExpandableListUnidadeAdapter extends BaseExpandableListAdapter{
         return groupPosition;
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded,View convertView, ViewGroup parent) {
+        Display display = parent.getDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int height = size.y;
+        /**
+         * Arredonda para Cima
+         */
+        int alturaTituloResultado = (int) Math.round(((double)height / ConstantesAplicacao.ROW_DISPLAY)+0.5d);
         String headerTitle = (String) getGroup(groupPosition);
         if (convertView == null) {
             LayoutInflater infalInflater = (LayoutInflater) this._context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -293,7 +306,7 @@ public class ExpandableListUnidadeAdapter extends BaseExpandableListAdapter{
 
         TextView lblListHeader = (TextView) convertView.findViewById(R.id.lblListHeader);
         lblListHeader.setTypeface(null, Typeface.BOLD);
-        lblListHeader.setHeight(70);
+        lblListHeader.setHeight(alturaTituloResultado);
         lblListHeader.setTextColor(_context.getResources().getColor(R.color.DodgerBlue));
         lblListHeader.setText(headerTitle);
 
