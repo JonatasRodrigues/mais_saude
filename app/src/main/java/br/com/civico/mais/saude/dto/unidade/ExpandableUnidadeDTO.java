@@ -13,13 +13,10 @@ public class ExpandableUnidadeDTO implements Serializable{
 
     private List<String> listDataHeader;
     private HashMap<String, List<String>> listDataChild;
-    private HashMap<String, AvaliacaoResponse> listMediaChild;
 
-    public ExpandableUnidadeDTO(List<String> listDataHeader, HashMap<String, List<String>> listDataChild,
-            HashMap<String, AvaliacaoResponse> listMediaChild) {
+    public ExpandableUnidadeDTO(List<String> listDataHeader, HashMap<String, List<String>> listDataChild) {
         this.listDataHeader = listDataHeader;
         this.listDataChild = listDataChild;
-        this.listMediaChild =listMediaChild;
     }
 
     public List<String> getListDataHeader() {
@@ -30,7 +27,4 @@ public class ExpandableUnidadeDTO implements Serializable{
         return listDataChild;
     }
 
-    public HashMap<String, AvaliacaoResponse> getListMediaChild() {
-        return listMediaChild;
-    }
 }
