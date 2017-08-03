@@ -99,7 +99,7 @@ public class  PostagemActivity extends BaseActivity {
             @Override
             protected void onPreExecute() {
                 progressDialog = new ProgressDialog(PostagemActivity.this);
-                progressDialog.setMessage("Carregando...");
+                progressDialog.setMessage(ConstantesAplicacao.MSG_PROGRESS_DIALOG);
                 progressDialog.setCancelable(false);
                 progressDialog.setIndeterminate(true);
                 progressDialog.show();

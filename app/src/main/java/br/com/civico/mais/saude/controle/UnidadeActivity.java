@@ -2,7 +2,6 @@ package br.com.civico.mais.saude.controle;
 
 import  android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.os.AsyncTask;
@@ -26,7 +25,6 @@ import br.com.civico.mais.saude.R;
 import br.com.civico.mais.saude.adapter.ExpandableListUnidadeAdapter;
 import br.com.civico.mais.saude.cache.InternalStorage;
 import br.com.civico.mais.saude.constantes.ConstantesAplicacao;
-import br.com.civico.mais.saude.dto.AvaliacaoResponse;
 import br.com.civico.mais.saude.dto.unidade.UnidadeResponse;
 import br.com.civico.mais.saude.util.ConexaoUtil;
 import br.com.civico.mais.saude.servico.GPSService;
@@ -120,7 +118,6 @@ public class UnidadeActivity extends BaseActivity {
         InternalStorage.deleteCache(context, ConstantesAplicacao.KEY_CACHE_UNIDADE);
         InternalStorage.deleteCache(context, ConstantesAplicacao.KEY_CACHE_HEADER_UNIDADE);
         InternalStorage.deleteCache(context, ConstantesAplicacao.KEY_CACHE_lIST_UNIDADE);
-        InternalStorage.deleteCache(context, ConstantesAplicacao.KEY_CACHE_MEDIA_UNIDADE);
     }
 
     private ExpandableListView.OnGroupClickListener  onGroupClickListener = new ExpandableListView.OnGroupClickListener() {
@@ -193,13 +190,12 @@ public class UnidadeActivity extends BaseActivity {
         try {
             List<String> listDataHeader= (List<String>) InternalStorage.readObject(context, ConstantesAplicacao.KEY_CACHE_HEADER_UNIDADE);
             HashMap<String, List<String>> listDataChild = (HashMap<String, List<String>>) InternalStorage.readObject(context,ConstantesAplicacao.KEY_CACHE_lIST_UNIDADE);
-            HashMap<String, AvaliacaoResponse> listMediaChild = (HashMap<String, AvaliacaoResponse>) InternalStorage.readObject(context, ConstantesAplicacao.KEY_CACHE_MEDIA_UNIDADE);
 
             if(listDataChild.size() < ConstantesAplicacao.QTD_RETORNO_SERVICO){
                 expListView.setOnScrollListener(null);
             }
 
-            ExpandableListUnidadeAdapter adapter = new ExpandableListUnidadeAdapter(context,listDataHeader,listDataChild,listMediaChild );
+            ExpandableListUnidadeAdapter adapter = new ExpandableListUnidadeAdapter(context,listDataHeader,listDataChild);
             expListView.setAdapter(adapter);
             configurarExpList();
 
@@ -224,7 +220,7 @@ public class UnidadeActivity extends BaseActivity {
                         @Override
                         protected void onPreExecute() {
                             progressDialog = new ProgressDialog(UnidadeActivity.this);
-                            progressDialog.setMessage("Buscando unidades...");
+                            progressDialog.setMessage(ConstantesAplicacao.MSG_PROGRESS_DIALOG);
                             progressDialog.setCancelable(false);
                             progressDialog.setIndeterminate(true);
                             progressDialog.show();
@@ -252,17 +248,17 @@ public class UnidadeActivity extends BaseActivity {
 
                                 if (unidadeAdapter == null) {
                                     ExpandableListUnidadeAdapter adapter = new ExpandableListUnidadeAdapter(context, unidadeResponse.getExpandableUnidadeDTO().getListDataHeader(),
-                                            unidadeResponse.getExpandableUnidadeDTO().getListDataChild(), unidadeResponse.getExpandableUnidadeDTO().getListMediaChild());
+                                            unidadeResponse.getExpandableUnidadeDTO().getListDataChild());
                                     expListView.setAdapter(adapter);
                                 } else {
                                     if (isPrimeiraPesquisaPorTexto()) {
                                         ExpandableListUnidadeAdapter adapter = new ExpandableListUnidadeAdapter(context, unidadeResponse.getExpandableUnidadeDTO().getListDataHeader(),
-                                                unidadeResponse.getExpandableUnidadeDTO().getListDataChild(), unidadeResponse.getExpandableUnidadeDTO().getListMediaChild());
+                                                unidadeResponse.getExpandableUnidadeDTO().getListDataChild());
                                         adapter.setValorPesquisa(searchValue);
                                         expListView.setAdapter(adapter);
                                     } else {
                                         unidadeAdapter.updateData(unidadeResponse.getExpandableUnidadeDTO().getListDataHeader(),
-                                                unidadeResponse.getExpandableUnidadeDTO().getListDataChild(), unidadeResponse.getExpandableUnidadeDTO().getListMediaChild());
+                                                unidadeResponse.getExpandableUnidadeDTO().getListDataChild());
                                         unidadeAdapter.notifyDataSetChanged();
                                     }
                                 }

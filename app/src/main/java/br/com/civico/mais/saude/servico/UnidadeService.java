@@ -32,11 +32,13 @@ public class UnidadeService {
     private Location location;
     private static final Integer RAIO = 10;
 
+    public UnidadeService(){}
+
     public UnidadeService(Location location){
         this.location=location;
     }
 
-    private AvaliacaoResponse getMediaAvaliacaoPorUnidade(String codigoUnidade) {
+    public AvaliacaoResponse getMediaAvaliacaoPorUnidade(String codigoUnidade) {
         String result=null;
         try {
             String url = ConstantesAplicacao.URL_BASE_METAMODELO + "/rest/postagens/tipopostagem/" +
@@ -121,7 +123,7 @@ public class UnidadeService {
         List<String> listaHeader = new ArrayList<String>();
         List<String> listaDados;
         HashMap<String, List<String>> listDataChild = new HashMap<>();
-        HashMap<String, AvaliacaoResponse> listMediaChild = new HashMap<>();
+
         for (int i=0; i < jsonArray.length(); i++) {
             try {
                 listaDados = new ArrayList<String>();
@@ -165,12 +167,11 @@ public class UnidadeService {
                 listaDados.add("Atendimento: " + oneObject.getString("turnoAtendimento"));
 
                 listDataChild.put(listaHeader.get(i), listaDados);
-                listMediaChild.put(codigoUnidade, getMediaAvaliacaoPorUnidade(codigoUnidade));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
-        return new ExpandableUnidadeDTO(listaHeader,listDataChild,listMediaChild);
+        return new ExpandableUnidadeDTO(listaHeader,listDataChild);
     }
 
     public JSONArray getJson(String json) throws JSONException {
