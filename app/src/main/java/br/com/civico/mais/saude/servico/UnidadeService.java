@@ -123,7 +123,7 @@ public class UnidadeService{
         List<String> listaHeader = new ArrayList<String>();
         List<String> listaDados;
         HashMap<String, List<String>> listDataChild = new HashMap<>();
-        HashMap<String, AvaliacaoResponse> listMediaChild = new HashMap<>();
+
         for (int i=0; i < jsonArray.length(); i++) {
             try {
                 listaDados = new ArrayList<String>();
@@ -167,12 +167,11 @@ public class UnidadeService{
                 listaDados.add("Atendimento: " + oneObject.getString("turnoAtendimento"));
 
                 listDataChild.put(listaHeader.get(i), listaDados);
-             //   listMediaChild.put(codigoUnidade, getMediaAvaliacaoPorUnidade(codigoUnidade));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
-        return new ExpandableUnidadeDTO(listaHeader,listDataChild,listMediaChild);
+        return new ExpandableUnidadeDTO(listaHeader,listDataChild);
     }
 
     public JSONArray getJson(String json) throws JSONException {

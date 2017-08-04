@@ -92,7 +92,6 @@ public class MainActivity extends BaseActivity {
                     InternalStorage.deleteCache(context, ConstantesAplicacao.KEY_CACHE_UNIDADE);
                     InternalStorage.deleteCache(context, ConstantesAplicacao.KEY_CACHE_HEADER_UNIDADE);
                     InternalStorage.deleteCache(context, ConstantesAplicacao.KEY_CACHE_lIST_UNIDADE);
-                    InternalStorage.deleteCache(context, ConstantesAplicacao.KEY_CACHE_MEDIA_UNIDADE);
 
                     Intent intent = new Intent(MainActivity.this, UnidadeActivity.class);
                     startActivity(intent);

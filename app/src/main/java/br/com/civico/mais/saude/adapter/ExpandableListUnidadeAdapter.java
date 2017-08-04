@@ -38,7 +38,6 @@ public class ExpandableListUnidadeAdapter extends BaseExpandableListAdapter{
     private Context _context;
     private List<String> _listDataHeader; // header titles
     private HashMap<String, List<String>> _listDataChild;
-    private HashMap<String, AvaliacaoResponse> listMediaChild;
     private String codigoUnidade;
     private Double latitude;
     private Double longitute;
@@ -46,12 +45,10 @@ public class ExpandableListUnidadeAdapter extends BaseExpandableListAdapter{
     private String valorPesquisa="";
     private ProgressDialog progressDialog;
 
-    public ExpandableListUnidadeAdapter(Context context, List<String> listDataHeader,HashMap<String, List<String>> listChildData,
-          HashMap<String, AvaliacaoResponse> listMediaChild) {
+    public ExpandableListUnidadeAdapter(Context context, List<String> listDataHeader,HashMap<String, List<String>> listChildData) {
         this._context = context;
         this._listDataHeader = listDataHeader;
         this._listDataChild = listChildData;
-        this.listMediaChild =listMediaChild;
     }
 
     static class ViewHolder {
@@ -64,10 +61,6 @@ public class ExpandableListUnidadeAdapter extends BaseExpandableListAdapter{
     @Override
     public Object getChild(int groupPosition, int childPosititon) {
         return this._listDataChild.get(this._listDataHeader.get(groupPosition)).get(childPosititon);
-    }
-
-    public AvaliacaoResponse getMediaChild(String codigoUnidade) {
-        return this.listMediaChild.get(codigoUnidade);
     }
 
     @Override
@@ -111,7 +104,7 @@ public class ExpandableListUnidadeAdapter extends BaseExpandableListAdapter{
                             @Override
                             protected void onPreExecute() {
                                 progressDialog = new ProgressDialog(_context);
-                                progressDialog.setMessage("Carregando...");
+                                progressDialog.setMessage(ConstantesAplicacao.MSG_PROGRESS_DIALOG);
                                 progressDialog.setCancelable(false);
                                 progressDialog.setIndeterminate(true);
                                 progressDialog.show();
@@ -210,13 +203,11 @@ public class ExpandableListUnidadeAdapter extends BaseExpandableListAdapter{
             InternalStorage.deleteCache(_context, ConstantesAplicacao.KEY_CACHE_UNIDADE);
             InternalStorage.deleteCache(_context, ConstantesAplicacao.KEY_CACHE_HEADER_UNIDADE);
             InternalStorage.deleteCache(_context, ConstantesAplicacao.KEY_CACHE_lIST_UNIDADE);
-            InternalStorage.deleteCache(_context, ConstantesAplicacao.KEY_CACHE_MEDIA_UNIDADE);
 
             if(InternalStorage.getFreeSpace() >= ConstantesAplicacao.ESPACO_MINIMO_CACHE){
                 InternalStorage.writeObject(_context, ConstantesAplicacao.KEY_CACHE_UNIDADE,ConstantesAplicacao.KEY_CACHE_UNIDADE);
                 InternalStorage.writeObject(_context, ConstantesAplicacao.KEY_CACHE_HEADER_UNIDADE,_listDataHeader);
                 InternalStorage.writeObject(_context, ConstantesAplicacao.KEY_CACHE_lIST_UNIDADE,_listDataChild);
-                InternalStorage.writeObject(_context, ConstantesAplicacao.KEY_CACHE_MEDIA_UNIDADE,listMediaChild);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -313,11 +304,9 @@ public class ExpandableListUnidadeAdapter extends BaseExpandableListAdapter{
         return convertView;
     }
 
-    public void updateData( List<String> listDataHeader,HashMap<String, List<String>> listChildData,
-                            HashMap<String, AvaliacaoResponse> listMediaChild) {
+    public void updateData( List<String> listDataHeader,HashMap<String, List<String>> listChildData) {
         this._listDataHeader.addAll(listDataHeader);
         this._listDataChild.putAll(listChildData);
-        this.listMediaChild.putAll(listMediaChild);
     }
 
     @Override
