@@ -158,7 +158,7 @@ public class ExpandableListUnidadeAdapter extends BaseExpandableListAdapter{
                     }
                 });
 
-             }else {
+            }else {
                 convertView = infalInflater.inflate(R.layout.customer_unidade_row_sem_btn, parent, false);
             }
 

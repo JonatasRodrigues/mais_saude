@@ -75,6 +75,16 @@ public class  MedicamentoActivity extends BaseActivity {
         expListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
             public boolean onGroupClick(ExpandableListView expandableListView, View view, int groupPosition, long l) {
+                ExpandableListMedicamentoAdapter customExpander = (ExpandableListMedicamentoAdapter) expListView.getExpandableListAdapter();
+                if(!expandableListView.isGroupExpanded(groupPosition)){
+                    final String principioAtivo = (String) customExpander.getChild(groupPosition,5);
+                    try{
+                        customExpander.setPrincipioAtivo(principioAtivo.split(":")[1].trim());
+                    }catch(Exception e){
+                        customExpander.setPrincipioAtivo("");
+                    }
+                    customExpander.setPagina(0);
+                }
                 if(ultimoExpandido != -1){
                     expListView.collapseGroup(ultimoExpandido);
                 }
@@ -234,6 +244,7 @@ public class  MedicamentoActivity extends BaseActivity {
                                     adapterMedicamento.updateData(medicamentoResponse.getMedicamentoExpandableDTO().getListDataHeader(),
                                             medicamentoResponse.getMedicamentoExpandableDTO().getListDataChild());
                                     adapterMedicamento.notifyDataSetChanged();
+                                    adapterMedicamento.setPrincipioAtivo("");
                                 }
                             }
                         } else {
