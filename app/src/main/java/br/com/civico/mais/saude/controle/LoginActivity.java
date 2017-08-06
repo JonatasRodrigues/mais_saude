@@ -21,10 +21,13 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.json.JSONException;
@@ -56,12 +59,23 @@ public class LoginActivity extends BaseActivity {
     private SharedPreferences.Editor editor;
     private AlertDialog.Builder popDialog;
     private DateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+    private TextView linkEsqueciSenha;
+    private TextView linkVoltaLogin;
+    private AlertDialog alertDialog;
+    private ProgressBar progressBar;
+    private TextView tvEnviando;
+
+    final Animation animation1 = new AlphaAnimation(1.0f, 0.0f);
+    final Animation  animation2 = new AlphaAnimation(0.0f, 1.0f);
 
     @SuppressLint("NewApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        init();
+    }
 
+    private void init(){
         this.popDialog = new AlertDialog.Builder(this);
         this.context=this;
         this.settings = PreferenceManager.getDefaultSharedPreferences(this);
@@ -71,7 +85,6 @@ public class LoginActivity extends BaseActivity {
         String auth_token_string = settings.getString("token", "");
         String dataExpiracao =  settings.getString("dataExpiracaoToken", "");
         controlarAutenticacao(dataExpiracao,auth_token_string);
-
     }
 
     private void controlarAutenticacao(String dataExpiracao,String auth_token_string){
@@ -123,12 +136,21 @@ public class LoginActivity extends BaseActivity {
         this.btnNovaConta = (Button) root.findViewById(R.id.btnNovaConta);
         this.btnLogin = (Button) root.findViewById(R.id.btnLogin);
         this.chkCadastrado = (CheckBox) root.findViewById(R.id.chkCadastrado);
+        this.linkEsqueciSenha = (TextView) root.findViewById(R.id.linkEsqueciSenha);
 
         this.chkCadastrado.setOnClickListener(onClickListenerCheck);
         this.btnNovaConta.setOnClickListener(onClickListenerCriarConta);
         this. btnLogin.setOnClickListener(onClickListenerLogin);
+        this.linkEsqueciSenha.setOnClickListener(onClickListenerRecuperarSenha);
 
-        String titulo="Autenticação";
+        btnLogin.setVisibility(View.GONE);
+        linkEsqueciSenha.setVisibility(View.GONE);
+
+        criarModal(root,"Autenticação");
+
+    }
+
+    private void criarModal(View root,String titulo){
         TextView myMsg = new TextView(this);
         SpannableString spanString = new SpannableString(titulo);
         spanString.setSpan(new StyleSpan(Typeface.BOLD), 0, spanString.length(), 0);
@@ -141,15 +163,15 @@ public class LoginActivity extends BaseActivity {
         popDialog.setView(root);
         popDialog.setCancelable(false);
         popDialog.setCustomTitle(myMsg);
-        popDialog.create();
+        alertDialog =  popDialog.create();
 
-        popDialog.setOnKeyListener(new Dialog.OnKeyListener() {
+        alertDialog.setOnKeyListener(new Dialog.OnKeyListener() {
 
             @Override
             public boolean onKey(DialogInterface dialog, int keyCode,KeyEvent event) {
                 if (keyCode == KeyEvent.KEYCODE_BACK) {
                     finish();
-                    dialog.dismiss();
+                    alertDialog.dismiss();
                     voltar();
                     return true;
                 }
@@ -158,7 +180,7 @@ public class LoginActivity extends BaseActivity {
 
         });
 
-        popDialog.show();
+        alertDialog.show();
     }
 
     private View.OnClickListener onClickListenerCheck = new View.OnClickListener() {
@@ -168,6 +190,7 @@ public class LoginActivity extends BaseActivity {
                 passwordConfirm.setVisibility(View.GONE);
                 btnNovaConta.setVisibility(View.GONE);
                 btnLogin.setVisibility(View.VISIBLE);
+                linkEsqueciSenha.setVisibility(View.VISIBLE);
             } else {
                 nome.setVisibility(View.VISIBLE);
                 View focusView = nome;
@@ -175,6 +198,7 @@ public class LoginActivity extends BaseActivity {
                 passwordConfirm.setVisibility(View.VISIBLE);
                 btnNovaConta.setVisibility(View.VISIBLE);
                 btnLogin.setVisibility(View.GONE);
+                linkEsqueciSenha.setVisibility(View.GONE);
             }
         }
     };
@@ -295,6 +319,154 @@ public class LoginActivity extends BaseActivity {
             }
         }
     };
+
+
+    private View.OnClickListener onClickListenerRecuperarSenha = new View.OnClickListener() {
+        public void onClick(final View v) {
+
+            alertDialog.dismiss();
+            View root = ((LayoutInflater)LoginActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.recuperar_senha, null);
+
+            emailView = (AutoCompleteTextView) root.findViewById(R.id.emailCadastrado);
+
+            linkVoltaLogin = (TextView) root.findViewById(R.id.linkVoltaLogin);
+            progressBar = (ProgressBar) root.findViewById(R.id.progressBar);
+            tvEnviando = (TextView) root.findViewById(R.id.tvEnviando);
+
+            Button btnEnviarEmail = (Button) root.findViewById(R.id.btnEnviarEmail);
+            btnEnviarEmail.setOnClickListener(onClickListenerEnviarEmail);
+
+            progressBar.setVisibility(View.GONE);
+            tvEnviando.setVisibility(View.GONE);
+
+            linkVoltaLogin.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    alertDialog.dismiss();
+                    init();
+                }
+            });
+
+            criarModal(root,"Recuperação de Senha");
+         }
+    };
+
+    private View.OnClickListener onClickListenerEnviarEmail = new View.OnClickListener() {
+        public void onClick(final View v) {
+
+            boolean isValido=true;
+            View focusView = null;
+            final String emailCadastrado = emailView.getText().toString();
+
+            // Check for a valid email address.
+            if (TextUtils.isEmpty(emailCadastrado)) {
+                emailView.setError(getString(R.string.error_email_obrigatorio));
+                focusView = emailView;
+                isValido = false;
+            } else if (!isEmailValido(emailCadastrado)) {
+                emailView.setError(getString(R.string.error_invalido_email));
+                focusView = emailView;
+                isValido = false;
+            }
+
+
+            if(isValido) {
+                AsyncTask<Void, Void, LoginResponse> task = new AsyncTask<Void, Void, LoginResponse>() {
+
+                    @Override
+                    protected void onPreExecute() {
+                        progressBar.setVisibility(View.VISIBLE);
+                        tvEnviando.setVisibility(View.VISIBLE);
+                        tvEnviando.setTextColor(getResources().getColor(R.color.black));
+                        tvEnviando.setText("Enviando...");
+                        startAnimation();
+                    }
+
+                    @Override
+                    protected LoginResponse doInBackground(Void... voids) {
+                        try {
+                            LoginService service = new LoginService(null, null, emailCadastrado);
+                            return service.recuperarSenha();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        return null;
+                    }
+
+                    @Override
+                    protected void onPostExecute(LoginResponse result) {
+
+                          progressBar.setVisibility(View.GONE);
+
+                          tvEnviando.clearAnimation();
+                          tvEnviando.animate().cancel();
+                          tvEnviando.setAnimation(null);
+                          stopAnimation();
+
+                         tvEnviando.setText(result.getMensagem());
+
+                        if(result != null && ConstantesAplicacao.STATUS_OK==result.getStatusCodigo()){
+                           tvEnviando.setTextColor(getResources().getColor(R.color.lime));
+                        }else {
+                            tvEnviando.setTextColor(getResources().getColor(R.color.red));
+                        }
+                    }
+                };
+                task.execute((Void[]) null);
+            }else{
+                focusView.requestFocus();
+            }
+        }
+    };
+
+    private void stopAnimation(){
+        animation1.setAnimationListener(null);
+        animation2.setAnimationListener(null);
+    }
+
+    private void startAnimation(){
+        animation1.setDuration(800);
+        animation1.setStartOffset(1000);
+
+        //animation1 AnimationListener
+        animation1.setAnimationListener(new Animation.AnimationListener() {
+
+            @Override
+            public void onAnimationEnd(Animation arg0) {
+                // start animation2 when animation1 ends (continue)
+                tvEnviando.startAnimation(animation2);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation arg0) { }
+
+            @Override
+            public void onAnimationStart(Animation arg0) {}
+
+        });
+
+        animation2.setDuration(800);
+        animation2.setStartOffset(1000);
+
+        //animation2 AnimationListener
+        animation2.setAnimationListener(new Animation.AnimationListener() {
+
+            @Override
+            public void onAnimationEnd(Animation arg0) {
+                // start animation1 when animation2 ends (repeat)
+                tvEnviando.startAnimation(animation1);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation arg0) {}
+
+            @Override
+            public void onAnimationStart(Animation arg0) {}
+
+        });
+
+        tvEnviando.startAnimation(animation1);
+    }
 
     private void resetErrors(){
         nome.setError(null);

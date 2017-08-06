@@ -23,12 +23,13 @@ public class ConstantesAplicacao {
     public static final String MENSAGEM_SUCESSO="Sucesso";
     public static final String MENSAGEM_PARAMETRO_INVALIDO="Email já se encontra cadastrado";
     public static final String MENSAGEM_CRENDECIAIS_INVALIDAS="Usuário ou senha incorretos";
-    public static final String MENSAGEM_EMAIL_NAO_CADASTRADO="Ocorreu um erro ao encontrar o e-mail informado";
+    public static final String MENSAGEM_EMAIL_NAO_CADASTRADO="E-mail não encontrado";
     public static final String MENSAGEM_SERVICO_NOT_FOUND_CADASTRO="Ocorreu um erro no cadastro. Por favor, tente novamente mais tarde.";
     public static final String MENSAGEM_SESSAO_EXPIRADA="Sessão expirada";
     public static final String MENSAGEM_NOT_FOUND_LOCATION="Por favor, verifique se o serviço de localização do aparelho está ativo em \'Configurar -> Localização\'.";
     public static final String MENSAGEM_SEM_CONEXAO_INTERNET="Verifique sua conexão com a internet e tente novamente.";
     public static final String MENSAGEM_COMENTARIO_EXCLUSAO_SUCESSO = "Comentário excluído com sucesso.";
+    public static final String MENSAGEM_EMAI_ENVIADO_SUCESSO = "Email enviado com sucesso.";
 
     public static final String SPLIT_CARACTER="_";
     public static final long QTD_RETORNO_SERVICO =15;
@@ -46,6 +47,6 @@ public class ConstantesAplicacao {
     public static final String BTN_CANCELAR ="Cancelar";
     public static final String BTN_OK="OK";
 
-    public static final String MSG_PROGRESS_DIALOG ="Acessando a Nuvem Cívica do TCU...";
+    public static final String MSG_PROGRESS_DIALOG ="Acessando base de dados do TCU...";
 
 }

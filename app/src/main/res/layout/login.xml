@@ -119,5 +119,18 @@
         </LinearLayout>
     </ScrollView>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/link_esqueci_senha"
+        android:id="@+id/linkEsqueciSenha"
+        android:layout_gravity="right"
+        android:textStyle="bold"
+        android:textColor="@color/darkGreen"
+        android:layout_marginTop="20dp"
+        android:layout_below="@+id/login_form"
+        android:layout_centerHorizontal="true" />
+
 
 </RelativeLayout>

@@ -12,6 +12,10 @@
     <string name="btn_novo_comentario">Adicionar Comentário</string>
     <string name="title_activity_login">Login</string>
     <string name="chck_cadastrado">Já sou cadastrado.</string>
+    <string name="link_login"><u>&lt;&lt; Login</u></string>
+    <string name="link_esqueci_senha"><u>Esqueci minha senha</u></string>
+
+
 
     <!--Strings relacionados a tela de Medicamento -->
     <string name="button_search_medicamentoPor">Pesquisar por:</string>
@@ -34,11 +38,14 @@
     <!-- Strings related to login -->
     <string name="prompt_nome">Nome</string>
     <string name="prompt_email">Email</string>
+    <string name="prompt_email_cadastrado">Email cadastrado</string>
     <string name="prompt_password">Senha</string>
     <string name="prompt_password_confirm">Confirmar Senha</string>
     <string name="prompt_comentario">Escreva seu elogio,sugestão ou reclamação</string>
     <string name="btn_nova_conta">Criar Conta</string>
     <string name="btn_login">Login</string>
+    <string name="btn_enviar_email">Enviar</string>
+    <string name="btn_cancelar">Cancelar</string>
     <string name="btn_facebook">Login Facebook</string>
     <string name="error_invalido_email">Email inválido</string>
     <string name="error_nome_invalido">Nome inválido</string>
