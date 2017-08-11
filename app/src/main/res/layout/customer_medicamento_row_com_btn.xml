@@ -4,12 +4,10 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-
-
     <RelativeLayout
         android:id="@+id/menuMedicamento"
         android:layout_width="match_parent"
-        android:layout_height="25dp"
+        android:layout_height="30dp"
 
         android:visibility="visible"
         android:layout_marginRight="8dp">
@@ -17,25 +15,36 @@
         <View
             android:layout_width="1dp"
             android:layout_height="fill_parent"
-            android:layout_alignParentLeft="true"
-            android:layout_marginLeft="40dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="40dp"
             android:background="#FFFFFF" />
         <Button
             android:id="@+id/btnBuscarPrincipioAtivo"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:focusable="false"
-            android:layout_alignParentLeft="true"
-            android:layout_marginLeft="5dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="5dp"
             android:background="@drawable/icon_busca"/>
 
         <TextView
-            android:id="@+id/descMedicamento"
+            android:id="@+id/labelBusca"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="55dp"
             android:layout_gravity="center_vertical"
             android:textStyle="bold"
-            android:text="TextView"/>
+            android:text="Buscar Medicamentos Relacionados"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true" />
     </RelativeLayout>
+
+
+    <TextView
+        android:id="@+id/descMedicamento"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_gravity="center_vertical"
+        android:textStyle="bold"
+        android:text="TextView"/>
 </LinearLayout>

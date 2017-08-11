@@ -3,6 +3,7 @@ package br.com.civico.mais.saude.adapter;
 import android.annotation.TargetApi;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Point;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
@@ -21,6 +22,8 @@ import java.util.List;
 
 import br.com.civico.mais.saude.R;
 import br.com.civico.mais.saude.constantes.ConstantesAplicacao;
+import br.com.civico.mais.saude.controle.LoginActivity;
+import br.com.civico.mais.saude.controle.MedicamentoActivity;
 import br.com.civico.mais.saude.dto.medicamento.MedicamentoResponse;
 import br.com.civico.mais.saude.servico.MedicamentoService;
 
@@ -34,7 +37,6 @@ public class ExpandableListMedicamentoAdapter extends BaseExpandableListAdapter{
     private HashMap<String, List<String>> _listDataChild;
     private ProgressDialog progressDialog;
     private String principioAtivo;
-    private int pagina;
 
     public ExpandableListMedicamentoAdapter(Context context, List<String> listDataHeader, HashMap<String, List<String>> listChildData) {
         this._context = context;
@@ -77,13 +79,17 @@ public class ExpandableListMedicamentoAdapter extends BaseExpandableListAdapter{
         LayoutInflater infalInflater = (LayoutInflater) this._context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if (convertView == null) {
             holder = new ViewHolder();
-            if("Princípio Ativo".equalsIgnoreCase(childText.split(":")[0])){
+            if(childPosition == 0){
                 convertView = infalInflater.inflate(R.layout.customer_medicamento_row_com_btn, parent, false);
                 holder.btnBuscaPrincipioAtivo = (Button) convertView.findViewById(R.id.btnBuscarPrincipioAtivo);
                 holder.btnBuscaPrincipioAtivo.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        AsyncTask<Void,Void,MedicamentoResponse> asyncTask = new AsyncTask<Void, Void, MedicamentoResponse>() {
+                        Intent intent = new Intent(_context, MedicamentoActivity.class);
+                        intent.putExtra("principioAtivo", getPrincipioAtivo());
+                        intent.putExtra("tipoPesquisaMedicamento",ConstantesAplicacao.SEARCH_MEDICAMENTOPOR_PRINCIPIO_ATIVO);
+                        _context.startActivity(intent);
+                        /*AsyncTask<Void,Void,MedicamentoResponse> asyncTask = new AsyncTask<Void, Void, MedicamentoResponse>() {
 
                             protected void onPreExecute(){
                                 progressDialog = new ProgressDialog(_context);
@@ -108,7 +114,7 @@ public class ExpandableListMedicamentoAdapter extends BaseExpandableListAdapter{
                                 }
                             }
                         };
-                        asyncTask.execute((Void[]) null);
+                        asyncTask.execute((Void[]) null);*/
                     }
                 });
             }else {
@@ -201,14 +207,6 @@ public class ExpandableListMedicamentoAdapter extends BaseExpandableListAdapter{
 
     public void setPrincipioAtivo(String principioAtivo) {
         this.principioAtivo = principioAtivo;
-    }
-
-    public int getPagina() {
-        return pagina;
-    }
-
-    public void setPagina(int pagina) {
-        this.pagina = pagina;
     }
 
 }
