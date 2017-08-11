@@ -94,7 +94,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Nenhum medicamento não foi encontrado!"
+        android:text="Nenhum medicamento foi encontrado!"
         android:id="@+id/semResultado"
         android:layout_below="@+id/tvHeaderTitle"
         android:layout_alignParentLeft="true"

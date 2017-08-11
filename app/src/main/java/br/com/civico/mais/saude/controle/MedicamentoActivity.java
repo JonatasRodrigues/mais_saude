@@ -262,6 +262,10 @@ public class  MedicamentoActivity extends BaseActivity {
                                 MedicamentoActivity.this.lblSemResultado.setVisibility(View.VISIBLE);
                                 MedicamentoActivity.this.precoAbusivo.setVisibility(View.GONE);
                             }
+
+                            if(currentPage > 0){
+                                MedicamentoActivity.this.lblSemResultado.setText("Não existe mais medicamentos a ser carregado!");
+                            }
                         }catch (Exception e){
                             MedicamentoActivity.this.lblSemResultado.setVisibility(View.VISIBLE);
                             MedicamentoActivity.this.precoAbusivo.setVisibility(View.GONE);
