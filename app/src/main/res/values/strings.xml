@@ -34,6 +34,8 @@
         poderá encaminhar denúncia ao Anvis@tende, pelo telefone <b>0800-642-9782</b>
         ou e-mail da Secretaria Executiva da Cmed: <b>denuncia.cmed@anvisa.gov.br</b> </string>
 
+    <string name="body_popup_search_medicamento_sem_registro">Não existem mais medicamentos a serem carregados!</string>
+
 
     <!-- Strings related to login -->
     <string name="prompt_nome">Nome</string>

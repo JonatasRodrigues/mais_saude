@@ -258,13 +258,24 @@ public class  MedicamentoActivity extends BaseActivity {
                             voltarMenu();
                         }
                         try {
-                            if (medicamentoResponse.getMedicamentoExpandableDTO().getListDataChild().size() == 0) {
-                                MedicamentoActivity.this.lblSemResultado.setVisibility(View.VISIBLE);
-                                MedicamentoActivity.this.precoAbusivo.setVisibility(View.GONE);
-                            }
 
-                            if(currentPage > 0){
-                                MedicamentoActivity.this.lblSemResultado.setText("Não existe mais medicamentos a ser carregado!");
+                            if(medicamentoResponse.getMedicamentoExpandableDTO().getListDataChild().size() == 0){
+                                if (currentPage <= 0) {
+                                    MedicamentoActivity.this.lblSemResultado.setVisibility(View.VISIBLE);
+                                    MedicamentoActivity.this.precoAbusivo.setVisibility(View.GONE);
+                                } else if (currentPage > 0){
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(MedicamentoActivity.this);
+                                    TextView title = new TextView(MedicamentoActivity.this);
+                                    title.setText(R.string.title_popup_preco_Abusivo);
+                                    title.setBackgroundColor(Color.DKGRAY);
+                                    title.setPadding(10, 10, 10, 10);
+                                    title.setGravity(Gravity.CENTER);
+                                    title.setTextColor(Color.WHITE);
+                                    title.setTextSize(20);
+                                    builder.setCustomTitle(title);
+                                    builder.setMessage(R.string.body_popup_search_medicamento_sem_registro);
+                                    builder.create().show();
+                                }
                             }
                         }catch (Exception e){
                             MedicamentoActivity.this.lblSemResultado.setVisibility(View.VISIBLE);

@@ -10,7 +10,8 @@
         android:layout_height="30dp"
 
         android:visibility="visible"
-        android:layout_marginRight="8dp">
+        android:layout_marginRight="8dp"
+        android:background="@color/blue_55">
 
         <View
             android:layout_width="1dp"
@@ -34,8 +35,8 @@
             android:layout_gravity="center_vertical"
             android:textStyle="bold"
             android:text="Buscar Medicamentos Relacionados"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true" />
+            android:layout_marginLeft="15dp"
+            android:layout_centerVertical="true" />
     </RelativeLayout>
 
 
