@@ -48,6 +48,7 @@ public class  MedicamentoActivity extends BaseActivity {
     private TextView lblSemResultado;
     private TextView precoAbusivo;
     private int ultimoExpandido = -1;
+    private String principioAtivo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +76,15 @@ public class  MedicamentoActivity extends BaseActivity {
         expListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
             public boolean onGroupClick(ExpandableListView expandableListView, View view, int groupPosition, long l) {
+                ExpandableListMedicamentoAdapter customExpander = (ExpandableListMedicamentoAdapter) expListView.getExpandableListAdapter();
+                if(!expandableListView.isGroupExpanded(groupPosition)){
+                    final String principioAtivo = (String) customExpander.getChild(groupPosition,5);
+                    try{
+                        customExpander.setPrincipioAtivo(principioAtivo.split(":")[1].trim());
+                    }catch(Exception e){
+                        customExpander.setPrincipioAtivo("");
+                    }
+                }
                 if(ultimoExpandido != -1){
                     expListView.collapseGroup(ultimoExpandido);
                 }
@@ -89,11 +99,12 @@ public class  MedicamentoActivity extends BaseActivity {
             }
         });
 
-
+        setPrincipioAtivo(getIntent().getStringExtra("principioAtivo"));
         String tipoPesquisaMedicamento = getIntent().getStringExtra("tipoPesquisaMedicamento");
-        if(tipoPesquisaMedicamento.equalsIgnoreCase(ConstantesAplicacao.SEARCH_MEDICAMENTOPOR_CODBARRA)){
+        if(ConstantesAplicacao.SEARCH_MEDICAMENTOPOR_CODBARRA.equalsIgnoreCase(tipoPesquisaMedicamento)){
             scanBarcode();
-        }else if(tipoPesquisaMedicamento.equalsIgnoreCase(ConstantesAplicacao.SEARCH_MEDICAMENTOPOR_LISTARTODOS)){
+        }else if(ConstantesAplicacao.SEARCH_MEDICAMENTOPOR_LISTARTODOS.equalsIgnoreCase(tipoPesquisaMedicamento)
+                || ConstantesAplicacao.SEARCH_MEDICAMENTOPOR_PRINCIPIO_ATIVO.equalsIgnoreCase(tipoPesquisaMedicamento)){
             pesquisaMedicamento();
         }else{
             voltarMenu();
@@ -139,6 +150,7 @@ public class  MedicamentoActivity extends BaseActivity {
     private View.OnClickListener onClickListenerMedicamento = new View.OnClickListener() {
         public void onClick(final View v) {
             if(v.getId()== R.id.btnSearchMedicamento){
+                setPrincipioAtivo("");
                 btnVoltar.setVisibility(View.VISIBLE);
                 isPesquisa=true;
                 pesquisaMedicamento();
@@ -204,7 +216,11 @@ public class  MedicamentoActivity extends BaseActivity {
                     protected MedicamentoResponse doInBackground(Void... voids) {
                         try {
                             MedicamentoService medicamentoService = new MedicamentoService();
-                            return medicamentoService.consumirServicoTCU(currentPage, searchValue);
+                            if(getPrincipioAtivo() != null && !getPrincipioAtivo().isEmpty()){
+                                return medicamentoService.buscarPorPrincipioAtivo(currentPage,getPrincipioAtivo());
+                            } else {
+                                return medicamentoService.consumirServicoTCU(currentPage, searchValue);
+                            }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -234,6 +250,7 @@ public class  MedicamentoActivity extends BaseActivity {
                                     adapterMedicamento.updateData(medicamentoResponse.getMedicamentoExpandableDTO().getListDataHeader(),
                                             medicamentoResponse.getMedicamentoExpandableDTO().getListDataChild());
                                     adapterMedicamento.notifyDataSetChanged();
+                                    adapterMedicamento.setPrincipioAtivo("");
                                 }
                             }
                         } else {
@@ -241,9 +258,24 @@ public class  MedicamentoActivity extends BaseActivity {
                             voltarMenu();
                         }
                         try {
-                            if (medicamentoResponse.getMedicamentoExpandableDTO().getListDataChild().size() == 0) {
-                                MedicamentoActivity.this.lblSemResultado.setVisibility(View.VISIBLE);
-                                MedicamentoActivity.this.precoAbusivo.setVisibility(View.GONE);
+
+                            if(medicamentoResponse.getMedicamentoExpandableDTO().getListDataChild().size() == 0){
+                                if (currentPage <= 0) {
+                                    MedicamentoActivity.this.lblSemResultado.setVisibility(View.VISIBLE);
+                                    MedicamentoActivity.this.precoAbusivo.setVisibility(View.GONE);
+                                } else if (currentPage > 0){
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(MedicamentoActivity.this);
+                                    TextView title = new TextView(MedicamentoActivity.this);
+                                    title.setText(R.string.title_popup_preco_Abusivo);
+                                    title.setBackgroundColor(Color.DKGRAY);
+                                    title.setPadding(10, 10, 10, 10);
+                                    title.setGravity(Gravity.CENTER);
+                                    title.setTextColor(Color.WHITE);
+                                    title.setTextSize(20);
+                                    builder.setCustomTitle(title);
+                                    builder.setMessage(R.string.body_popup_search_medicamento_sem_registro);
+                                    builder.create().show();
+                                }
                             }
                         }catch (Exception e){
                             MedicamentoActivity.this.lblSemResultado.setVisibility(View.VISIBLE);
@@ -309,4 +341,13 @@ public class  MedicamentoActivity extends BaseActivity {
     public void onBackPressed() {
         voltarMenu();
     }
+
+    public String getPrincipioAtivo() {
+        return principioAtivo;
+    }
+
+    public void setPrincipioAtivo(String principioAtivo) {
+        this.principioAtivo = principioAtivo;
+    }
+
 }

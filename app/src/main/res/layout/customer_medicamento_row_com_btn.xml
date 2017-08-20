@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/menuMedicamento"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+
+        android:visibility="visible"
+        android:layout_marginRight="8dp"
+        android:background="@color/blue_55">
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="fill_parent"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="40dp"
+            android:background="#FFFFFF" />
+        <Button
+            android:id="@+id/btnBuscarPrincipioAtivo"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:focusable="false"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/icon_busca"/>
+
+        <TextView
+            android:id="@+id/labelBusca"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textStyle="bold"
+            android:text="Buscar Medicamentos Relacionados"
+            android:layout_marginLeft="15dp"
+            android:layout_centerVertical="true" />
+    </RelativeLayout>
+
+
+    <TextView
+        android:id="@+id/descMedicamento"
+        android:fontFamily="sans-serif-condensed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_gravity="center_vertical"
+        android:text="TextView"/>
+</LinearLayout>

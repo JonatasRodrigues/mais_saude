@@ -10,6 +10,7 @@ import android.graphics.Point;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.text.Html;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,6 +31,7 @@ import br.com.civico.mais.saude.controle.LoginActivity;
 import br.com.civico.mais.saude.controle.MapsActivity;
 import br.com.civico.mais.saude.dto.AvaliacaoResponse;
 import br.com.civico.mais.saude.servico.UnidadeService;
+import br.com.civico.mais.saude.util.StringUtil;
 
 /**
  * Created by Jônatas Rodrigues on 29/08/2016.
@@ -86,7 +88,7 @@ public class ExpandableListUnidadeAdapter extends BaseExpandableListAdapter{
         final String childText = (String) getChild(groupPosition, childPosition);
 
         LayoutInflater infalInflater = (LayoutInflater) this._context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        ViewHolder holder;
+        final ViewHolder holder;
 
         if (convertView == null) {
             holder = new ViewHolder();
@@ -121,7 +123,7 @@ public class ExpandableListUnidadeAdapter extends BaseExpandableListAdapter{
                                     progressDialog.dismiss();
                                 }
 
-                                showPopUpMediaAvaliacao(result);
+                                showPopUpComentario(result);
                             }
                         };
                         task.execute((Void[]) null);
@@ -154,17 +156,19 @@ public class ExpandableListUnidadeAdapter extends BaseExpandableListAdapter{
             }else {
                 convertView = infalInflater.inflate(R.layout.customer_unidade_row_sem_btn, parent, false);
             }
+
             holder.descUnidade = (TextView) convertView.findViewById(R.id.descUnidade);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        holder.descUnidade.setText(childText);
+        holder.descUnidade.setText(Html.fromHtml(StringUtil.formatar(childText)));
         return convertView;
     }
 
-    public void showPopUpMediaAvaliacao(AvaliacaoResponse avaliacaoResponse){
+
+    public void showPopUpComentario(AvaliacaoResponse avaliacaoResponse){
         final View root = ((LayoutInflater)this._context.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.dialog_avg_media, null);
 
         RatingBar rat = (RatingBar)root.findViewById(R.id.ratingBarMedia);
@@ -194,6 +198,7 @@ public class ExpandableListUnidadeAdapter extends BaseExpandableListAdapter{
         dialog.show();
 
     }
+
 
     private void writeCache(){
         try {
@@ -286,11 +291,10 @@ public class ExpandableListUnidadeAdapter extends BaseExpandableListAdapter{
          * Arredonda para Cima
          */
         int alturaTituloResultado = (int) Math.round(((double)height / ConstantesAplicacao.ROW_DISPLAY)+0.5d);
-
         String headerTitle = (String) getGroup(groupPosition);
         if (convertView == null) {
             LayoutInflater infalInflater = (LayoutInflater) this._context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = infalInflater.inflate(R.layout.customer_unidade_group, null);
+            convertView = infalInflater.inflate(R.layout.customer_group, null);
         }
 
         TextView lblListHeader = (TextView) convertView.findViewById(R.id.lblListHeader);

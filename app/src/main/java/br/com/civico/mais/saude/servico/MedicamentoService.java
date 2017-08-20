@@ -25,25 +25,58 @@ import cz.msebera.android.httpclient.HttpResponse;
 import cz.msebera.android.httpclient.client.HttpClient;
 import cz.msebera.android.httpclient.impl.client.DefaultHttpClient;
 
-public class MedicamentoService{
+public class MedicamentoService {
 
-    public MedicamentoService(){
+    public MedicamentoService() {
 
+    }
+
+    public MedicamentoResponse buscarPorPrincipioAtivo(int pagina,String principioAtivo) {
+        MedicamentoResponse responseMedicamento = new MedicamentoResponse();
+        String result = "";
+        try {
+            String url = ConstantesAplicacao.URL_BASE + "/rest/remedios?quantidade" + ConstantesAplicacao.QTD_RETORNO_SERVICO + "&pagina=" + pagina;
+            url = url.concat("&campos=produto,ultimaAlteracao,codBarraEan,apresentacao," +
+                    "registro,classeTerapeutica,principioAtivo,cnpj,laboratorio,codBarraEan,pmc0");
+            url = url.concat("&principioAtivo=").concat(URLEncoder.encode(principioAtivo, "UTF-8"));
+
+            HttpClient httpClient = new DefaultHttpClient();
+            HttpGet httpGet = new HttpGet(url);
+            HttpResponse response = httpClient.execute(httpGet);
+            responseMedicamento.setStatusCodigo(response.getStatusLine().getStatusCode());
+
+            if (responseMedicamento.getStatusCodigo() == ConstantesAplicacao.STATUS_OK) {
+                HttpEntity entity = response.getEntity();
+
+                if (entity != null) {
+                    InputStream instream = entity.getContent();
+                    result = StreamConverter.convertStreamToString(instream);
+                    instream.close();
+                }
+                responseMedicamento.setMedicamentoExpandableDTO(converterJsonParaObject(getJson(result)));
+
+            } else {
+                responseMedicamento.setMensagem("Erro ao recuperar informações. Por favor, tente mais tarde.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return responseMedicamento;
     }
 
     public MedicamentoResponse consumirServicoTCU(int pagina, String produto) throws JSONException {
         MedicamentoResponse medicamentoResponse = new MedicamentoResponse();
-        String result="";
+        String result = "";
         try {
-            String url = ConstantesAplicacao.URL_BASE + "/rest/remedios?quantidade="+ConstantesAplicacao.QTD_RETORNO_SERVICO+"&pagina="+pagina;
+            String url = ConstantesAplicacao.URL_BASE + "/rest/remedios?quantidade=" + ConstantesAplicacao.QTD_RETORNO_SERVICO + "&pagina=" + pagina;
             url = url.concat("&campos=produto,ultimaAlteracao,codBarraEan,apresentacao," +
                     "registro,classeTerapeutica,principioAtivo,cnpj,laboratorio,codBarraEan,pmc0");
-            if(produto != null && !produto.isEmpty()){
+            if (produto != null && !produto.isEmpty()) {
                 //Se for numérico
                 boolean digitsOnly = TextUtils.isDigitsOnly(produto);
-                if(!digitsOnly){
+                if (!digitsOnly) {
                     url = url.concat("&produto=").concat(URLEncoder.encode(produto, "UTF-8"));
-                }else{
+                } else {
                     url = url.concat("&codBarraEan=").concat(URLEncoder.encode(produto, "UTF-8"));
                 }
             }
@@ -55,21 +88,21 @@ public class MedicamentoService{
 
             medicamentoResponse.setStatusCodigo(response.getStatusLine().getStatusCode());
 
-            if( medicamentoResponse.getStatusCodigo() == ConstantesAplicacao.STATUS_OK){
+            if (medicamentoResponse.getStatusCodigo() == ConstantesAplicacao.STATUS_OK) {
                 HttpEntity entity = response.getEntity();
 
                 if (entity != null) {
                     InputStream instream = entity.getContent();
-                    result= StreamConverter.convertStreamToString(instream);
+                    result = StreamConverter.convertStreamToString(instream);
                     instream.close();
                 }
                 medicamentoResponse.setMedicamentoExpandableDTO(converterJsonParaObject(getJson(result)));
 
-            }else{
+            } else {
                 medicamentoResponse.setMensagem("Erro ao recuperar informações. Por favor, tente mais tarde.");
             }
-        } catch (NetworkOnMainThreadException e){
-            result="[{\n" +
+        } catch (NetworkOnMainThreadException e) {
+            result = "[{\n" +
                     "  \"produto\": \"Produto A\",\n" +
                     "  \"principioAtivo\": \"Principio Ativo A\",\n" +
                     "  \"laboratorio\": \"Laboratorio A\",\n" +
@@ -89,18 +122,17 @@ public class MedicamentoService{
                     "}]";
 
             medicamentoResponse.setMedicamentoExpandableDTO(converterJsonParaObject(getJson(result)));
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return medicamentoResponse;
     }
 
-    private MedicamentoExpandableDTO converterJsonParaObject(JSONArray jsonArray){
+    private MedicamentoExpandableDTO converterJsonParaObject(JSONArray jsonArray) {
         List<String> listaHeader = new ArrayList<>();
         List<String> listaDados;
         HashMap<String, List<String>> listDataChild = new HashMap<>();
-        for (int i=0; i < jsonArray.length(); i++) {
+        for (int i = 0; i < jsonArray.length(); i++) {
             try {
                 listaDados = new ArrayList<>();
                 JSONObject oneObject = jsonArray.getJSONObject(i);
@@ -119,9 +151,9 @@ public class MedicamentoService{
                 listaDados.add("Última Alteração: " + oneObject.getString("ultimaAlteracao"));
                 listaDados.add("");
                 String pmc0 = oneObject.getString("pmc0");
-                if(!pmc0.equalsIgnoreCase("0.0")){
-                    listaDados.add("*Preço Máximo ao Consumidor: R$" + pmc0.replace(".",","));
-                }else{
+                if (!pmc0.equalsIgnoreCase("0.0")) {
+                    listaDados.add("*Preço Máximo ao Consumidor: R$" + pmc0.replace(".", ","));
+                } else {
                     listaDados.add("*Preço Máximo ao Consumidor: Não informado");
                 }
                 listDataChild.put(idHash, listaDados);
@@ -129,7 +161,7 @@ public class MedicamentoService{
                 e.printStackTrace();
             }
         }
-        return new MedicamentoExpandableDTO(listaHeader,listDataChild);
+        return new MedicamentoExpandableDTO(listaHeader, listDataChild);
     }
 
     public JSONArray getJson(String json) throws JSONException {

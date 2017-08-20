@@ -56,8 +56,8 @@ public class LoginService {
 
             loginResponse.setStatusCodigo(httpresponse.getStatusLine().getStatusCode());
 
-             if(loginResponse.getStatusCodigo() == ConstantesAplicacao.STATUS_CREDENCIAIS_INVALIDAS)
-                 loginResponse.setMensagem(ConstantesAplicacao.MENSAGEM_CRENDECIAIS_INVALIDAS);
+            if(loginResponse.getStatusCodigo() == ConstantesAplicacao.STATUS_CREDENCIAIS_INVALIDAS)
+                loginResponse.setMensagem(ConstantesAplicacao.MENSAGEM_CRENDECIAIS_INVALIDAS);
 
             if(loginResponse.getStatusCodigo() == ConstantesAplicacao.STATUS_EMAIL_NAO_CADASTRADO)
                 loginResponse.setMensagem(ConstantesAplicacao.MENSAGEM_EMAIL_NAO_CADASTRADO);
@@ -73,7 +73,7 @@ public class LoginService {
                 loginResponse.setCodigoUsuario(getCodigoUsuario(result));
                 loginResponse.setMensagem(ConstantesAplicacao.MENSAGEM_SUCESSO);
             }
-         } catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
             Log.i("Parse Exception", e + "");
         }
@@ -106,7 +106,7 @@ public class LoginService {
             loginResponse.setStatusCodigo(httpresponse.getStatusLine().getStatusCode());
 
             if(loginResponse.getStatusCodigo() == ConstantesAplicacao.STATUS_CADASTRO_SUCESSO){
-               return autenticarUsuario();
+                return autenticarUsuario();
             }
 
             if(loginResponse.getStatusCodigo() == ConstantesAplicacao.STATUS_PARAMETRO_INVALIDO)
@@ -122,6 +122,34 @@ public class LoginService {
 
         return loginResponse;
     }
+
+
+    public LoginResponse recuperarSenha() throws JSONException {
+        LoginResponse loginResponse = new LoginResponse();
+        loginResponse.setMensagem("Ocorreu um erro.");
+        try {
+
+            String url= ConstantesAplicacao.URL_BASE_METAMODELO + "/rest/pessoas/redefinirSenha?email=" + this.email;
+            HttpClient httpclient = new DefaultHttpClient();
+            HttpPost post = new HttpPost(url);
+            HttpResponse httpresponse = httpclient.execute(post);
+
+            loginResponse.setStatusCodigo(httpresponse.getStatusLine().getStatusCode());
+
+            if(loginResponse.getStatusCodigo() == ConstantesAplicacao.STATUS_OK)
+                loginResponse.setMensagem(ConstantesAplicacao.MENSAGEM_EMAIL_ENVIADO_SUCESSO);
+
+            if(loginResponse.getStatusCodigo() == ConstantesAplicacao.STATUS_EMAIL_NAO_CADASTRADO)
+                loginResponse.setMensagem(ConstantesAplicacao.MENSAGEM_EMAIL_NAO_CADASTRADO);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.i("Parse Exception", e + "");
+        }
+
+        return loginResponse;
+    }
+
 
     private Long getCodigoUsuario(String json) throws JSONException {
         JSONObject obj = new JSONObject(json);

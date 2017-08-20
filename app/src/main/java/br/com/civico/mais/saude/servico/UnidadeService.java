@@ -1,6 +1,6 @@
 package br.com.civico.mais.saude.servico;
 
- import android.location.Location;
+import android.location.Location;
 
 import com.loopj.android.http.HttpGet;
 import org.json.JSONArray;
@@ -9,16 +9,16 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
- import java.net.URLEncoder;
- import java.util.ArrayList;
+import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import br.com.civico.mais.saude.constantes.ConstantesAplicacao;
 import br.com.civico.mais.saude.converter.StreamConverter;
- import br.com.civico.mais.saude.dto.AvaliacaoResponse;
- import br.com.civico.mais.saude.dto.unidade.ExpandableUnidadeDTO;
- import br.com.civico.mais.saude.dto.unidade.UnidadeResponse;
+import br.com.civico.mais.saude.dto.AvaliacaoResponse;
+import br.com.civico.mais.saude.dto.unidade.ExpandableUnidadeDTO;
+import br.com.civico.mais.saude.dto.unidade.UnidadeResponse;
 import cz.msebera.android.httpclient.HttpEntity;
 import cz.msebera.android.httpclient.HttpResponse;
 import cz.msebera.android.httpclient.client.HttpClient;
@@ -27,7 +27,7 @@ import cz.msebera.android.httpclient.impl.client.DefaultHttpClient;
 /**
  * Created by Jônatas Rodrigues on 27/08/2016.
  */
-public class UnidadeService {
+public class UnidadeService{
 
     private Location location;
     private static final Integer RAIO = 10;
@@ -134,15 +134,15 @@ public class UnidadeService {
                 String codigoUnidade = oneObject.getString("codUnidade");
                 listaDados.add("Código: " + codigoUnidade);
                 listaDados.add("Vinculo SUS: " + oneObject.getString("vinculoSus"));
-                listaDados.add("Emergência:  " + oneObject.getString("temAtendimentoUrgencia")+ "       " + "Centro Cirúrgico: " + oneObject.getString("temCentroCirurgico"));
-                listaDados.add("Ambulatório: " + oneObject.getString("temAtendimentoAmbulatorial")+ "       " + "Obstetria: " + oneObject.getString("temObstetra"));
-                listaDados.add("Neo-Natal:     " + oneObject.getString("temNeoNatal") + "       " + "Diálise: " + oneObject.getString("temDialise"));
+                listaDados.add("Ambulatório: " + oneObject.getString("temAtendimentoAmbulatorial")+ "/" + "Obstetria: " + oneObject.getString("temObstetra"));
+                listaDados.add("Emergência:  " + oneObject.getString("temAtendimentoUrgencia")+ "/" + "Neo-Natal: " + oneObject.getString("temNeoNatal"));
+                listaDados.add("C. Cirúrgico&nbsp;:" + oneObject.getString("temCentroCirurgico") + "/" + "Diálise: " + oneObject.getString("temDialise"));
                 listaDados.add("  ");
 
                 if (oneObject.has("logradouro") && oneObject.has("numero")) {
                     listaDados.add("Logradouro: " + oneObject.getString("logradouro") + ", " + oneObject.getString("numero"));
                 }else{
-                    listaDados.add("Logradouro: - ");
+                    listaDados.add("Logradouro: - ");;
                 }
 
                 if (oneObject.has("bairro")) {
@@ -162,7 +162,7 @@ public class UnidadeService {
                 }else{
                     listaDados.add("Telefone: - ");
                 }
-                listaDados.add("Latitude: " + oneObject.getString("lat") + "   /    " + "Longitude: " + oneObject.getString("long"));
+                listaDados.add("Latitude: " + oneObject.getString("lat") + "/" + "Longitude: " + oneObject.getString("long"));
                 listaDados.add("  ");
                 listaDados.add("Atendimento: " + oneObject.getString("turnoAtendimento"));
 
