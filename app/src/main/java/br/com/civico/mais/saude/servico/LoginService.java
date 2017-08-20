@@ -137,7 +137,7 @@ public class LoginService {
             loginResponse.setStatusCodigo(httpresponse.getStatusLine().getStatusCode());
 
             if(loginResponse.getStatusCodigo() == ConstantesAplicacao.STATUS_OK)
-                loginResponse.setMensagem(ConstantesAplicacao.MENSAGEM_EMAI_ENVIADO_SUCESSO);
+                loginResponse.setMensagem(ConstantesAplicacao.MENSAGEM_EMAIL_ENVIADO_SUCESSO);
 
             if(loginResponse.getStatusCodigo() == ConstantesAplicacao.STATUS_EMAIL_NAO_CADASTRADO)
                 loginResponse.setMensagem(ConstantesAplicacao.MENSAGEM_EMAIL_NAO_CADASTRADO);

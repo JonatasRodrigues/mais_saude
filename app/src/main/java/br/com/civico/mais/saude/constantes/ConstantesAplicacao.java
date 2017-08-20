@@ -29,7 +29,7 @@ public class ConstantesAplicacao {
     public static final String MENSAGEM_NOT_FOUND_LOCATION="Por favor, verifique se o serviço de localização do aparelho está ativo em \'Configurar -> Localização\'.";
     public static final String MENSAGEM_SEM_CONEXAO_INTERNET="Verifique sua conexão com a internet e tente novamente.";
     public static final String MENSAGEM_COMENTARIO_EXCLUSAO_SUCESSO = "Comentário excluído com sucesso.";
-    public static final String MENSAGEM_EMAI_ENVIADO_SUCESSO = "Email enviado com sucesso.";
+    public static final String MENSAGEM_EMAIL_ENVIADO_SUCESSO = "Email enviado com sucesso.";
 
     public static final String SPLIT_CARACTER="_";
     public static final long QTD_RETORNO_SERVICO =15;
