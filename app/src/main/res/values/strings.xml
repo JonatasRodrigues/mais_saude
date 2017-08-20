@@ -35,6 +35,8 @@
 
     <string name="body_popup_search_medicamento_sem_registro">Não existem mais medicamentos a serem carregados!</string>
 
+    <string name="title_sobre">Sobre</string>
+
     <!-- Strings related to login -->
     <string name="prompt_nome">Nome</string>
     <string name="prompt_email">Email</string>
