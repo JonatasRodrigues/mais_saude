@@ -134,15 +134,15 @@ public class UnidadeService{
                 String codigoUnidade = oneObject.getString("codUnidade");
                 listaDados.add("Código: " + codigoUnidade);
                 listaDados.add("Vinculo SUS: " + oneObject.getString("vinculoSus"));
-                listaDados.add("Emergência:  " + oneObject.getString("temAtendimentoUrgencia")+ "       " + "Centro Cirúrgico: " + oneObject.getString("temCentroCirurgico"));
-                listaDados.add("Ambulatório: " + oneObject.getString("temAtendimentoAmbulatorial")+ "       " + "Obstetria: " + oneObject.getString("temObstetra"));
-                listaDados.add("Neo-Natal:     " + oneObject.getString("temNeoNatal") + "       " + "Diálise: " + oneObject.getString("temDialise"));
+                listaDados.add("Ambulatório: " + oneObject.getString("temAtendimentoAmbulatorial")+ "/" + "Obstetria: " + oneObject.getString("temObstetra"));
+                listaDados.add("Emergência:  " + oneObject.getString("temAtendimentoUrgencia")+ "/" + "Neo-Natal: " + oneObject.getString("temNeoNatal"));
+                listaDados.add("C. Cirúrgico&nbsp;:" + oneObject.getString("temCentroCirurgico") + "/" + "Diálise: " + oneObject.getString("temDialise"));
                 listaDados.add("  ");
 
                 if (oneObject.has("logradouro") && oneObject.has("numero")) {
                     listaDados.add("Logradouro: " + oneObject.getString("logradouro") + ", " + oneObject.getString("numero"));
                 }else{
-                    listaDados.add("Logradouro: - ");
+                    listaDados.add("Logradouro: - ");;
                 }
 
                 if (oneObject.has("bairro")) {
@@ -162,7 +162,7 @@ public class UnidadeService{
                 }else{
                     listaDados.add("Telefone: - ");
                 }
-                listaDados.add("Latitude: " + oneObject.getString("lat") + "   /    " + "Longitude: " + oneObject.getString("long"));
+                listaDados.add("Latitude: " + oneObject.getString("lat") + "/" + "Longitude: " + oneObject.getString("long"));
                 listaDados.add("  ");
                 listaDados.add("Atendimento: " + oneObject.getString("turnoAtendimento"));
 

@@ -6,13 +6,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Point;
 import android.graphics.Typeface;
-import android.os.AsyncTask;
 import android.os.Build;
+import android.text.Html;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
 import android.widget.TextView;
@@ -22,10 +21,8 @@ import java.util.List;
 
 import br.com.civico.mais.saude.R;
 import br.com.civico.mais.saude.constantes.ConstantesAplicacao;
-import br.com.civico.mais.saude.controle.LoginActivity;
 import br.com.civico.mais.saude.controle.MedicamentoActivity;
-import br.com.civico.mais.saude.dto.medicamento.MedicamentoResponse;
-import br.com.civico.mais.saude.servico.MedicamentoService;
+import br.com.civico.mais.saude.util.StringUtil;
 
 /**
  * Created by Jônatas Rodrigues on 29/08/2016.
@@ -35,7 +32,6 @@ public class ExpandableListMedicamentoAdapter extends BaseExpandableListAdapter{
     private List<String> _listDataHeader; // header titles
     // child data in format of header title, child title
     private HashMap<String, List<String>> _listDataChild;
-    private ProgressDialog progressDialog;
     private String principioAtivo;
 
     public ExpandableListMedicamentoAdapter(Context context, List<String> listDataHeader, HashMap<String, List<String>> listChildData) {
@@ -89,43 +85,18 @@ public class ExpandableListMedicamentoAdapter extends BaseExpandableListAdapter{
                         intent.putExtra("principioAtivo", getPrincipioAtivo());
                         intent.putExtra("tipoPesquisaMedicamento",ConstantesAplicacao.SEARCH_MEDICAMENTOPOR_PRINCIPIO_ATIVO);
                         _context.startActivity(intent);
-                        /*AsyncTask<Void,Void,MedicamentoResponse> asyncTask = new AsyncTask<Void, Void, MedicamentoResponse>() {
-
-                            protected void onPreExecute(){
-                                progressDialog = new ProgressDialog(_context);
-                                progressDialog.setMessage("Buscando medicamentos...");
-                                progressDialog.setCancelable(false);
-                                progressDialog.setIndeterminate(true);
-                                progressDialog.show();
-                            }
-                            @Override
-                            protected MedicamentoResponse doInBackground(Void... params) {
-                                MedicamentoService medicamentoService = new MedicamentoService();
-                                return medicamentoService.buscarPorPrincipioAtivo(getPagina(),getPrincipioAtivo());
-                            }
-                            @Override
-                            protected void onPostExecute(MedicamentoResponse medicamentoResponse) {
-                                if (progressDialog != null) {
-                                    progressDialog.dismiss();
-                                }
-                                if (medicamentoResponse.getStatusCodigo() == ConstantesAplicacao.STATUS_OK) {
-                                    subEscreveDados(medicamentoResponse.getMedicamentoExpandableDTO().getListDataHeader(), medicamentoResponse.getMedicamentoExpandableDTO().getListDataChild());
-                                    notifyDataSetChanged();
-                                }
-                            }
-                        };
-                        asyncTask.execute((Void[]) null);*/
                     }
                 });
             }else {
                 convertView = infalInflater.inflate(R.layout.customer_medicamento_row_sem_btn, parent, false);
             }
+            holder.descMedicamento = (TextView) convertView.findViewById(R.id.descMedicamento);
+            convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        holder.descMedicamento = (TextView) convertView.findViewById(R.id.descMedicamento);
-        convertView.setTag(holder);
-        holder.descMedicamento.setText(childText);
+
+        holder.descMedicamento.setText(Html.fromHtml(StringUtil.formatar(childText)));
         return convertView;
     }
 
@@ -170,7 +141,7 @@ public class ExpandableListMedicamentoAdapter extends BaseExpandableListAdapter{
 
         if (convertView == null) {
             LayoutInflater infalInflater = (LayoutInflater) this._context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = infalInflater.inflate(R.layout.customer_unidade_group, null);
+            convertView = infalInflater.inflate(R.layout.customer_group, null);
         }
 
         TextView lblListHeader = (TextView) convertView.findViewById(R.id.lblListHeader);
@@ -182,10 +153,6 @@ public class ExpandableListMedicamentoAdapter extends BaseExpandableListAdapter{
         return convertView;
     }
 
-    private void subEscreveDados( List<String> listDataHeader,HashMap<String, List<String>> listChildData) {
-        this._listDataHeader = listDataHeader ;
-        this._listDataChild = listChildData ;
-    }
     public void updateData( List<String> listDataHeader,HashMap<String, List<String>> listChildData) {
         this._listDataHeader.addAll(listDataHeader);
         this._listDataChild.putAll(listChildData);

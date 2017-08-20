@@ -30,11 +30,12 @@
                 android:layout_column="1"
                 android:text="@string/label_aplicativo"
                 android:padding="3dip"
-                android:textStyle="bold"/>
+                android:fontFamily="sans-serif-condensed"/>
             <TextView
                 android:text="@string/app_name"
                 android:gravity="left"
                 android:padding="3dip"
+                android:fontFamily="sans-serif-condensed"
                 android:textStyle="bold"/>
         </TableRow>
 
@@ -44,12 +45,13 @@
                 android:text="@string/label_versao"
                 android:gravity="left"
                 android:padding="3dip"
-                android:textStyle="bold"/>
+                android:fontFamily="sans-serif-condensed"/>
             <TextView
                 android:text="@string/app_versao"
                 android:gravity="left"
                 android:padding="3dip"
-                android:textStyle="bold"/>
+                android:textStyle="bold"
+                android:fontFamily="sans-serif-condensed"/>
         </TableRow>
 
     </TableLayout>
@@ -69,7 +71,7 @@
                 android:text="@string/label_descricao"
                 android:gravity="left"
                 android:padding="3dip"
-                android:textStyle="bold"/>
+                android:fontFamily="sans-serif-condensed"/>
         </TableRow>
 
         <TableRow>
@@ -79,7 +81,8 @@
                 android:layout_width="wrap_content"
                 android:gravity="left"
                 android:padding="3dip"
-                android:textStyle="bold"/>
+                android:textStyle="bold"
+                android:fontFamily="sans-serif-condensed"/>
         </TableRow>
 
         <Space
@@ -93,7 +96,7 @@
                 android:layout_width="wrap_content"
                 android:gravity="left"
                 android:padding="3dip"
-                android:textStyle="bold"/>
+                android:fontFamily="sans-serif-condensed"/>
         </TableRow>
 
         <TableRow>
@@ -102,7 +105,8 @@
                 android:text="@string/label_desenvolvedor_1"
                 android:gravity="left"
                 android:padding="1dip"
-                android:textStyle="bold"/>
+                android:textStyle="bold"
+                android:fontFamily="sans-serif-condensed"/>
         </TableRow>
 
         <TableRow>
@@ -111,7 +115,8 @@
                 android:text="@string/label_desenvolvedor_2"
                 android:gravity="left"
                 android:padding="1dip"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:fontFamily="sans-serif-condensed"/>
         </TableRow>
 
 
@@ -126,7 +131,7 @@
                 android:layout_width="wrap_content"
                 android:gravity="left"
                 android:padding="3dip"
-                android:textStyle="bold"/>
+                android:fontFamily="sans-serif-condensed"/>
         </TableRow>
 
         <TableRow>
@@ -135,6 +140,7 @@
                 android:text="@string/label_email_contato"
                 android:gravity="left"
                 android:padding="2dip"
+                android:fontFamily="sans-serif-condensed"
                 android:textStyle="bold"/>
         </TableRow>
 

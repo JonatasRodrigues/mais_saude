@@ -10,6 +10,7 @@ import android.graphics.Point;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.text.Html;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,6 +31,7 @@ import br.com.civico.mais.saude.controle.LoginActivity;
 import br.com.civico.mais.saude.controle.MapsActivity;
 import br.com.civico.mais.saude.dto.AvaliacaoResponse;
 import br.com.civico.mais.saude.servico.UnidadeService;
+import br.com.civico.mais.saude.util.StringUtil;
 
 /**
  * Created by Jônatas Rodrigues on 29/08/2016.
@@ -161,7 +163,7 @@ public class ExpandableListUnidadeAdapter extends BaseExpandableListAdapter{
             holder = (ViewHolder) convertView.getTag();
         }
 
-        holder.descUnidade.setText(childText);
+        holder.descUnidade.setText(Html.fromHtml(StringUtil.formatar(childText)));
         return convertView;
     }
 
@@ -292,7 +294,7 @@ public class ExpandableListUnidadeAdapter extends BaseExpandableListAdapter{
         String headerTitle = (String) getGroup(groupPosition);
         if (convertView == null) {
             LayoutInflater infalInflater = (LayoutInflater) this._context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = infalInflater.inflate(R.layout.customer_unidade_group, null);
+            convertView = infalInflater.inflate(R.layout.customer_group, null);
         }
 
         TextView lblListHeader = (TextView) convertView.findViewById(R.id.lblListHeader);
