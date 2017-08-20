@@ -26,6 +26,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:id="@+id/labelUnidade"
+            android:fontFamily="sans-serif-condensed"
             android:layout_marginLeft="5dp"/>
 
         <Space
