@@ -17,135 +17,124 @@
 
         <TableRow>
 
-    <TableLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
 
-        <Space
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="10dp"/>
+
+                <TableRow>
+                    <TextView
+                        android:layout_column="1"
+                        android:text="@string/label_aplicativo"
+                        android:padding="3dip"
+                        android:fontFamily="sans-serif-condensed"/>
+                    <TextView
+                        android:text="@string/app_name"
+                        android:gravity="left"
+                        android:padding="3dip"
+                        android:fontFamily="sans-serif-condensed"
+                        android:textStyle="bold"/>
+                </TableRow>
+
+                <TableRow>
+                    <TextView
+                        android:layout_column="1"
+                        android:text="@string/label_versao"
+                        android:gravity="left"
+                        android:padding="3dip"
+                        android:fontFamily="sans-serif-condensed"/>
+                    <TextView
+                        android:text="@string/app_versao"
+                        android:gravity="left"
+                        android:padding="3dip"
+                        android:fontFamily="sans-serif-condensed"
+                        android:textStyle="bold"/>
+                </TableRow>
+
+            </TableLayout>
+        </TableRow>
+
+        <TableLayout
             android:layout_width="match_parent"
-            android:layout_height="10dp"/>
+            android:layout_height="match_parent" >
 
-        <TableRow>
-            <TextView
-                android:layout_column="1"
-                android:text="@string/label_aplicativo"
-                android:padding="3dip"
-                android:fontFamily="sans-serif-condensed"/>
-            <TextView
-                android:text="@string/app_name"
-                android:gravity="left"
-                android:padding="3dip"
-                android:fontFamily="sans-serif-condensed"
-                android:textStyle="bold"/>
-        </TableRow>
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="10dp"/>
 
-        <TableRow>
-            <TextView
-                android:layout_column="1"
-                android:text="@string/label_versao"
-                android:gravity="left"
-                android:padding="3dip"
-                android:fontFamily="sans-serif-condensed"/>
-            <TextView
-                android:text="@string/app_versao"
-                android:gravity="left"
-                android:padding="3dip"
-                android:textStyle="bold"
-                android:fontFamily="sans-serif-condensed"/>
-        </TableRow>
+            <TableRow>
+                <TextView
+                    android:layout_column="1"
+                    android:text="@string/label_descricao"
+                    android:gravity="left"
+                    android:padding="3dip"
+                    android:fontFamily="sans-serif-condensed"/>
+            </TableRow>
 
-    </TableLayout>
-        </TableRow>
+            <TableRow>
+                <TextView
+                    android:layout_column="1"
+                    android:text="@string/descricao_app"
+                    android:layout_width="wrap_content"
+                    android:gravity="left"
+                    android:padding="3dip"
+                    android:textStyle="bold"
+                    android:fontFamily="sans-serif-condensed"/>
+            </TableRow>
 
-    <TableLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="10dp"/>
 
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="10dp"/>
+            <TableRow>
+                <TextView
+                    android:layout_column="1"
+                    android:text="@string/label_desenvolvedores"
+                    android:layout_width="wrap_content"
+                    android:gravity="left"
+                    android:padding="3dip"
+                    android:fontFamily="sans-serif-condensed"/>
+            </TableRow>
 
-        <TableRow>
-            <TextView
-                android:layout_column="1"
-                android:text="@string/label_descricao"
-                android:gravity="left"
-                android:padding="3dip"
-                android:fontFamily="sans-serif-condensed"/>
-        </TableRow>
+            <TableRow>
+                <TextView
+                    android:layout_column="1"
+                    android:text="@string/label_nomes_desenvolvedores"
+                    android:gravity="left"
+                    android:padding="1dip"
+                    android:textStyle="bold"
+                    android:fontFamily="sans-serif-condensed"/>
+            </TableRow>
 
-        <TableRow>
-            <TextView
-                android:layout_column="1"
-                android:text="@string/descricao_app"
-                android:layout_width="wrap_content"
-                android:gravity="left"
-                android:padding="3dip"
-                android:textStyle="bold"
-                android:fontFamily="sans-serif-condensed"/>
-        </TableRow>
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="10dp"/>
 
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="10dp"/>
+            <TableRow>
+                <TextView
+                    android:layout_column="1"
+                    android:text="@string/label_contato"
+                    android:layout_width="wrap_content"
+                    android:gravity="left"
+                    android:padding="3dip"
+                    android:fontFamily="sans-serif-condensed"/>
+            </TableRow>
 
-        <TableRow>
-            <TextView
-                android:layout_column="1"
-                android:text="@string/label_desenvolvedores"
-                android:layout_width="wrap_content"
-                android:gravity="left"
-                android:padding="3dip"
-                android:fontFamily="sans-serif-condensed"/>
-        </TableRow>
-
-        <TableRow>
-            <TextView
-                android:layout_column="1"
-                android:text="@string/label_desenvolvedor_1"
-                android:gravity="left"
-                android:padding="1dip"
-                android:textStyle="bold"
-                android:fontFamily="sans-serif-condensed"/>
-        </TableRow>
-
-        <TableRow>
-            <TextView
-                android:layout_column="1"
-                android:text="@string/label_desenvolvedor_2"
-                android:gravity="left"
-                android:padding="1dip"
-                android:textStyle="bold"
-                android:fontFamily="sans-serif-condensed"/>
-        </TableRow>
+            <TableRow>
+                <TextView
+                    android:layout_column="1"
+                    android:text="@string/label_email_contato"
+                    android:gravity="left"
+                    android:padding="2dip"
+                    android:fontFamily="sans-serif-condensed"
+                    android:textStyle="bold"/>
+            </TableRow>
 
 
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="10dp"/>
-
-        <TableRow>
-            <TextView
-                android:layout_column="1"
-                android:text="@string/label_contato"
-                android:layout_width="wrap_content"
-                android:gravity="left"
-                android:padding="3dip"
-                android:fontFamily="sans-serif-condensed"/>
-        </TableRow>
-
-        <TableRow>
-            <TextView
-                android:layout_column="1"
-                android:text="@string/label_email_contato"
-                android:gravity="left"
-                android:padding="2dip"
-                android:fontFamily="sans-serif-condensed"
-                android:textStyle="bold"/>
-        </TableRow>
-
-
-      </TableLayout>
+        </TableLayout>
 
     </TableLayout>
 </RelativeLayout>

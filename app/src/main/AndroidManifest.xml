@@ -33,7 +33,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:icon="@android:color/transparent"
+            android:icon="@drawable/seta"
             android:name=".controle.UnidadeActivity"
             android:label="@string/title_unidades_hospitalares"
             android:windowSoftInputMode="stateHidden"
@@ -50,13 +50,15 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:icon="@android:color/transparent"
+            android:icon="@drawable/seta"
             android:name=".controle.MedicamentoActivity"
             android:label="@string/title_activity_medicamento"
             android:windowSoftInputMode="stateHidden"
             android:screenOrientation="portrait"
             android:theme="@style/MyTheme" />
         <activity
+            android:icon="@drawable/seta"
+            android:label="@string/title_sobre"
             android:name=".controle.SobreActivity"
             android:screenOrientation="portrait"
             android:theme="@style/MyTheme" />

@@ -22,7 +22,7 @@ android {
         applicationId "br.com.civico.mais.saude"
         minSdkVersion 16
         targetSdkVersion 23
-        versionCode 6
+        versionCode 7
         versionName "2.0"
         multiDexEnabled true
         signingConfig signingConfigs.config

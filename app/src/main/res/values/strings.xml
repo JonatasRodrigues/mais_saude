@@ -16,7 +16,6 @@
     <string name="link_esqueci_senha"><u>Esqueci minha senha</u></string>
 
 
-
     <!--Strings relacionados a tela de Medicamento -->
     <string name="button_search_medicamentoPor">Pesquisar por:</string>
     <string name="button_search_medicamentoPor_confirmar">Ok</string>
@@ -36,6 +35,7 @@
 
     <string name="body_popup_search_medicamento_sem_registro">Não existem mais medicamentos a serem carregados!</string>
 
+    <string name="title_sobre">Sobre</string>
 
     <!-- Strings related to login -->
     <string name="prompt_nome">Nome</string>
@@ -61,15 +61,16 @@
     <string name="label_aplicativo">- Aplicativo:</string>
     <string name="label_versao">- Versão:</string>
     <string name="label_descricao">- Descrição:</string>
-    <string name="descricao_app">  O aplicativo Brasil Mais Saúde possui o cunho cívico e social, ao qual, está participando do
-        DESAFIO DE APLICATIVOS CÍVICOS: CONTROLE SOCIAL DIGITAL-2016 realizado pelo Tribunal de Contas da União (TCU).
+    <string name="descricao_app">  O aplicativo Brasil Mais Saúde possui o cunho cívico e social, ao qual,  foi avaliado e
+        classificado entre os 11 melhores apps do DESAFIO DE APLICATIVOS CÍVICOS: CONTROLE SOCIAL DIGITAL-2016 realizado pelo
+        Tribunal de Contas da União (TCU). O aplicativo possui um leitor de código de barras que facilita verificar o
+        preço máximo ao consumidor (PMC) dos medicamentos regulamentados no Brasil.
         \n O aplicativo é baseado em dados abertos disponibilizados nas bases governamentais públicas  e utiliza o sistema
         de crowdsourcing que é abastecido pelos usuários. As informações coletadas com a participação da sociedade serão usadas para gerar
         conteúdo e auxiliar os órgãos de controle externo.</string>
 
     <string name="label_desenvolvedores">- Desenvolvedores:</string>
-    <string name="label_desenvolvedor_1">Jônatas Rodrigues</string>
-    <string name="label_desenvolvedor_2">Jefferson Araujo</string>
+    <string name="label_nomes_desenvolvedores">Jônatas Rodrigues / Jefferson Araujo</string>
     <string name="label_contato">- Contato:</string>
     <string name="label_email_contato">jsrodrigues@protonmail.com</string>
 
